@@ -1,0 +1,3 @@
+https://www.serverless.com/blog/flask-python-rest-api-serverless-lambda-dynamodb
+https://www.serverless.com/framework/docs/providers/aws/examples/hello-world/python/
+https://www.serverless.com/framework/docs/providers/aws/cli-reference/create/#available-templates

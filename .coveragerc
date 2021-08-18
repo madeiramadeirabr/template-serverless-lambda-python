@@ -1,0 +1,33 @@
+# .coveragerc to control coverage.py
+[paths]
+source =
+    ./chalicelib/
+    ./flask_app/
+    ./app.py
+
+[run]
+branch = True
+
+omit =
+        */test*
+        *venv/*,
+        *vendor/*
+        *~/.local/lib/*
+        /usr/local/lib*
+        /home/*/.local/*
+
+
+[report]
+omit =
+        */test*
+        *venv/*,
+        *vendor/*
+        *~/.local/lib/*
+        /usr/local/lib*
+        /home/*/.local/*
+
+[html]
+directory =  ./target/unit/coverage_html/
+
+[xml]
+output = ./target/unit/report.xml

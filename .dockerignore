@@ -1,0 +1,6 @@
+**/venv
+.git
+.gitignore
+docker-compose.yml
+docker-compose-chalice.yml
+bin/

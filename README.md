@@ -1,1 +1,1 @@
-# template-serverless-service-python
+# template-serverless-lambda-python

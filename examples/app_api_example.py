@@ -39,17 +39,6 @@ def index():
 APP_QUEUE = config.APP_QUEUE
 
 
-@app.on_sqs_message(queue=APP_QUEUE, batch_size=1)
-def sqs_handler(event):
-    body = {"app": '%s:%s' % (APP_NAME, APP_VERSION)}
-    logger.info('Env: {} App Info: {}'.format(env, body))
-    logger.info('Handling event: {}'.format(event.to_dict()))
-
-    result = True
-
-    return result
-
-
 @app.route('/alive')
 def alive():
     """

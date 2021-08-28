@@ -1,7 +1,7 @@
 import os
 import logging
 
-from flask_app import APP_NAME
+from lambda_app import APP_NAME
 
 _LOGGER = None
 # fix + reset

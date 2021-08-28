@@ -12,7 +12,7 @@ from lambda_app.logging import get_logger
 from lambda_app import APP_NAME, APP_VERSION, http_helper, helper
 from lambda_app.helper import open_vendor_file, print_routes
 from lambda_app.http_helper import CUSTOM_DEFAULT_HEADERS
-from lambda_app.lambda_app import LambdaApp
+from lambda_app.lambda_flask import LambdaFlask
 from lambda_app.openapi import spec, get_doc, generate_openapi_yml
 from lambda_app.openapi import api_schemas
 
@@ -23,7 +23,7 @@ debug = helper.debug_mode()
 # logger
 logger = get_logger()
 
-app = LambdaApp(__name__)
+app = LambdaFlask(__name__)
 
 
 @app.route('/')

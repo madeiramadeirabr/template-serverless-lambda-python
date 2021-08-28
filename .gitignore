@@ -26,15 +26,6 @@ venv
 /sam.json
 /.coverage
 
-# mantem a vendor
-!vendor
-# ignora os demais arquivos
-vendor/*
-# mantem essa pasta
-!/vendor/public
-# mantem essa pasta
-!/vendor/datasources
-
 # Coverage results and execution report
 !/target/integration/report.xml
 !/target/component/report.xml
@@ -59,8 +50,8 @@ imagedefinitions.json
 config/integration.en
 /node_modules/
 
-/examples/lambda_api/vendor/*
-# mantem essa pasta
-!/examples/lambda_api/vendor/public
-# mantem essa pasta
-!/examples/lambda_api/vendor/datasources
+/examples/lambda_api/vendor/
+/examples/lambda_cron/vendor/
+/examples/lambda_s3/vendor/
+/examples/lambda_sns/vendor/
+/examples/lambda_sqs/vendor/

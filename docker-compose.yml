@@ -1,9 +1,8 @@
 version: "3.2"
 services:
-  template-serverless-lambda-python:
-    container_name: template-serverless-lambda-python
+  template-serverless-lambda-python-lambda-api:
     build:
-      context: .
+      context: ./examples/lambda_api/
       dockerfile: ./docker/python/Dockerfile
     privileged: true
     environment:

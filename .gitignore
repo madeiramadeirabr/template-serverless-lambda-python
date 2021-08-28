@@ -58,3 +58,9 @@ imagedefinitions.json
 /include/*
 config/integration.en
 /node_modules/
+
+/examples/lambda_api/vendor/*
+# mantem essa pasta
+!/examples/lambda_api/vendor/public
+# mantem essa pasta
+!/examples/lambda_api/vendor/datasources

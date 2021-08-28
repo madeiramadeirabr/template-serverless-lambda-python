@@ -3,7 +3,7 @@ import inspect
 import logging
 import os
 
-from flask_app import APP_NAME, APP_VERSION
+from lambda_app import APP_NAME, APP_VERSION
 
 _CONFIG = None
 

@@ -1,15 +1,16 @@
 import os
 
-from flask_app.boot import load_dot_env
+from lambda_app.boot import load_dot_env
 # load env
-from flask_app.config import get_config
+from lambda_app.config import get_config
+from lambda_app.services.v1.carrier_notifier_service import CarrierNotifierService
 
 env = os.environ['ENVIRONMENT_NAME'] if 'ENVIRONMENT_NAME' in os.environ else None
 load_dot_env(env)
 
-from flask_app.logging import get_logger
-from flask_app import APP_NAME, APP_VERSION, helper
-from flask_app.lambda_app import LambdaApp
+from lambda_app.logging import get_logger
+from lambda_app import APP_NAME, APP_VERSION, helper
+from lambda_app.lambda_flask import LambdaFlask
 
 # config
 config = get_config()
@@ -18,7 +19,7 @@ debug = helper.debug_mode()
 # logger
 logger = get_logger()
 
-app = LambdaApp(__name__)
+app = LambdaFlask(APP_NAME)
 
 # general vars
 APP_QUEUE = config.APP_QUEUE
@@ -30,6 +31,7 @@ def sqs_handler(event):
     logger.info('Env: {} App Info: {}'.format(env, body))
     logger.info('Handling event: {}'.format(event.to_dict()))
 
-    result = True
+    service = CarrierNotifierService()
+    result = service.process(event)
 
     return result

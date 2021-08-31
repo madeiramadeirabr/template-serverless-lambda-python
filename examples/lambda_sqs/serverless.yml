@@ -1,0 +1,61 @@
+# serverless.yml
+
+service: template-serverless-lambda-python
+
+plugins:
+  - serverless-python-requirements
+  - serverless-offline
+  - serverless-plugin-canary-deployments
+  - serverless-plugin-resource-tagging
+custom:
+  wsgi:
+    app: app.app
+    packRequirements: false
+  pythonRequirements:
+    dockerizePip: non-linux
+
+provider:
+  name: aws
+  region: ${env:AWS_REGION}
+  lambdaHashingVersion: 20201221
+  environment: ${ssm:/aws/reference/secretsmanager/${env:SECRET_NAME}}
+  apiGateway:
+    shouldStartNameWithService: true
+  deploymentBucket: ${env:LAMBDA_DEPLOYMENT_BUCKET}
+    deploymentPrefix: ${self:service}
+    stackTags:
+      App: ${env:APP_NAME}
+      Env: ${env:ENVIRONMENT_NAME}
+#    layers:
+#      - arn:aws:lambda:${env:AWS_REGION}:${env:ACCOUNT_ID}:layer:boto3-python:1
+  runtime: python3.8
+  stage: ${env:ENVIRONMENT_NAME}
+
+functions:
+  app:
+#    handler: ${env:LAMBDA_HANDLER}
+    handler: wsgi.handler
+    name: ${env:APP_NAME}-${env:ENVIRONMENT_NAME}
+    runtime: ${env:LAMBDA_RUNTIME}
+    memorySize: ${env:LAMBDA_MEMORY_SIZE}
+    timeout: ${env:LAMBDA_TIMEOUT}
+    provisionedConcurrency: ${env:LAMBDA_PROVISIONED_CONCURRENCY}
+    reservedConcurrency: ${env:LAMBDA_RESERVED_CONCURRENCY}
+    role: ${env:LAMBDA_EXECUTION_ROLE_ARN}
+    events:
+      - http: ANY /
+      - http: 'ANY {proxy+}'
+    deploymentSettings:
+      type: ${env:LAMBDA_DEPLOYMENT_PREFERENCE_TYPE}
+      alias: Live
+    vpc:
+      securityGroupIds:
+        - ${env:LAMBDA_SECURITY_GROUP_ID}
+      subnetIds:
+        - ${env:SUBNET_ID_0}
+        - ${env:SUBNET_ID_1}
+    environment:
+      APP_ENV: ${env:ENVIRONMENT_NAME}
+      DEBUG: true
+      LOG_LEVEL: error
+      REGION_NAME: ${env:AWS_REGION}

@@ -1,13 +1,12 @@
-# template-serverless-lambda-python - Lambda API
-Template for build flexible API with AWS Lambda.
+# template-serverless-lambda-python - Lambda SQS
+Template for build flexible SQS processor with AWS Lambda.
 
 ## Service Architecture
-Example of architecture with Kong API Gateway.
+Example of architecture with AWS SQS and AWS Lambda.
 ![Service-Arch](docs/service-arch.png)
 
 ## General Service Routes Architecture
-Service routes map.
-![Service-Routes](docs/service-routes.png)
+There are no routes for this project.
 
 # Prerequisites
 - Python 3.6
@@ -30,7 +29,6 @@ Service routes map.
 * Flask
 * MySQL
 * Redis
-* Swagger
 
 ## Installation
 
@@ -42,7 +40,7 @@ To create the `venv` and install the modules execute:
 #### Running the app
 Execute the follow command:
 ```
-./scripts/flask/run-local.sh
+No command for while
 ```
 ### Running via docker
 To execute the build:

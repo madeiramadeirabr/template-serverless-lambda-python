@@ -1,23 +1,9 @@
 version: "3.2"
 services:
-  template-serverless-lambda-python-lambda-api:
-    build:
-      context: ./examples/lambda_api/
-      dockerfile: ./docker/python/Dockerfile
-    privileged: true
-    environment:
-      # Fake credentials for Localstack
-      AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
-      AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-    ports:
-      - 5000:5000
-    networks:
-      - service-python
-    volumes:
-      - ./:/app
   template-serverless-lambda-python-lambda-sqs:
+    container_name: template-serverless-lambda-python-lambda-sqs
     build:
-      context: ./examples/lambda_sqs/
+      context: .
       dockerfile: ./docker/python/Dockerfile
     privileged: true
     environment:

@@ -4,7 +4,11 @@ a stack example.
 
 ## Service Architecture
 Example of architecture of this project stack.
-![Service-Arch](docs/service-stack.png)
+![Service-Arch](docs/service-arch.png)
+
+## Service Stack
+Example of components of the architecture of this project.
+![Service-Stack](docs/service-stack.png)
 
 ## Single projects
 You can find single examples for:

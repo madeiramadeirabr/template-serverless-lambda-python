@@ -1,7 +1,5 @@
 from time import sleep
 
-
-
 from lambda_app.config import get_config
 from lambda_app.logging import get_logger
 from vendor import pymysql

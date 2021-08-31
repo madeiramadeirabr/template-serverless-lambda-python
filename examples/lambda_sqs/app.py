@@ -1,6 +1,7 @@
 import os
 
-from lambda_app.boot import load_dot_env
+from lambda_app.boot import load_dot_env,register_vendor
+register_vendor()
 # load env
 from lambda_app.config import get_config
 from lambda_app.services.v1.carrier_notifier_service import CarrierNotifierService
@@ -26,7 +27,7 @@ APP_QUEUE = config.APP_QUEUE
 
 
 @app.on_sqs_message(queue=APP_QUEUE, batch_size=1)
-def sqs_handler(event):
+def index(event):
     body = {"app": '%s:%s' % (APP_NAME, APP_VERSION)}
     logger.info('Env: {} App Info: {}'.format(env, body))
     logger.info('Handling event: {}'.format(event.to_dict()))

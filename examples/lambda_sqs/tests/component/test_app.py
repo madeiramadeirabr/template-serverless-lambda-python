@@ -69,28 +69,28 @@ class AppTestCase(BaseComponentTestCase):
         logger.info('created message: {}'.format(message))
 
     @data_provider(get_queue_message)
-    def test_sqs_handler(self, event):
+    def test_index(self, event):
         self.logger.info('Running test: %s', get_function_name(__name__))
         self.logger.info('Event: {}'.format(event))
 
         response = False
         lambda_context = FakeLambdaContext()
         try:
-            response = app.sqs_handler(event=event, context=lambda_context)
+            response = app.index(event=event, context=lambda_context)
         except Exception as err:
             self.logger.error(err)
 
         self.assertTrue(response)
 
     @data_provider(get_queue_events_samples)
-    def test_cancelamento_event_sqs_handler(self, event):
+    def test_cancelamento_event_index(self, event):
         self.logger.info('Running test: %s', get_function_name(__name__))
         self.logger.info('Event: {}'.format(event))
 
         response = False
         lambda_context = FakeLambdaContext()
         try:
-            response = app.sqs_handler(event=event, context=lambda_context)
+            response = app.index(event=event, context=lambda_context)
         except Exception as err:
             self.logger.error(err)
 

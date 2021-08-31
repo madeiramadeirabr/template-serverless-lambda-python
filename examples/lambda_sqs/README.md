@@ -32,16 +32,6 @@ There are no routes for this project.
 
 ## Installation
 
-### Running Locally
-To create the `venv` and install the modules execute:
-```
-./scripts/venv.sh
-```
-#### Running the app
-Execute the follow command:
-```
-No command for while
-```
 ### Running via docker
 To execute the build:
 ```
@@ -53,10 +43,16 @@ Execute the follow command:
 ./scripts/runenv.sh
 ```
 
-### Boot the queues
+### Boot the lambda
 Execute the follow command:
 ```
 ./scripts/boot.sh
+```
+
+### Running the app
+Execute the follow command:
+```
+./scripts/localstack/lambda/invoke-sqs-function.sh lambda_sqs
 ```
 
 ## Samples
@@ -64,6 +60,12 @@ See the project samples in this folder [here](samples).
 
 ## Running tests
 To run the unit tests of the project you can execute the follow command:
+
+### Running creating the venv
+To create the `venv` and install the modules execute:
+```
+./scripts/venv.sh
+```
 
 First you need install the tests requirements:
  ```

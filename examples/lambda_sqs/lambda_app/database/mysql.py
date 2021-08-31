@@ -56,6 +56,9 @@ def get_connection(config=None, connect=True, retry=False):
                 # retry
                 if not retry:
                     _RETRY_COUNT += 1
+                    # Fix para tratar diff entre docker/local
+                    if config.DB_HOST == 'mysql':
+                        config.DB_HOST = 'localhost'
                     return get_connection(config, True)
     else:
         connection = _CONNECTION

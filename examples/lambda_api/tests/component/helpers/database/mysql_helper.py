@@ -66,7 +66,7 @@ class MySQLHelper:
                 while line:
                     cnt += 1
                     with connection.cursor() as cursor:
-                        if line is not '':
+                        if line != '':
                             cursor.execute(line,)
                     line = seeder_file.readline().strip().replace(';', '')
 

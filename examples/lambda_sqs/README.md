@@ -32,6 +32,12 @@ There are no routes for this project.
 
 ## Installation
 
+### Creating network
+Execute the follow command:
+```
+./scripts/docker/create-network.sh
+```
+
 ### Running via docker
 To execute the build:
 ```

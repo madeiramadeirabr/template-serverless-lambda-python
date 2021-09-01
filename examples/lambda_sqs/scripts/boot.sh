@@ -12,6 +12,9 @@ echo 'Validating jd installation..'
 echo 'Validate connection'
 ./scripts/boot-validate-connection.sh
 
+echo 'Booting db...'
+./scripts/boot-db.sh
+
 echo 'Create the queues...'
 ./scripts/boot-queues.sh
 

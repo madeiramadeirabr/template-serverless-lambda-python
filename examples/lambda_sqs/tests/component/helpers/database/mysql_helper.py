@@ -71,6 +71,7 @@ class MySQLHelper:
                     line = seeder_file.readline().strip().replace(';', '')
 
                 connection.commit()
+                result = True
             except Exception as ex:
                 result = False
                 connection.rollback()

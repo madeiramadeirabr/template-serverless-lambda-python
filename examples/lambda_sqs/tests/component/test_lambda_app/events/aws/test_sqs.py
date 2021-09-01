@@ -1,36 +1,24 @@
 import os
 import unittest
 
-from tests.component.componenttestutils import BaseComponentTestCase
-from lambda_app import helper
 from unittest_data_provider import data_provider
+
 from lambda_app.config import get_config
+from lambda_app.events.aws.sqs import SQSEvents
 from lambda_app.logging import get_logger
+from tests.component.componenttestutils import BaseComponentTestCase
 from tests.component.helpers.events.aws.sqs_helper import SQSHelper
-from tests.unit.helpers.aws.sqs_helper import get_sqs_event_sample, create_chalice_sqs_event
-from tests.unit.helpers.events_helper import get_delivery_time_simulator_event_sample, get_cancelamento_event
-from tests.unit.mocks.aws_mocks.aws_lambda_mock import FakeLambdaContext
+from tests.unit.helpers.events_helper import get_cancelamento_event
+from tests.unit.helpers.ocoren_helper import get_ocoren_cancelamento_sample
 from tests.unit.testutils import get_function_name
-import app
-import json
 
 
-def get_queue_message():
-    queue_url = os.getenv("APP_QUEUE")
-    event = SQSHelper.get_message(queue_url)
-
-    return (event,)
-
-
-def get_queue_events_samples():
+def get_sqs_event_sample():
     event = get_cancelamento_event()
-    # delivery_event = get_delivery_time_simulator_event_sample()
-    sqs_event = create_chalice_sqs_event(event)
-
-    return (sqs_event,)
+    return (event,),
 
 
-class AppTestCase(BaseComponentTestCase):
+class SQSEventsTestCase(BaseComponentTestCase):
     EXECUTE_FIXTURE = True
     CONFIG = None
 
@@ -69,33 +57,23 @@ class AppTestCase(BaseComponentTestCase):
         SQSHelper.create_message(message, queue_url)
         logger.info('created message: {}'.format(message))
 
-    @data_provider(get_queue_message)
-    def test_index(self, event):
+    def test_connect(self):
         self.logger.info('Running test: %s', get_function_name(__name__))
-        self.logger.info('Event: {}'.format(event))
+        sqs = SQSEvents()
+        connection = sqs.connect()
+        self.assertIsNotNone(connection)
 
-        response = False
-        lambda_context = FakeLambdaContext()
-        try:
-            response = app.index(event=event, context=lambda_context)
-        except Exception as err:
-            self.logger.error(err)
-
-        self.assertTrue(response)
-
-    @data_provider(get_queue_events_samples)
-    def test_cancelamento_event_index(self, event):
+    @data_provider(get_sqs_event_sample)
+    def test_send_message(self, message):
         self.logger.info('Running test: %s', get_function_name(__name__))
-        self.logger.info('Event: {}'.format(event))
+        sqs = SQSEvents()
+        queue_url = self.CONFIG.APP_QUEUE
+        response = sqs.send_message(message, queue_url)
 
-        response = False
-        lambda_context = FakeLambdaContext()
-        try:
-            response = app.index(event=event, context=lambda_context)
-        except Exception as err:
-            self.logger.error(err)
-
-        self.assertTrue(response)
+        self.assertIsNotNone(response)
+        self.assertIsInstance(response, dict)
+        self.assertTrue('MD5OfMessageBody' in response)
+        self.assertTrue('MessageId' in response)
 
 
 if __name__ == '__main__':

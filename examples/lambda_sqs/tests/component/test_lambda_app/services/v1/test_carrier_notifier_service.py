@@ -36,6 +36,7 @@ class CarrierNotifierServiceTestCase(BaseComponentTestCase):
 
     @classmethod
     def setUpClass(cls):
+        BaseComponentTestCase.setUpClass()
         cls.CONFIG = get_config()
         cls.CONFIG.SQS_ENDPOINT = cls.SQS_LOCALSTACK
 

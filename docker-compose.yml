@@ -37,7 +37,7 @@ services:
     expose:
       - 6379
     networks:
-      - default
+      - service-python
   mysql:
     image: mysql:5.7.22
     ports:

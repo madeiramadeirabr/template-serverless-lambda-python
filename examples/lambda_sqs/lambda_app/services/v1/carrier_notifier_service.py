@@ -43,6 +43,7 @@ class CarrierNotifierService:
                     event_tracker.track(event_hash, event)
                     # todo implementar lógica aqui
                     # aqui temos um simples exemplo de created
+                    # TODO compatibilidade com a API (arrumar depois)
                     if 'data' in event:
                         event = event['data']
                     event_vo = OcorenVO(event)

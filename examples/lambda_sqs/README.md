@@ -32,6 +32,21 @@ There are no routes for this project.
 
 ## Installation
 
+### Installing AWS CLI
+Documentation:
+https://docs.aws.amazon.com/pt_br/cli/latest/userguide/install-cliv2.html
+
+Execute the follow command:
+```
+apt install awscli
+apt install zip
+app install pip
+```
+Execute the follow command:
+```
+aws configure
+```
+
 ### Creating network
 Execute the follow command:
 ```

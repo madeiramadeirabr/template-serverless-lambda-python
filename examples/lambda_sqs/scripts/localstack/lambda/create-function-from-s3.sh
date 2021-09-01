@@ -99,7 +99,7 @@ else
    --function-name arn:aws:lambda:$REGION:000000000000:function:$FUNCTION_NAME \
    --runtime python3.6 --handler $HANDLER --memory-size 128 \
    --code S3Bucket=test,S3Key=lambda-full.zip --role arn:aws:iam:awslocal \
-   --environment {\"Variables\": $ENVIRONMENT_VARIABLES}"
+   --environment \"{\"Variables\": $ENVIRONMENT_VARIABLES}\""
 
   aws --endpoint-url=http://$HOST:4566 lambda create-function \
    --function-name arn:aws:lambda:$REGION:000000000000:function:$FUNCTION_NAME \

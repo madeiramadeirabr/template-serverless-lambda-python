@@ -16,6 +16,7 @@ class CarrierNotifierService:
         self.logger = logger if logger is not None else get_logger()
 
         self.repository = repository if repository is not None else OcorenRepository()
+        self.repository.debug = True
 
     def process(self, sqs_event):
         result = True
@@ -42,7 +43,10 @@ class CarrierNotifierService:
                     event_tracker.track(event_hash, event)
                     # todo implementar lógica aqui
                     # aqui temos um simples exemplo de created
+                    if 'data' in event:
+                        event = event['data']
                     event_vo = OcorenVO(event)
+                    self.logger.info('event_vo: {}'.format(event_vo.to_dict()))
                     created = self.repository.create(event_vo)
                     if not created:
                         result = False

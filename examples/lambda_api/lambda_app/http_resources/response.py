@@ -1,11 +1,11 @@
 import json
 
 from flask import Response
-from flask_app import helper
-from flask_app.enums.messages import MessagesEnum
-from flask_app.exceptions import ApiException
-from flask_app.http_resources.request_control import Pagination
-from flask_app.http_helper import CUSTOM_DEFAULT_HEADERS
+from lambda_app import helper
+from lambda_app.enums.messages import MessagesEnum
+from lambda_app.exceptions import ApiException
+from lambda_app.http_resources.request_control import Pagination
+from lambda_app.http_helper import CUSTOM_DEFAULT_HEADERS
 
 
 class ApiResponse:

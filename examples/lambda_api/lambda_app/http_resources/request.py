@@ -2,9 +2,9 @@ import copy
 import json
 import uuid
 
-from flask_app import helper
-from flask_app.http_resources.request_control import Pagination, Order
-from flask_app.http_resources.parsers.flask_request_parser import FlaskRequestParser
+from lambda_app import helper
+from lambda_app.http_resources.request_control import Pagination, Order
+from lambda_app.http_resources.parsers.flask_request_parser import FlaskRequestParser
 from flask import request
 
 

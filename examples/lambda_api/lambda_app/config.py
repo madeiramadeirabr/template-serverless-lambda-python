@@ -28,9 +28,6 @@ class Configuration:
     DB = ""
 
     APP_QUEUE = ""
-    APP_SALES_QUEUE = ""
-    APP_DECISION_QUEUE = ""
-    APP_RULES_QUEUE = ""
 
     REDIS_HOST = ""
     REDIS_PORT = 6379
@@ -55,10 +52,6 @@ class Configuration:
         self.DB = os.getenv("DB") if 'DB' in os.environ else self.DB
 
         self.APP_QUEUE = os.getenv("APP_QUEUE") if 'APP_QUEUE' in os.environ else self.APP_QUEUE
-        self.APP_SALES_QUEUE = os.getenv("APP_SALES_QUEUE") if 'APP_SALES_QUEUE' in os.environ else self.APP_SALES_QUEUE
-        self.APP_DECISION_QUEUE = os.getenv(
-            "APP_DECISION_QUEUE") if 'APP_DECISION_QUEUE' in os.environ else self.APP_DECISION_QUEUE
-        self.APP_RULES_QUEUE = os.getenv("APP_RULES_QUEUE") if 'APP_RULES_QUEUE' in os.environ else self.APP_RULES_QUEUE
 
         self.REDIS_HOST = os.getenv("REDIS_HOST") if 'REDIS_HOST' in os.environ else self.REDIS_HOST
         self.REDIS_PORT = os.getenv("REDIS_PORT") if 'REDIS_PORT' in os.environ else self.REDIS_PORT

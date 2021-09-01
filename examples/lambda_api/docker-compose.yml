@@ -42,12 +42,12 @@ services:
       - "9070:9070"
       - "8080:8080"
     environment:
-      SERVICES: sqs,lambda,cloudwatch
+      SERVICES: sqs,lambda,cloudwatch,s3
       DOCKER_HOST: unix:///var/run/docker.sock
       PORT_WEB_UI: 9070
-      LAMBDA_EXECUTOR: docker
+      #LAMBDA_EXECUTOR: docker # está dando erro via docker
+      LAMBDA_EXECUTOR: local
       DEBUG: 1
-      HOSTNAME: localstack
       HOSTNAME_EXTERNAL: localstack
     networks:
       - service-python

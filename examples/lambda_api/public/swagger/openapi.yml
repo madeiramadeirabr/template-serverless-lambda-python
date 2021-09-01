@@ -6,6 +6,65 @@ components:
           example: I'm alive!
           type: string
       type: object
+    EventCreateErrorResponse:
+      properties:
+        code:
+          example: 105
+          type: integer
+        event_hash:
+          example: null
+          type: string
+        label:
+          example: common.error.event_type_unknown_error
+          type: string
+        message:
+          example: 'Event type unknown: (%s)'
+          type: string
+        params:
+          items:
+            type: string
+          type: array
+        result:
+          example: false
+          type: boolean
+      type: object
+    EventCreateRequest:
+      properties:
+        chavenfe:
+          example: '32210206107255000134550010001712551245826554'
+          type: string
+        ocor:
+          example: MOTIVO DO CANCELAMENTO
+          type: string
+        origem:
+          example: SAC/EAGLE
+          type: string
+        pedido:
+          example: Z1223321
+          type: string
+      type: object
+    EventCreateResponse:
+      properties:
+        code:
+          example: 102
+          type: integer
+        event_hash:
+          example: c82bf3ee20dd2f4ae7109e52d313a3190f1a85ba3362c54d3eb6257bd0c4d69d
+          type: string
+        label:
+          example: common.event_registered_with_success
+          type: string
+        message:
+          example: Event registered with success
+          type: string
+        params:
+          items:
+            type: string
+          type: array
+        result:
+          example: true
+          type: boolean
+      type: object
 info:
   title: template-serverless-lambda-python-lambda-api
   version: 1.0.0
@@ -21,8 +80,37 @@ paths:
                 $ref: '#/components/schemas/Alive'
           description: Success response
       summary: Service Health Method
+  /v1/event/{event_type}:
+    post:
+      parameters:
+      - description: Event type
+        in: path
+        name: event_type
+        required: true
+        schema:
+          example: ocoren-event
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventCreateRequest'
+        description: Event to be created
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventCreateResponse'
+        4xx:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventCreateErrorResponse'
+      summary: Create event
 servers:
 - description: Staging server
-  url: https://localhost:5000
+  url: http://localhost:5000
 - description: Development server
   url: http://localhost:5000

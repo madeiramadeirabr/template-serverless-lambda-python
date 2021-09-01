@@ -4,7 +4,7 @@ import boto3
 
 from os import path
 
-from flask_app.database.mysql import get_connection
+from lambda_app.database.mysql import get_connection
 from tests import ROOT_DIR
 
 if __package__:
@@ -71,6 +71,7 @@ class MySQLHelper:
                     line = seeder_file.readline().strip().replace(';', '')
 
                 connection.commit()
+                result = True
             except Exception as ex:
                 result = False
                 connection.rollback()

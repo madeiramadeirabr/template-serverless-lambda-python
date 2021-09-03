@@ -33,8 +33,7 @@ provider:
 
 functions:
   app:
-#    handler: ${env:LAMBDA_HANDLER}
-    handler: wsgi.handler
+    handler: ${env:LAMBDA_HANDLER} # app.index
     name: ${env:APP_NAME}-${env:ENVIRONMENT_NAME}
     runtime: ${env:LAMBDA_RUNTIME}
     memorySize: ${env:LAMBDA_MEMORY_SIZE}

@@ -32,6 +32,10 @@ Service routes map.
 * Redis
 * Swagger
 
+## Kong configuration
+Configure Kong API Gateway to work compatible with API Gateway.
+
+
 ## Installation
 
 ### Running Locally

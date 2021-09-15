@@ -4,9 +4,10 @@ from lambda_app.boot import load_dot_env,register_vendor
 register_vendor()
 # load env
 from lambda_app.config import get_config
+from lambda_app import helper
 from lambda_app.services.v1.carrier_notifier_service import CarrierNotifierService
 
-env = os.environ['ENVIRONMENT_NAME'] if 'ENVIRONMENT_NAME' in os.environ else None
+env = helper.get_environment()
 load_dot_env(env)
 
 from lambda_app.logging import get_logger

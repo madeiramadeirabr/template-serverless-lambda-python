@@ -3,6 +3,11 @@ import os
 from lambda_app.boot import load_dot_env,register_vendor
 register_vendor()
 
+from lambda_app import helper
+
+env = helper.get_environment()
+load_dot_env(env)
+
 # load env
 from lambda_app.config import get_config
 from lambda_app.enums.events import EventType
@@ -13,10 +18,6 @@ from lambda_app.http_resources.request import ApiRequest
 from lambda_app.http_resources.response import ApiResponse
 from lambda_app.services.v1.ocoren_event_service import OcorenEventService
 from lambda_app.vos.events import EventVO
-
-env = os.environ['ENVIRONMENT_NAME'] if 'ENVIRONMENT_NAME' in os.environ else None
-load_dot_env(env)
-
 from lambda_app.logging import get_logger
 from lambda_app import APP_NAME, APP_VERSION, http_helper, helper
 from lambda_app.helper import open_vendor_file, print_routes
@@ -198,9 +199,108 @@ def event_create(event_type):
     return response.get_response(status_code)
 
 
+@app.route('/v1/event/<event_type>', methods=['GET'])
+def event_list(event_type):
+    """
+    :param event_type:
+    :return:
+    ---
+    get:
+        summary: List event
+        parameters:
+            - in: path
+              name: event_type
+              description: "Event type"
+              required: true
+              schema:
+                type: string
+                example: ocoren-event
+        responses:
+            200:
+                content:
+                    application/json:
+                        schema: EventListResponseSchema
+            4xx:
+                content:
+                    application/json:
+                        schema: EventListErrorResponseSchema
+        """
+    request = ApiRequest().parse_request(app)
+    logger.info('event_type: {}'.format(event_type))
+    logger.info('request: {}'.format(request))
+
+    # event_tracker = EventTracker(logger)
+    #
+    status_code = 200
+    response = ApiResponse(request)
+    response.set_hateos(False)
+    # try:
+    #     # event_type validation
+    #     if EventType.from_value(event_type) not in EventType.get_public_events():
+    #         exception = ApiException(MessagesEnum.EVENT_TYPE_UNKNOWN_ERROR)
+    #         exception.set_message_params([event_type])
+    #         raise exception
+    #
+    #     event_vo = EventVO(event_type=event_type, data=request.where)
+    #     # if EventType.from_value(event_type) == EventType.OCOREN_EVENT:
+    #     #     event_service = OcorenEventService()
+    #     # else:
+    #     #     event_service = ProductEventService()
+    #     event_service = OcorenEventService()
+    #     service = EventManager(logger=logger, event_service=event_service)
+    #     result = service.process(event_vo)
+    #     event_hash = event_vo.hash
+    #
+    #     event_tracker.track(event_hash, event_vo.to_dict())
+    #
+    #     if result:
+    #         code = MessagesEnum.EVENT_REGISTERED_WITH_SUCCESS.code
+    #         label = MessagesEnum.EVENT_REGISTERED_WITH_SUCCESS.label
+    #         message = MessagesEnum.EVENT_REGISTERED_WITH_SUCCESS.message
+    #         params = None
+    #     else:
+    #         if isinstance(service.exception, ApiException):
+    #             raise service.exception
+    #         else:
+    #             raise ApiException(MessagesEnum.INTERNAL_SERVER_ERROR)
+    # except Exception as err:
+    #     logger.error(err)
+    #     result = False
+    #     event_hash = None
+    #     if isinstance(err, ApiException):
+    #         api_ex = err
+    #         status_code = 400
+    #     else:
+    #         api_ex = ApiException(MessagesEnum.CREATE_ERROR)
+    #         status_code = 500
+    #
+    #     code = api_ex.code
+    #     label = api_ex.label
+    #     message = api_ex.message
+    #     params = api_ex.params
+    #
+    # data = {
+    #     "result": result,
+    #     "event_hash": event_hash,
+    #     "code": code,
+    #     "label": label,
+    #     "message": message,
+    #     "params": params
+    # }
+
+
+    data = {}
+
+    response.set_data(data)
+    response.set_total()
+
+    # event_tracker.track(event_hash, data)
+    return response.get_response(status_code)
+
+
 # doc
 spec.path(view=alive, path="/alive", operations=get_doc(alive))
-# spec.path(view=event_list, path="/v1/event/{event_type}", operations=get_doc(event_list))
+spec.path(view=event_list, path="/v1/event/{event_type}", operations=get_doc(event_list))
 spec.path(view=event_create, path="/v1/event/{event_type}", operations=get_doc(event_create))
 
 print_routes(app, logger)

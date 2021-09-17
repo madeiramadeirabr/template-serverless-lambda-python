@@ -1,0 +1,21 @@
+{
+  "name": "template-serverless-lambda-python",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "serverless-offline": "^8.0.0",
+    "serverless-plugin-canary-deployments": "^0.6.0",
+    "serverless-python-requirements": "^5.1.1"
+  }
+}

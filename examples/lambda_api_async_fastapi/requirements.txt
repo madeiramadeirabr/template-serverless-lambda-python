@@ -1,0 +1,12 @@
+python-dotenv
+jsonformatter
+requests
+pytz
+redis
+flask-cors
+Flask
+pyyaml
+apispec
+marshmallow
+fastapi
+uvicorn

@@ -1,0 +1,139 @@
+{
+  "resource": "/{proxy+}",
+  "path": "/v1/alive",
+  "httpMethod": "GET",
+  "headers": {
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Accept-Language": "en-US,en;q=0.9,pt;q=0.8,pt-BR;q=0.7",
+    "cache-control": "max-age=0",
+    "CloudFront-Forwarded-Proto": "https",
+    "CloudFront-Is-Desktop-Viewer": "true",
+    "CloudFront-Is-Mobile-Viewer": "false",
+    "CloudFront-Is-SmartTV-Viewer": "false",
+    "CloudFront-Is-Tablet-Viewer": "false",
+    "CloudFront-Viewer-Country": "BR",
+    "Host": "jifeuwr9u1.execute-api.us-east-2.amazonaws.com",
+    "sec-fetch-dest": "document",
+    "sec-fetch-mode": "navigate",
+    "sec-fetch-site": "none",
+    "sec-fetch-user": "?1",
+    "upgrade-insecure-requests": "1",
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36",
+    "Via": "2.0 513836d07c729f4760e39e1441d6beb9.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Id": "75csOdeuV9dlva0Y8tXFTWtPOEdUumSHTKBMUVef81XfPrenCqJk8w==",
+    "X-Amzn-Trace-Id": "Root=1-613bc4e7-5eaa935a56bb4eff5e18c399",
+    "X-Forwarded-For": "201.66.75.181, 130.176.160.169",
+    "X-Forwarded-Port": "443",
+    "X-Forwarded-Proto": "https"
+  },
+  "multiValueHeaders": {
+    "Accept": [
+      "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+    ],
+    "Accept-Encoding": [
+      "gzip, deflate, br"
+    ],
+    "Accept-Language": [
+      "en-US,en;q=0.9,pt;q=0.8,pt-BR;q=0.7"
+    ],
+    "cache-control": [
+      "max-age=0"
+    ],
+    "CloudFront-Forwarded-Proto": [
+      "https"
+    ],
+    "CloudFront-Is-Desktop-Viewer": [
+      "true"
+    ],
+    "CloudFront-Is-Mobile-Viewer": [
+      "false"
+    ],
+    "CloudFront-Is-SmartTV-Viewer": [
+      "false"
+    ],
+    "CloudFront-Is-Tablet-Viewer": [
+      "false"
+    ],
+    "CloudFront-Viewer-Country": [
+      "BR"
+    ],
+    "Host": [
+      "jifeuwr9u1.execute-api.us-east-2.amazonaws.com"
+    ],
+    "sec-fetch-dest": [
+      "document"
+    ],
+    "sec-fetch-mode": [
+      "navigate"
+    ],
+    "sec-fetch-site": [
+      "none"
+    ],
+    "sec-fetch-user": [
+      "?1"
+    ],
+    "upgrade-insecure-requests": [
+      "1"
+    ],
+    "User-Agent": [
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36"
+    ],
+    "Via": [
+      "2.0 513836d07c729f4760e39e1441d6beb9.cloudfront.net (CloudFront)"
+    ],
+    "X-Amz-Cf-Id": [
+      "75csOdeuV9dlva0Y8tXFTWtPOEdUumSHTKBMUVef81XfPrenCqJk8w=="
+    ],
+    "X-Amzn-Trace-Id": [
+      "Root=1-613bc4e7-5eaa935a56bb4eff5e18c399"
+    ],
+    "X-Forwarded-For": [
+      "201.66.75.181, 130.176.160.169"
+    ],
+    "X-Forwarded-Port": [
+      "443"
+    ],
+    "X-Forwarded-Proto": [
+      "https"
+    ]
+  },
+  "queryStringParameters": null,
+  "multiValueQueryStringParameters": null,
+  "pathParameters": {
+    "proxy": "v1/alive"
+  },
+  "stageVariables": null,
+  "requestContext": {
+    "resourceId": "iozge6",
+    "resourcePath": "/{proxy+}",
+    "httpMethod": "GET",
+    "extendedRequestId": "Fdu0KEm_CYcFvYg=",
+    "requestTime": "10/Sep/2021:20:49:43 +0000",
+    "path": "/staging/v1/alive",
+    "accountId": "683720833731",
+    "protocol": "HTTP/1.1",
+    "stage": "staging",
+    "domainPrefix": "jifeuwr9u1",
+    "requestTimeEpoch": 1631306983207,
+    "requestId": "049af0a8-a32c-4694-9188-af641a9a7cf9",
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "sourceIp": "201.66.75.181",
+      "principalOrgId": null,
+      "accessKey": null,
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36",
+      "user": null
+    },
+    "domainName": "jifeuwr9u1.execute-api.us-east-2.amazonaws.com",
+    "apiId": "jifeuwr9u1"
+  },
+  "body": null,
+  "isBase64Encoded": false
+}

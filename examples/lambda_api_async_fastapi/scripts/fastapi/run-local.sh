@@ -10,7 +10,5 @@ then
   PORT=5000
 fi
 
-export FLASK_ENV=development
-export FLASK_APP=app.py
-#export FLASK_DEBUG=1
-flask run $1 $2
+# export FLASK_ENV=development
+python3 -m uvicorn app:app --port $PORT

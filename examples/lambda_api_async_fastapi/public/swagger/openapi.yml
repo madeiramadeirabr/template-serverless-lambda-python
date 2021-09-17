@@ -135,7 +135,7 @@ components:
       - limit
       type: object
 info:
-  title: template-serverless-lambda-python-lambda-api
+  title: template-serverless-lambda-python-lambda-api-async_fastapi
   version: 1.0.0
 openapi: 3.0.2
 paths:

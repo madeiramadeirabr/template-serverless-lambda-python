@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# declare an array variable
-declare -a arr=("./examples/lambda_api/" "./examples/lambda_cron/" "./examples/lambda_s3/" "./examples/lambda_sns/" "./examples/lambda_sqs/")
+## variables
+source ${current_filename_path}scripts/variables.sh
 
 ## now loop through the above array
 for example_path in "${arr[@]}"

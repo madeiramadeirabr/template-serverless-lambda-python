@@ -1,21 +1,5 @@
 version: "3.2"
 services:
-#  template-serverless-lambda-python-lambda-sqs:
-#    container_name: lambda-sqs
-#    build:
-#      context: .
-#      dockerfile: ./docker/python/Dockerfile
-#    privileged: true
-#    environment:
-#      # Fake credentials for Localstack
-#      AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
-#      AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-#    ports:
-#      - 5001:5000
-#    networks:
-#      - service-python
-#    volumes:
-#      - ./:/app
   redis:
     image: "redis:alpine"
     ports:
@@ -24,6 +8,7 @@ services:
       - 6379
     networks:
       - service-python
+    # hostname: redis
   mysql:
     image: mysql:5.7.22
     ports:
@@ -49,6 +34,7 @@ services:
       LAMBDA_EXECUTOR: local
       DEBUG: 1
       HOSTNAME_EXTERNAL: localstack
+    hostname: localstack
     networks:
       - service-python
     volumes:

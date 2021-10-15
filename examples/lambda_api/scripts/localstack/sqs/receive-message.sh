@@ -1,7 +1,10 @@
 QUEUE=$1
 if [ -z "$QUEUE" ]
 then
-  QUEUE='http://localhost:4566/000000000000/test'
+  QUEUE='http://localhost:4566/000000000000/test-queue'
+else
+  QUEUE=$(basename -- $QUEUE)
+  QUEUE="http://localhost:4566/000000000000/${QUEUE}"
 fi
 
 echo "aws --endpoint-url=http://localhost:4566 sqs receive-message --queue-url $QUEUE"

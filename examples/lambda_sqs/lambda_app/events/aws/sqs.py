@@ -25,9 +25,12 @@ class SQSEvents:
         try:
             endpoint_url = self.config.SQS_ENDPOINT
             profile = os.environ['AWS_PROFILE'] if 'AWS_PROFILE' in os.environ else None
+            queue_name = os.path.basename(os.environ['APP_QUEUE']) if 'APP_QUEUE' in os.environ else None
             self.logger.info('SQSEvents - profile: {}'.format(profile))
             self.logger.info('SQSEvents - endpoint_url: {}'.format(endpoint_url))
+            self.logger.info('SQSEvents - queue_name: {}'.format(queue_name))
             self.logger.info('SQSEvents - self.config.REGION_NAME: {}'.format(self.config.REGION_NAME))
+
             if profile:
                 session = boto3.session.Session(profile_name=profile)
                 connection = session.resource(
@@ -43,10 +46,11 @@ class SQSEvents:
                 )
 
             try:
-                connection.get_queue_by_name(QueueName='test')
+                connection.get_queue_by_name(QueueName=queue_name)
             except Exception as err:
                 if helper.has_attr(err, "response") and err.response['Error']:
                     self.logger.info('SQSEvents - Connected')
+                    self.logger.error(err)
                 else:
                     raise err
 
@@ -66,7 +70,9 @@ class SQSEvents:
                     _RETRY_COUNT += 1
                     # Fix para tratar diff entre docker/local
                     if self.config.SQS_ENDPOINT == 'http://0.0.0.0:4566' or self.config.SQS_ENDPOINT == 'http://localstack:4566':
-                        self.config.DB_HOST = 'http://localhost:4566'
+                        old_value = self.config.SQS_ENDPOINT
+                        self.config.SQS_ENDPOINT = 'http://localhost:4566'
+                        self.logger.info('Changing the endpoint from {} to {}'.format(old_value, self.config.SQS_ENDPOINT))
                     connection = self.connect(retry=True)
         return connection
 

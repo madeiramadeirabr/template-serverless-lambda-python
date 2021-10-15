@@ -35,6 +35,8 @@ class CarrierNotifierService:
             for record in records:
                 process_counter += 1
                 event = self._read_event(record)
+                if event is None:
+                    raise Exception('Event is None')
                 event_hash = event['hash'] if 'hash' in event else generate_hash(event)
 
                 self.logger.info('Event: {}'.format(event))

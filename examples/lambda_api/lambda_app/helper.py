@@ -164,3 +164,14 @@ def print_routes(app, logger):
         methods = list(dict_route.keys())
         for method in methods:
             logger.info('Route: %s - %s', method, path)
+
+
+def get_environment():
+    environment = 'development'
+    if 'ENVIRONMENT' in os.environ:
+        environment = os.environ['ENVIRONMENT']
+    elif 'ENVIRONMENT_NAME' in os.environ:
+        environment = os.environ['ENVIRONMENT_NAME']
+    elif 'APP_ENV' in os.environ:
+        environment = os.environ['APP_ENV']
+    return environment

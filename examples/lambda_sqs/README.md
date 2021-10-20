@@ -9,7 +9,7 @@ Example of architecture with AWS SQS and AWS Lambda.
 There are no routes for this project.
 
 # Prerequisites
-- Python 3.6
+- Python 3.6 (Attention)
 - docker
 - docker-compose
 - python-dotenv
@@ -54,6 +54,11 @@ Execute the follow command:
 ```
 
 ### Running via docker
+Installing dependencies:
+```
+./scripts/venv.sh
+```
+
 To execute the build:
 ```
 ./scripts/runenv.sh --build

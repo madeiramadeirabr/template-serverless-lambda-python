@@ -20,14 +20,14 @@ def get_queue_message():
     queue_url = os.getenv("APP_QUEUE")
     event = SQSHelper.get_message(queue_url)
 
-    return (event,)
+    return (event,),
 
 
 def get_queue_events_samples():
     event = get_cancelamento_event()
     sqs_event = create_chalice_sqs_event(event)
 
-    return (sqs_event,)
+    return (sqs_event,),
 
 
 class CarrierNotifierServiceTestCase(BaseComponentTestCase):

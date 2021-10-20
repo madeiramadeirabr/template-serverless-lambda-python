@@ -1,5 +1,6 @@
 import os
 import unittest
+from time import sleep
 
 from tests.component.componenttestutils import BaseComponentTestCase
 from lambda_app import helper
@@ -19,7 +20,7 @@ def get_queue_message():
     queue_url = os.getenv("APP_QUEUE")
     event = SQSHelper.get_message(queue_url)
 
-    return (event,)
+    return (event,),
 
 
 def get_queue_events_samples():
@@ -27,10 +28,15 @@ def get_queue_events_samples():
     # delivery_event = get_delivery_time_simulator_event_sample()
     sqs_event = create_chalice_sqs_event(event)
 
-    return (sqs_event,)
+    return (sqs_event,),
 
-
+# AttributeError: module 'typing' has no attribute '_classvar'
+# This error occours on Python 3.8
+# If you will consume items from the queue, dont boot the lambda
 class AppTestCase(BaseComponentTestCase):
+    """
+
+    """
     EXECUTE_FIXTURE = True
     CONFIG = None
 
@@ -66,8 +72,12 @@ class AppTestCase(BaseComponentTestCase):
         message = event['Records'][0]
         if 'body' in message:
             message = message['body']
+        # print(message)
         SQSHelper.create_message(message, queue_url)
         logger.info('created message: {}'.format(message))
+        # message = SQSHelper.get_message(queue_url)
+        # logger.info('reading message: {}'.format(message))
+        # print(message)
 
     @data_provider(get_queue_message)
     def test_index(self, event):

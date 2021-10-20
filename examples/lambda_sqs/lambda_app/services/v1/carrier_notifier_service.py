@@ -80,6 +80,7 @@ class CarrierNotifierService:
         records = []
         try:
             if isinstance(sqs_event, SQSEvent):
+                self.logger.info("SQSEvent instance")
                 if not helper.empty(sqs_event.to_dict()):
                     try:
                         sqs_event_dict = sqs_event.to_dict()
@@ -91,6 +92,7 @@ class CarrierNotifierService:
                         self.logger.error(err)
                         records.append(sqs_event.to_dict())
             elif isinstance(sqs_event, SQSRecord):
+                self.logger.info("SQSRecord instance")
                 if not helper.empty(sqs_event.to_dict()):
                     records.append(sqs_event)
         except Exception as err:

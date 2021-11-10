@@ -41,5 +41,5 @@ RUN pip install --no-cache-dir -r requirements.txt \
 COPY . .
 
 #CMD [ "flask", "run", "--host", "0.0.0.0" ]
-CMD [ "python3", "server-async.py" ]
+CMD [ "python3", "server_async.py" ]
 

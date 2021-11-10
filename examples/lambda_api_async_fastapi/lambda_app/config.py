@@ -10,7 +10,7 @@ _CONFIG = None
 
 class Configuration:
     # APP
-    APP_ENV = 'development'
+    APP_ENV = os.getenv("APP_ENV")
     APP_NAME = ''
     APP_VERSION = ''
 
@@ -18,9 +18,9 @@ class Configuration:
     LOG_LEVEL = logging.INFO
 
     # NEW RELIC
-    NEW_RELIC_DEVELOPER_MODE = 'development'
-    NEW_RELIC_LICENSE_KEY = "license_key"
-    NEW_RELIC_LOG_HOST = "https://log-api.newrelic.com/log/v1"
+    NEW_RELIC_DEVELOPER_MODE = os.getenv("APP_ENV")
+    NEW_RELIC_LICENSE_KEY = os.getenv("NEW_RELIC_LICENSE_KEY")
+    NEW_RELIC_LOG_HOST = os.getenv("NEW_RELIC_LOG_HOST")
 
     DB_HOST = ""
     DB_USER = ""
@@ -34,7 +34,7 @@ class Configuration:
     REGION_NAME = ""
 
     SQS_ENDPOINT = None
-    SQS_LOCALSTACK = "http://localhost:4566"
+    SQS_LOCALSTACK = os.getenv("APP_SQS_LOCALSTACK")
     SECRET_KEY = 'teste'
 
     def __init__(self):

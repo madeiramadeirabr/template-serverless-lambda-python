@@ -5,7 +5,6 @@ import base64
 import json
 from lambda_app.logging import get_logger
 
-
 class Secrets:
     def __init__(self, logger=None):
         """

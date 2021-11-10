@@ -1,2 +1,2 @@
-PROJECT_NAME=template-serverless-lambda-python-lambda-api
+PROJECT_NAME=lambda-api-async
 NETWORK_NAME=service-python

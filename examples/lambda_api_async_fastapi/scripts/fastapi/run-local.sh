@@ -11,4 +11,4 @@ then
 fi
 
 # export FLASK_ENV=development
-python3 -m uvicorn app:app --port $PORT
+uvicorn app:app --port $PORT

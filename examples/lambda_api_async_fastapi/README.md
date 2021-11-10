@@ -1,4 +1,4 @@
-# template-serverless-lambda-python - Lambda API
+# template-serverless-lambda-python (FastAPI) - Lambda API
 Template for build flexible API with AWS Lambda.
 
 ## Service Architecture
@@ -20,14 +20,14 @@ Service routes map.
 - redis
 - pyyaml
 - apispec
-- marshmallow
-- Flask
+- pydantic
+- FastAPI
 
 ## Features
 - Docker-compose 
 - OpenApi
 - SQS Integration
-* Flask
+* FastAPI
 * MySQL
 * Redis
 * Swagger
@@ -154,4 +154,5 @@ See the license [LICENSE.md](LICENSE.md).
 
 ## Contributions
 * Anderson de Oliveira Contreira [andersoncontreira](https://github.com/andersoncontreira)
+* José Ricardo Borba [jrborbars]()(https://github.com/jrborbars)
 

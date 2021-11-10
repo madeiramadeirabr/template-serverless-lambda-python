@@ -1,4 +1,6 @@
-# template-serverless-lambda-python - Lambda API - Changelog
+# template-serverless-lambda-python (FastAPI) - Lambda API - Changelog
 
-## v1.0.0
-* First version of the project;
+
+## v0.0.1
+* First running version of the project. Just copied it from Flask template and did minor adjustments;
+

@@ -8,11 +8,11 @@ for example_path in "${arr[@]}"
 do
    echo "Installing data for ${example_path}"
    if test -f "${example_path}requirements.txt"; then
-     python3 -m pip install -r ${example_path}requirements.txt
+     pip install -r ${example_path}requirements.txt
    fi
 
    if test -f "${example_path}requirements-vendor.txt"; then
-    python3 -m pip install -r ${example_path}requirements-vendor.txt -t ./${example_path}vendor
+    pip install -r ${example_path}requirements-vendor.txt
    fi
 done
 

@@ -70,4 +70,4 @@ services:
       - /tmp/localstack:/tmp/localstack
 networks:
   service-python:
-    external: true
+  #  external: true

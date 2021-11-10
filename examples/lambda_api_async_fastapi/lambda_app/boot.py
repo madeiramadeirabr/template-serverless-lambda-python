@@ -15,12 +15,7 @@ if not current_path[-1] == '/':
 ROOT_DIR = current_path
 _LOADED = False
 
-try:
-    import chalicelib
-
-    APP_TYPE = 'Chalice'
-except Exception as err:
-    APP_TYPE = 'Flask'
+APP_TYPE = 'FastAPI'
 
 _DEFAULT_ENV_CONFIGS = {
     "APP_ENV": "development",

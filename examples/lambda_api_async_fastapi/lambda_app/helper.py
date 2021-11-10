@@ -153,15 +153,7 @@ def print_routes(app, logger):
     :return:
     """
     logger.info('List of routes:')
-    # TODO ver regra para o fastapi
-    return None
-
-    if has_attr(app, 'get_routes'):
-        routes = app.get_routes()
-    elif has_attr(app, 'url_map'):
-        routes = {rule.rule: dict.fromkeys(rule.methods, 0) for rule in app.url_map.iter_rules()}
-    else:
-        routes = app.routes
+    routes = app.routes()                   # FastAPI
     for path, dict_route in routes.items():
         methods = list(dict_route.keys())
         for method in methods:

@@ -26,14 +26,15 @@ venv
 /sam.json
 /.coverage
 
+/vendor
 # mantem a vendor
-!/vendor
+#!/vendor
 # ignora os demais arquivos
-/vendor/*
+#/vendor/*
 # mantem essa pasta
-!/vendor/public
+#!/vendor/public
 # mantem essa pasta
-!/vendor/datasources
+#!/vendor/datasources
 
 # Coverage results and execution report
 !/target/integration/report.xml

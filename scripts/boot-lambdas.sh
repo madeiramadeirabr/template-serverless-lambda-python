@@ -8,8 +8,8 @@ current_path_basename=$(basename $(pwd))
 current_file_full_path=$0
 # echo $current_filepath
 current_file_name=$(basename -- "$0")
-echo $current_file_full_path
-echo $current_file_name
+#echo $current_file_full_path
+#echo $current_file_name
 if [ $current_file_full_path = $current_file_name ] || [ $current_file_full_path = "./$current_file_name" ]; then
   current_file_full_path="./${current_file_full_path}"
   current_file_path="./"

@@ -59,8 +59,8 @@ services:
       SERVICES: sqs,lambda,cloudwatch,s3
       DOCKER_HOST: unix:///var/run/docker.sock
       PORT_WEB_UI: 9070
-      #LAMBDA_EXECUTOR: docker # está dando erro via docker
-      LAMBDA_EXECUTOR: local
+      LAMBDA_EXECUTOR: docker # está dando erro via docker
+      # LAMBDA_EXECUTOR: local
       DEBUG: 1
       HOSTNAME_EXTERNAL: localstack
     networks:

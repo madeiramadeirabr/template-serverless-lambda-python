@@ -4,7 +4,7 @@
 # -----------------------------------------------------------------------------
 debug=false
 parent_folder="../"
-current_path=$(pwd)
+current_path=$(pwd)/
 current_path_basename=$(basename $(pwd))
 current_file_full_path=$0
 # echo $current_filepath
@@ -43,6 +43,8 @@ else
   echo 'jq installed...'
 fi
 
+read -p "Press enter to continue..."
+
 
 echo '----------------------------------------'
 echo "$0 - Localstack connection check"
@@ -52,9 +54,10 @@ if test -f ${current_file_path}boot-validate-connection.sh; then
   echo 'Validate connection...'
   ${current_file_path}boot-validate-connection.sh
 else
-  echo 'There is no connection check'
+  echo 'There is no connection check file'
 fi
 
+read -p "Press enter to continue..."
 
 echo '----------------------------------------'
 echo "$0 - Database boot"
@@ -65,6 +68,8 @@ else
   echo 'There is no database to be booted'
 fi
 
+read -p "Press enter to continue..."
+
 echo '----------------------------------------'
 echo "$0 - Queues boot"
 echo '----------------------------------------'
@@ -73,6 +78,8 @@ if test -f ${current_file_path}boot-queues.sh; then
 else
   echo 'There is no queues to be booted'
 fi
+
+read -p "Press enter to continue..."
 
 echo '----------------------------------------'
 echo "$0 - Lambdas boot"

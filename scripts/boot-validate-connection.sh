@@ -8,7 +8,7 @@ do_request () {
   elif [ $response -ne "500" ]; then
     # success
     return 0
-  el
+  else
     # error
     return 1
   fi

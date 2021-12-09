@@ -1,2 +1,5 @@
 PROJECT_NAME=template-serverless-lambda-python-lambda-api
 NETWORK_NAME=service-python
+APP_QUEUE=test-queue
+APP_LAMBDA_NAME=lambda_api
+APP_LAMBDA_EVENT_SOURCE=false

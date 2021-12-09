@@ -32,14 +32,19 @@ RUN apk add --no-cache build-base \
 # upgrade pip
 RUN pip install --upgrade pip
 
+RUN rm -Rf ./vendor/*
+
 # Install requirements
 COPY requirements.txt requirements-vendor.txt ./
 RUN pip install --no-cache-dir -r requirements.txt \
     && pip install --no-cache-dir -r requirements-vendor.txt
 
+# Flask compatibility with Python 3.8
+RUN pip uninstall dataclasses -y
+RUN rm -Rf ./vendor/dataclasses-0.8.dist-info/ ./vendor/dataclasses.py
+
 # Copy project files
 COPY . .
 
-#CMD [ "flask", "run", "--host", "0.0.0.0" ]
-CMD [ "python3", "server.py" ]
+CMD [ "flask", "run", "--host", "0.0.0.0" ]
 

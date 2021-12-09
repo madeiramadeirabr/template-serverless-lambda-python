@@ -292,7 +292,7 @@ def event_list(event_type):
     data = {}
 
     response.set_data(data)
-    response.set_total()
+    response.set_total(len(data))
 
     # event_tracker.track(event_hash, data)
     return response.get_response(status_code)

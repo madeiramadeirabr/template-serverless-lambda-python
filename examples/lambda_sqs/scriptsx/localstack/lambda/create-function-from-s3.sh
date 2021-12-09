@@ -1,3 +1,46 @@
+# -----------------------------------------------------------------------------
+# Current file variables
+# -----------------------------------------------------------------------------
+debug=false
+parent_folder="../"
+current_path=$(pwd)/
+current_path_basename=$(basename $(pwd))
+current_file_full_path=$0
+# echo $current_filepath
+current_file_name=$(basename -- "$0")
+# echo $current_filename
+if [ $current_file_full_path = $current_file_name ] || [ $current_file_full_path = "./$current_file_name" ]; then
+  current_file_full_path="./${current_file_full_path}"
+  current_file_path="./"
+else
+  current_file_path="${current_file_full_path/$current_file_name/''}"
+fi
+
+
+current_file_path_basename=$(basename -- "$current_file_path")
+
+if [ -z "$current_file_path_basename" ] || [ $current_file_path = "./" ]; then
+#  echo 'aq'
+  current_parent_folder="../"
+else
+#  echo 'naq'
+  current_file_path_basename=$current_file_path_basename/
+  current_parent_folder="${current_file_path/$current_file_path_basename/''}"
+fi
+
+if [ debug ]; then
+  echo '----------------------------------------'
+  echo "$0 - Script variables"
+  echo '----------------------------------------'
+  echo "current_path: $current_path"
+  echo "current_path_basename: $current_path_basename"
+  echo "current_file_full_path: $current_file_full_path"
+  echo "current_file_name: $current_file_name"
+  echo "current_file_path: $current_file_path"
+  echo "current_parent_folder: $current_parent_folder"
+  echo '----------------------------------------'
+fi
+
 if [ -z "$1" ]; then
   echo 'Function name must be informed'
   exit 1
@@ -18,15 +61,31 @@ else
     HANDLER=$3
   fi
 
+  echo '----------------------------------------'
+  echo "$0 - Script Function variables"
+  echo '----------------------------------------'
   echo "Function name: $FUNCTION_NAME"
   echo "Function path: $FUNCTION_PATH"
   echo "Function handler: $HANDLER"
+  echo '----------------------------------------'
 
 
+
+  echo '----------------------------------------'
+  echo "$0 - Checking previous installation"
+  echo '----------------------------------------'
   # zip full code
-  if test -f lambda-full.zip; then
-    rm lambda-full.zip
+  if test -f ${FUNCTION_PATH}lambda-full.zip; then
+    echo 'Removing old zip file...'
+    rm ${FUNCTION_PATH}lambda-full.zip
+  else
+    echo 'There is no previous installation'
   fi
+
+  echo '---- exit'
+  exit
+
+
 
   #check path
   if test -d ./$FUNCTION_PATH; then

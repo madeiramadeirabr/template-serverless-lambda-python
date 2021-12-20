@@ -62,14 +62,17 @@ else
   fi
 
   echo '----------------------------------------'
-  echo "$0 - Script Function variables"
+  echo "$0 - Checking lambda function path"
   echo '----------------------------------------'
-  echo "Function name: $FUNCTION_NAME"
-  echo "Function path: $FUNCTION_PATH"
-  echo "Function handler: $HANDLER"
-  echo '----------------------------------------'
+  if test "${current_path_basename}" = "${FUNCTION_PATH}"; then
+    echo 'current folder is the same of the function'
+    FUNCTION_PATH=$current_path
+  else
+    echo 'current folder is not the same of the function'
+    FUNCTION_PATH="${current_parent_folder/scripts\/localstack\//''}"
+  fi
 
-
+  read -p "Press enter to continue..."
 
   echo '----------------------------------------'
   echo "$0 - Checking previous installation"
@@ -82,29 +85,30 @@ else
     echo 'There is no previous installation'
   fi
 
-  echo '---- exit'
-  exit
+  read -p "Press enter to continue..."
 
+  echo '----------------------------------------'
+  echo "$0 - Script Function variables"
+  echo '----------------------------------------'
+  echo "Function name: $FUNCTION_NAME"
+  echo "Function path: $FUNCTION_PATH"
+  echo "Function handler: $HANDLER"
+  echo '----------------------------------------'
 
+  echo '----------------------------------------'
+  echo "$0 - Zipping lambda data from ${FUNCTION_PATH}"
+  echo '----------------------------------------'
+  LAST_PWD=$(pwd)
+  cd ${FUNCTION_PATH}
+  zip -r ./lambda-full.zip ./ -x '*.git*' -x "./zip.sh*" -x "./venv/*" -x "./.idea/*" -x "./lambda-full.zip"
+  echo "zip file created in ${FUNCTION_PATH}lambda-full.zip"
+  cd ${LAST_PWD}
 
-  #check path
-  if test -d ./$FUNCTION_PATH; then
-    echo "Changing dir ./$(FUNCTION_PATH)"
-    cd ./$FUNCTION_PATH
-    echo "Zipping data from $(pwd)"
-    # python3 ../scripts/tools/python/zip.py --zip_file=../lambda-full.zip --source_dir=.
-    zip -r ../lambda-full.zip ./ -x '*.git*' -x './zip.sh*' -x './venv/*' -x './.idea/*'
-  else
-    echo "Zipping data from $(pwd)"
-    # python3 ./scripts/tools/python/zip.py --zip_file=./lambda-full.zip --source_dir=.
-    zip -r ./lambda-full.zip ./ -x '*.git*' -x './zip.sh*' -x './venv/*' -x './.idea/*'
-  fi
+  read -p "Press enter to continue..."
 
-  if test -d ./$FUNCTION_PATH; then
-    echo "Changing dir ../"
-    cd ../
-  fi
-
+  echo '----------------------------------------'
+  echo "$0 - Preparing bucket operations"
+  echo '----------------------------------------'
   echo 'Try to list'
   echo "aws --endpoint-url=http://$HOST:4566 s3api list-objects --bucket test > /dev/null 2>&1"
   aws --endpoint-url=http://$HOST:4566 s3api list-objects --bucket test > /dev/null 2>&1
@@ -115,11 +119,17 @@ else
     aws --endpoint-url=http://$HOST:4566 s3 mb s3://test
   fi
 
-  echo 'Copy lambda zip file to S3'
-  echo "aws --endpoint-url=http://$HOST:4566 s3 cp lambda-full.zip s3://test"
-  aws --endpoint-url=http://$HOST:4566 s3 cp lambda-full.zip s3://test
+  echo '----------------------------------------'
+  echo "$0 - Copy lambda zip file to S3"
+  echo '----------------------------------------'
+  echo "aws --endpoint-url=http://$HOST:4566 s3 cp ${FUNCTION_PATH}lambda-full.zip s3://test"
+  aws --endpoint-url=http://$HOST:4566 s3 cp ${FUNCTION_PATH}lambda-full.zip s3://test
 
-  echo 'Check if the lambda function exits'
+  read -p "Press enter to continue..."
+
+  echo '----------------------------------------'
+  echo "$0 - Check if the lambda function exits"
+  echo '----------------------------------------'
   echo "aws --endpoint-url=http://$HOST:4566 lambda get-function --function-name $FUNCTION_NAME --region $REGION > /dev/null 2>&1"
   aws --endpoint-url=http://$HOST:4566 lambda get-function --function-name $FUNCTION_NAME --region $REGION > /dev/null 2>&1
 
@@ -129,31 +139,25 @@ else
     aws --endpoint-url=http://$HOST:4566 lambda delete-function --function-name $FUNCTION_NAME --region $REGION
   fi
 
-  echo "Creating the environment variables"
-  if test -d ./$FUNCTION_PATH; then
-    if test -d ./$FUNCTION_PATH/.chalice; then
-      ENVIRONMENT_VARIABLES=$(jq '.stages.dev.environment_variables' ./$FUNCTION_PATH/.chalice/config.json -c)
-    else
-      #ENVIRONMENT_VARIABLES=$(python3 ../scripts/tools/python/env-to-json.py ./$FUNCTION_PATH/env/development.env | jq)
-      ENVIRONMENT_VARIABLES=$(python3 ../scripts/tools/python/env-to-json.py ./env/development.env)
-      #jq $(python3 ../scripts/tools/python/env-to-json.py ./env/development.env) -c
-    fi
-  else
-    if test -d ./$FUNCTION_PATH/.chalice; then
-      ENVIRONMENT_VARIABLES=$(jq '.stages.dev.environment_variables' ./.chalice/config.json -c)
-    else
-      #ENVIRONMENT_VARIABLES=$(python3 ./scripts/tools/python/env-to-json.py ./env/development.env | jq)
-      ENVIRONMENT_VARIABLES=$(python3 ./scripts/tools/python/env-to-json.py ./env/development.env)
-      #jq $(python3 ./scripts/tools/python/env-to-json.py ./env/development.env) -c
-    fi
-  fi
-#  echo 'exit'
-#  echo $ENVIRONMENT_VARIABLES
+  echo '----------------------------------------'
+  echo "$0 - Creating the environment variables"
+  echo '----------------------------------------'
 
-#  echo "{\"Variables\": $ENVIRONMENT_VARIABLES }"
-#  echo {"Variables": $ENVIRONMENT_VARIABLES} > environment.json
+  if test -d ${FUNCTION_PATH}.chalice; then
+      ENVIRONMENT_VARIABLES=$(jq '.stages.dev.environment_variables' ${FUNCTION_PATH}.chalice/config.json -c)
+    else
+      ENVIRONMENT_VARIABLES=$(python3 ${FUNCTION_PATH}scripts/tools/python/env-to-json.py ${FUNCTION_PATH}env/development.env)
+    fi
 
-  echo "Creating the lambda function"
+  echo "ENVIRONMENT_VARIABLES: ${ENVIRONMENT_VARIABLES}"
+  #  echo "{\"Variables\": $ENVIRONMENT_VARIABLES }"
+  #  echo {"Variables": $ENVIRONMENT_VARIABLES} > environment.json
+
+  read -p "Press enter to continue..."
+
+  echo '----------------------------------------'
+  echo "$0 - Creating the lambda function"
+  echo '----------------------------------------'
   echo "aws --endpoint-url=http://$HOST:4566 lambda create-function \
    --function-name arn:aws:lambda:$REGION:000000000000:function:$FUNCTION_NAME \
    --runtime python3.6 --handler $HANDLER --memory-size 128 \
@@ -167,4 +171,5 @@ else
    --environment "{\"Variables\": $ENVIRONMENT_VARIABLES }"
    #--environment Variables="{ENVIRONMENT_NAME=development}"
    # --environment file://environment.json
+
 fi

@@ -50,8 +50,8 @@ imagedefinitions.json
 config/integration.en
 /node_modules/
 
-/examples/lambda_api/vendor/
-/examples/lambda_cron/vendor/
-/examples/lambda_s3/vendor/
-/examples/lambda_sns/vendor/
-/examples/lambda_sqs/vendor/
+/examples/lambda_api/vendor/*
+/examples/lambda_cron/vendor/*
+/examples/lambda_s3/vendor/*
+/examples/lambda_sns/vendor/*
+/examples/lambda_sqs/vendor/*

@@ -2,11 +2,14 @@ import os
 import unittest
 from time import sleep
 
+from lambda_app.repositories.mysql.ocoren_repository import OcorenRepository
+from tests import ROOT_DIR
 from tests.component.componenttestutils import BaseComponentTestCase
 from lambda_app import helper
 from unittest_data_provider import data_provider
 from lambda_app.config import get_config
 from lambda_app.logging import get_logger
+from tests.component.helpers.database.mysql_helper import MySQLHelper
 from tests.component.helpers.events.aws.sqs_helper import SQSHelper
 from tests.unit.helpers.aws.sqs_helper import get_sqs_event_sample, create_chalice_sqs_event
 from tests.unit.helpers.events_helper import get_delivery_time_simulator_event_sample, get_cancelamento_event
@@ -46,6 +49,9 @@ class AppTestCase(BaseComponentTestCase):
         cls.CONFIG = get_config()
         cls.CONFIG.SQS_ENDPOINT = cls.SQS_LOCALSTACK
 
+        BaseComponentTestCase.setUpClass()
+        mysql_connection = MySQLHelper.get_connection()
+
         # fixture
         if cls.EXECUTE_FIXTURE:
             logger = get_logger()
@@ -53,6 +59,26 @@ class AppTestCase(BaseComponentTestCase):
 
             queue_url = cls.CONFIG.APP_QUEUE
             cls.fixture_sqs(logger, queue_url)
+
+            logger.info("Fixture: drop table")
+
+            table_name = OcorenRepository.BASE_TABLE
+            cls.fixture_table(logger, mysql_connection, table_name)
+
+
+    @classmethod
+    def fixture_table(cls, logger, mysql_connection, table_name):
+        dropped = MySQLHelper.drop_table(mysql_connection, table_name)
+        if dropped:
+            logger.info(f"Table dropped:: {table_name}")
+        file_name = ROOT_DIR + f"tests/datasets/database/structure/mysql/create.table.store.{table_name}.sql"
+        created = MySQLHelper.create_table(mysql_connection, table_name, file_name)
+        if created:
+            logger.info(f"Table created:: {table_name}")
+        file_name = ROOT_DIR + f"tests/datasets/database/seeders/mysql/seeder.table.store.{table_name}.sql"
+        populated = MySQLHelper.sow_table(mysql_connection, table_name, file_name)
+        if populated:
+            logger.info(f"Table populated:: {table_name}")
 
     @classmethod
     def fixture_sqs(cls, logger, queue_url):

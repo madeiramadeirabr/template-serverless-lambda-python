@@ -7,6 +7,7 @@ from lambda_app.events.tracker import EventTracker
 from lambda_app.helper import generate_hash
 from lambda_app.logging import get_logger
 from lambda_app.repositories.mysql.ocoren_repository import OcorenRepository
+from lambda_app.repositories.redis.product_repository import ProductRepository
 from lambda_app.vos.ocoren import OcorenVO
 
 
@@ -16,6 +17,7 @@ class CarrierNotifierService:
         self.logger = logger if logger is not None else get_logger()
 
         self.repository = repository if repository is not None else OcorenRepository()
+        self.redis_repository = ProductRepository()
         self.repository.debug = True
 
     def process(self, sqs_event):
@@ -51,6 +53,10 @@ class CarrierNotifierService:
                     event_vo = OcorenVO(event)
                     self.logger.info('event_vo: {}'.format(event_vo.to_dict()))
                     created = self.repository.create(event_vo)
+
+                    self.redis_repository.create("event_{}".format(event_hash), str(event_vo.to_dict()))
+                    # self.redis_repository.list(where="*")
+
                     if not created:
                         result = False
 

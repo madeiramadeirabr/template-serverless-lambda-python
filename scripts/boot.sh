@@ -35,16 +35,24 @@ echo 'Validating jq installation...'
 /usr/bin/jq --version > /dev/null 2>&1
 if [ $? -ne 0 ]; then
   echo 'Installing jq...'
-  # download directly into ~/bin_compciv
-  sudo curl http://stedolan.github.io/jq/download/linux64/jq -o /usr/bin/jq
-  # give it executable permissions
-  sudo chmod a+x /usr/bin/jq
+  sudo --help > /dev/null 2>&1
+  if [ $? -ne 0 ]; then
+    # download directly into ~/bin_compciv
+    curl http://stedolan.github.io/jq/download/linux64/jq -o /usr/bin/jq
+    # give it executable permissions
+    chmod a+x /usr/bin/jq
+  else
+    # download directly into ~/bin_compciv
+    sudo curl http://stedolan.github.io/jq/download/linux64/jq -o /usr/bin/jq
+    # give it executable permissions
+    sudo chmod a+x /usr/bin/jq
+  fi
+
 else
   echo 'jq installed...'
 fi
 
 read -p "Press enter to continue..."
-
 
 echo '----------------------------------------'
 echo "$0 - Localstack connection check"
@@ -55,28 +63,6 @@ if test -f ${current_file_path}boot-validate-connection.sh; then
   ${current_file_path}boot-validate-connection.sh
 else
   echo 'There is no connection check file'
-fi
-
-read -p "Press enter to continue..."
-
-echo '----------------------------------------'
-echo "$0 - Database boot"
-echo '----------------------------------------'
-if test -f ${current_file_path}boot-db.sh; then
-  ${current_file_path}boot-db.sh
-else
-  echo 'There is no database to be booted'
-fi
-
-read -p "Press enter to continue..."
-
-echo '----------------------------------------'
-echo "$0 - Queues boot"
-echo '----------------------------------------'
-if test -f ${current_file_path}boot-queues.sh; then
-  ${current_file_path}boot-queues.sh
-else
-  echo 'There is no queues to be booted'
 fi
 
 read -p "Press enter to continue..."

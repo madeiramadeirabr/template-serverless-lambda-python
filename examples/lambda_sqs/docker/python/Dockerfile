@@ -9,7 +9,7 @@ ENV FLASK_ENV=$ENVIRONMENT_NAME \
 
 EXPOSE ${FLASK_PORT}
 
-WORKDIR /${PROJECT_NAME}
+WORKDIR /app
 
 # SQLite support
 RUN apk update \
@@ -27,19 +27,35 @@ RUN apk add --no-cache build-base \
                        libcurl \
                        gpgme-dev \
                        libc-dev \
+                       bash \
+                       curl \
+                       zip \
     && rm -rf /var/cache/apk/*
 
 # upgrade pip
 RUN pip install --upgrade pip
+
+# install aws cli
+RUN pip --no-cache-dir install --upgrade awscli
+
+RUN rm -Rf ./vendor/*
 
 # Install requirements
 COPY requirements.txt requirements-vendor.txt ./
 RUN pip install --no-cache-dir -r requirements.txt \
     && pip install --no-cache-dir -r requirements-vendor.txt
 
+# Flask compatibility with Python 3.8
+RUN pip uninstall dataclasses -y
+RUN rm -Rf ./vendor/dataclasses-0.8.dist-info/ ./vendor/dataclasses.py
+
 # Copy project files
 COPY . .
 
-#CMD [ "flask", "run", "--host", "0.0.0.0" ]
-CMD [ "python3", "server.py" ]
+# entrypoint permission
+RUN ["chmod", "+x", "./docker/python/entrypoint.sh"]
+# entrypoint
+ENTRYPOINT ["sh", "./docker/python/entrypoint.sh"]
 
+# CMD [ "flask", "run", "--host", "0.0.0.0" ]
+# CMD [ "python3", "server.py" ]

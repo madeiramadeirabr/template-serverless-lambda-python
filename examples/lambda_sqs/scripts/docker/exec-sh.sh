@@ -4,9 +4,9 @@ elif test -f ./scripts/.projectrc; then
   source ./scripts/.projectrc
 fi
 
-if [ -z "$NETWORK_NAME" ]; then
-  echo 'NETWORK_NAME not defined'
+if [ -z "$PROJECT_NAME" ]; then
+  echo 'PROJECT_NAME not defined'
   exit 1
 else
-  docker network create $NETWORK_NAME
+  docker-compose exec $PROJECT_NAME /bin/sh
 fi

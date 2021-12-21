@@ -46,7 +46,11 @@ if [ -z "$1" ]; then
   exit 1
 else
 
-  HOST=0.0.0.0
+  if [ $RUNNING_IN_CONTAINER ]; then
+  HOST=localstack
+  else
+    HOST=0.0.0.0
+  fi
   FUNCTION_PATH=$1
   FUNCTION_NAME=$1
   HANDLER=$2

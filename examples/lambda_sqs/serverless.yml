@@ -55,6 +55,6 @@ functions:
         - ${env:SUBNET_ID_1}
     environment:
       APP_ENV: ${env:ENVIRONMENT_NAME}
-      DEBUG: true
+      DEBUG: false
       LOG_LEVEL: error
       REGION_NAME: ${env:AWS_REGION}

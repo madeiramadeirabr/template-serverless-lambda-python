@@ -1,6 +1,7 @@
 version: "3.2"
 services:
   template-serverless-lambda-python-lambda-api:
+#    container_name: template-serverless-lambda-python-lambda-api
     build:
       context: ./examples/lambda_api/
       dockerfile: ./docker/python/Dockerfile
@@ -9,13 +10,18 @@ services:
       # Fake credentials for Localstack
       AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
       AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    depends_on:
+      - "localstack"
+      - "redis"
+      - "mysql"
     ports:
       - 5000:5000
     networks:
       - service-python
     volumes:
-      - ./:/app
+      - ./examples/lambda_api/:/app
   template-serverless-lambda-python-lambda-sqs:
+#    container_name: template-serverless-lambda-python-lambda-sqs
     build:
       context: ./examples/lambda_sqs/
       dockerfile: ./docker/python/Dockerfile
@@ -24,12 +30,16 @@ services:
       # Fake credentials for Localstack
       AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
       AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-    ports:
-      - 5001:5000
+    depends_on:
+      - "localstack"
+      - "redis"
+      - "mysql"
+#    ports:
+#      - 5001:5000
     networks:
       - service-python
     volumes:
-      - ./:/app
+      - ./examples/lambda_sqs/:/app
   redis:
     image: "redis:alpine"
     ports:
@@ -59,8 +69,8 @@ services:
       SERVICES: sqs,lambda,cloudwatch,s3
       DOCKER_HOST: unix:///var/run/docker.sock
       PORT_WEB_UI: 9070
-      LAMBDA_EXECUTOR: docker # está dando erro via docker
-      # LAMBDA_EXECUTOR: local
+      # LAMBDA_EXECUTOR: docker # está dando erro via docker
+      LAMBDA_EXECUTOR: local
       DEBUG: 1
       HOSTNAME_EXTERNAL: localstack
     networks:

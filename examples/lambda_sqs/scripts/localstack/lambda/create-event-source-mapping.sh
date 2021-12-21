@@ -6,7 +6,11 @@ else
     echo 'Queue name must be informed'
     exit 1
   else
-    HOST=0.0.0.0
+    if [ $RUNNING_IN_CONTAINER ]; then
+      HOST=localstack
+    else
+      HOST=0.0.0.0
+    fi
     REGION=us-east-1
     echo "aws --endpoint-url=http://$HOST:4566 lambda create-event-source-mapping \
     --function-name arn:aws:lambda:$REGION:000000000000:function:$1 \

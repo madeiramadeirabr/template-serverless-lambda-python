@@ -1,3 +1,4 @@
+#!/bin/bash
 # -----------------------------------------------------------------------------
 # Current file variables
 # -----------------------------------------------------------------------------
@@ -35,10 +36,19 @@ echo 'Validating jq installation...'
 /usr/bin/jq --version > /dev/null 2>&1
 if [ $? -ne 0 ]; then
   echo 'Installing jq...'
-  # download directly into ~/bin_compciv
-  sudo curl http://stedolan.github.io/jq/download/linux64/jq -o /usr/bin/jq
-  # give it executable permissions
-  sudo chmod a+x /usr/bin/jq
+  sudo --help > /dev/null 2>&1
+  if [ $? -ne 0 ]; then
+    # download directly into ~/bin_compciv
+    curl http://stedolan.github.io/jq/download/linux64/jq -o /usr/bin/jq
+    # give it executable permissions
+    chmod a+x /usr/bin/jq
+  else
+    # download directly into ~/bin_compciv
+    sudo curl http://stedolan.github.io/jq/download/linux64/jq -o /usr/bin/jq
+    # give it executable permissions
+    sudo chmod a+x /usr/bin/jq
+  fi
+
 else
   echo 'jq installed...'
 fi

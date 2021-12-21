@@ -1,7 +1,7 @@
 version: "3.2"
 services:
   template-serverless-lambda-python-lambda-api:
-    container_name: template-serverless-lambda-python-lambda-api
+#    container_name: lambda-api
     build:
       context: .
       dockerfile: ./docker/python/Dockerfile
@@ -10,6 +10,10 @@ services:
       # Fake credentials for Localstack
       AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
       AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    depends_on:
+      - "localstack"
+      - "redis"
+      - "mysql"
     ports:
       - 5000:5000
     networks:

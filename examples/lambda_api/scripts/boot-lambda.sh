@@ -55,7 +55,7 @@ if test -f ${current_parent_folder}requirements.txt; then
 fi
 
 echo "Requirements file: ${current_parent_folder}requirements-vendor.txt"
-if test -f ${current_parent_folder}requirement.s-vendor.txt; then
+if test -f ${current_parent_folder}requirements-vendor.txt; then
   python3 -m pip install -r ${current_parent_folder}requirements-vendor.txt -t ${current_parent_folder}vendor
 #  cat ${current_parent_folder}requirements-vendor.txt
   echo "requirements vendor..."
@@ -84,10 +84,14 @@ if test -f "${current_parent_folder}scripts/localstack/lambda/create-function-fr
     read -p "Press enter to continue..."
 
     if test $APP_LAMBDA_EVENT_SOURCE = true;then
-      echo '----------------------------------------'
-      echo "$0 - Creating the event source: $APP_LAMBDA_NAME"
-      echo '----------------------------------------'
-      ${current_parent_folder}scripts/localstack/lambda/create-event-source-mapping.sh $APP_LAMBDA_NAME $APP_QUEUE
+      if test $TEST_ENV = 0; then
+        echo '----------------------------------------'
+        echo "$0 - Creating the event source: $APP_LAMBDA_NAME"
+        echo '----------------------------------------'
+        ${current_parent_folder}scripts/localstack/lambda/create-event-source-mapping.sh $APP_LAMBDA_NAME $APP_QUEUE
+      else
+        echo 'Event source disabled'
+      fi
     else
       echo 'There is no event source for this lambda'
     fi

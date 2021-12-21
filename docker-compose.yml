@@ -10,6 +10,7 @@ services:
       # Fake credentials for Localstack
       AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
       AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      TEST_ENV: ${TEST_ENV}
     depends_on:
       - "localstack"
       - "redis"
@@ -30,6 +31,7 @@ services:
       # Fake credentials for Localstack
       AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
       AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      TEST_ENV: ${TEST_ENV}
     depends_on:
       - "localstack"
       - "redis"

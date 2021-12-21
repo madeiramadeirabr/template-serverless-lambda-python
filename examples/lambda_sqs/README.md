@@ -69,16 +69,6 @@ Execute the follow command:
 ./scripts/runenv.sh
 ```
 
-[//]: # (### Boot the lambda)
-
-[//]: # (Execute the follow command:)
-
-[//]: # (```)
-
-[//]: # (./scripts/boot.sh)
-
-[//]: # (```)
-
 ### Running the app
 
 
@@ -121,11 +111,7 @@ First you need install the tests requirements:
 ### Components tests:
 Start the docker containers:
  ```
-./scripts/runenv.sh
-```
-Booting the environment:
- ```
-./scripts/boot.sh
+./scripts/testenv.sh
 ```
 
 Executing the tests:
@@ -160,12 +146,9 @@ Execute the follow command:
 ### Component test coverage:
 Start the docker containers:
 ``` 
-./scripts/runenv.sh
+./scripts/testenv.sh
 ```
-Booting the environment:
- ```
-./scripts/boot.sh
-```
+
 
 Execute the follow command:
 ``` 

@@ -73,7 +73,10 @@ class CarrierNotifierService:
     def _read_event(self, record):
         self.logger.info('try to reading event form record: {}'.format(record))
         self.logger.info('Getting type of data: {}'.format(type(record)))
-        self.logger.info('dump: {}'.format(json.dumps(record)))
+        try:
+            self.logger.info('dump: {}'.format(json.dumps(record)))
+        except Exception as err:
+            self.logger.error(err)
         event_body = None
         try:
             if isinstance(record, dict):

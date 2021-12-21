@@ -87,3 +87,14 @@ if test -f ${current_file_path}boot-lambda.sh; then
 else
   echo 'There is no lambda to be booted'
 fi
+
+read -p "Press enter to continue..."
+
+echo '----------------------------------------'
+echo "$0 - Database boot"
+echo '----------------------------------------'
+if test -f ${current_file_path}boot-db.sh; then
+  ${current_file_path}boot-db.sh
+else
+  echo 'There is no database to be booted'
+fi

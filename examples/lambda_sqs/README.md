@@ -69,16 +69,31 @@ Execute the follow command:
 ./scripts/runenv.sh
 ```
 
-### Boot the lambda
-Execute the follow command:
-```
-./scripts/boot.sh
-```
+[//]: # (### Boot the lambda)
+
+[//]: # (Execute the follow command:)
+
+[//]: # (```)
+
+[//]: # (./scripts/boot.sh)
+
+[//]: # (```)
 
 ### Running the app
+
+
+[//]: # (```)
+
+[//]: # (./scripts/localstack/lambda/invoke-sqs-function.sh lambda_sqs)
+
+[//]: # (```)
 Execute the follow command:
 ```
-./scripts/localstack/lambda/invoke-sqs-function.sh lambda_sqs
+./scripts/localstack/sqs/send-message.sh
+```
+Execute the follow command to send specific file:
+```
+./scripts/localstack/sqs/send-message.sh test-queue ./samples/ocorens/cancelamento.json
 ```
 
 ## Samples

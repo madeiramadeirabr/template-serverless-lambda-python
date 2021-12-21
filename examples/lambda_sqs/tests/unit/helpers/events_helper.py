@@ -20,3 +20,19 @@ def get_cancelamento_event():
     return json.loads(event_str)
   except:
     raise Exception('Invalid JSON')
+
+def get_cancelamento_error_event():
+  with open(path.join(ROOT_DIR, 'tests/datasources/events/sqs/ocorens/cancelamento.event.with.error.json')) as f:
+      event_str = f.read()
+  try:
+      return json.loads(event_str)
+  except:
+      raise Exception('Invalid JSON')
+
+def get_cancelamento_quote_error_event():
+  with open(path.join(ROOT_DIR, 'tests/datasources/events/sqs/ocorens/cancelamento.event.with.error.quotes.json')) as f:
+      event_str = f.read()
+  try:
+      return json.loads(event_str)
+  except:
+      raise Exception('Invalid JSON')

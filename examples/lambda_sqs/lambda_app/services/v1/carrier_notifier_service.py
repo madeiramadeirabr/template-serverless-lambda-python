@@ -1,4 +1,5 @@
 import json
+import ast
 
 from lambda_app import APP_NAME, APP_VERSION, APP_ARCH_VERSION, helper
 from lambda_app.decorators import SQSEvent
@@ -70,16 +71,28 @@ class CarrierNotifierService:
         return result
 
     def _read_event(self, record):
+        self.logger.info('try to reading event form record: {}'.format(record))
+        self.logger.info('Getting type of data: {}'.format(type(record)))
+        self.logger.info('dump: {}'.format(json.dumps(record)))
         event_body = None
         try:
             if isinstance(record, dict):
-                event_body = json.loads(record['body'])
+                try:
+                    event_body = json.loads(record['body'])
+                except Exception as err:
+                    self.logger.error(err)
+                    unescaped_str = ast.literal_eval(record['body'])
+                    event_body = json.loads(unescaped_str)
+            elif isinstance(record, str):
+                record = json.loads(record)
+                event_body = json.loads(record.body)
             elif isinstance(record.body, str):
                 event_body = json.loads(record.body)
             else:
                 event_body = record.body
         except Exception as err:
             self.logger.error(err)
+            self.logger.info('event_body: {}'.format(event_body))
         return event_body
 
     def get_records_from_sqs_event(self, sqs_event):

@@ -12,7 +12,8 @@ from lambda_app.services.v1.carrier_notifier_service import CarrierNotifierServi
 from tests.component.componenttestutils import BaseComponentTestCase
 from tests.component.helpers.events.aws.sqs_helper import SQSHelper
 from tests.unit.helpers.aws.sqs_helper import create_chalice_sqs_event, get_sqs_event_sample
-from tests.unit.helpers.events_helper import get_cancelamento_event
+from tests.unit.helpers.events_helper import get_cancelamento_event, get_cancelamento_error_event, \
+    get_cancelamento_quote_error_event
 from tests.unit.testutils import get_function_name
 
 
@@ -28,6 +29,12 @@ def get_queue_events_samples():
     sqs_event = create_chalice_sqs_event(event)
 
     return (sqs_event,),
+
+def get_queue_events_error_samples():
+    event = get_cancelamento_error_event()
+    qevent = get_cancelamento_quote_error_event()
+
+    return (create_chalice_sqs_event(event),), (create_chalice_sqs_event(qevent),),
 
 
 class CarrierNotifierServiceTestCase(BaseComponentTestCase):
@@ -85,6 +92,14 @@ class CarrierNotifierServiceTestCase(BaseComponentTestCase):
 
     @data_provider(get_queue_events_samples)
     def test_process_by_events(self, sqs_event):
+        self.logger.info('Running test: %s', get_function_name(__name__))
+
+        result = self.service.process(sqs_event=sqs_event)
+
+        self.assertTrue(result)
+
+    @data_provider(get_queue_events_error_samples)
+    def test_process_by_error_events(self, sqs_event):
         self.logger.info('Running test: %s', get_function_name(__name__))
 
         result = self.service.process(sqs_event=sqs_event)

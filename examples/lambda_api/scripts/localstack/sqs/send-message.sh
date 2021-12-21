@@ -56,9 +56,13 @@ MESSAGE=$2
 if [ -z "$MESSAGE" ]
 then
   MESSAGE=$(cat ${current_file_path}sample.json)
+else
+  if test -f $2 ; then
+    MESSAGE=$(cat $2)
+  fi
 fi
 
 # cat ${current_file_path}sample.json
-# echo $MESSAGE
+#echo $MESSAGE
 echo "aws --endpoint-url=http://$HOST:4566 sqs send-message --queue-url $QUEUE --message-body '$MESSAGE'"
-aws --endpoint-url=http://$HOST:4566 sqs send-message --queue-url $QUEUE --message-body "'$MESSAGE'"
+aws --endpoint-url=http://$HOST:4566 sqs send-message --queue-url $QUEUE --message-body "$MESSAGE"

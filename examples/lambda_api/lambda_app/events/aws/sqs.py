@@ -52,6 +52,7 @@ class SQSEvents:
                     self.logger.info('SQSEvents - Connected')
                     self.logger.error(err)
                 else:
+                    connection = None
                     raise err
 
             _CONNECTION = connection

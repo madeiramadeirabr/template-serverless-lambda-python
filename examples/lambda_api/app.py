@@ -8,7 +8,10 @@ from lambda_app import helper
 env = helper.get_environment()
 load_dot_env(env)
 
-# load env
+from lambda_app.services.v1.healthcheck import HealthCheckSchema
+from lambda_app.services.v1.healthcheck.resources import MysqlConnectionHealthCheck, RedisConnectionHealthCheck, \
+    SQSConnectionHealthCheck, SelfConnectionHealthCheck
+from lambda_app.services.v1.healthcheck_service import HealthCheckService
 from lambda_app.config import get_config
 from lambda_app.enums.events import EventType
 from lambda_app.enums.messages import MessagesEnum
@@ -65,10 +68,17 @@ def alive():
                     description: Success response
                     content:
                         application/json:
-                            schema: AliveSchema
+                            schema: HealthCheckSchema
         """
-    body = {"app": "I'm alive!"}
-    return http_helper.create_response(body=body, status_code=200)
+    # body = {"app": "I'm alive!"}
+    # return http_helper.create_response(body=body, status_code=200)
+    service = HealthCheckService()
+    service.add_check("self", SelfConnectionHealthCheck(logger, config), [])
+    service.add_check("mysql", MysqlConnectionHealthCheck(logger, config), ["db"])
+    service.add_check("redis", RedisConnectionHealthCheck(logger, config), ["redis"])
+    service.add_check("queue", SQSConnectionHealthCheck(logger, config), ["queue"])
+
+    return service.get_response()
 
 
 @app.route('/favicon-32x32.png')

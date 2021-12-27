@@ -15,7 +15,7 @@ class OcorenEventService:
         self.logger = logger if logger is not None else get_logger()
         # configurations
         self.config = config if config is not None else get_config()
-        # database connection
+        # sqs event service
         self.sqs_events = sqs_events if sqs_events is not None else SQSEvents()
         # queue_url
         self.queue = self.config.APP_QUEUE

@@ -70,8 +70,6 @@ def alive():
                         application/json:
                             schema: HealthCheckSchema
         """
-    # body = {"app": "I'm alive!"}
-    # return http_helper.create_response(body=body, status_code=200)
     service = HealthCheckService()
     service.add_check("self", SelfConnectionHealthCheck(logger, config), [])
     service.add_check("mysql", MysqlConnectionHealthCheck(logger, config), ["db"])

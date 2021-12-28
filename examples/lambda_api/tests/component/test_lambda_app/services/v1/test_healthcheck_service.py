@@ -2,11 +2,16 @@ import unittest
 
 from lambda_app.config import get_config
 from lambda_app.logging import get_logger
+from lambda_app.repositories.mysql.product_repository import ProductRepository
 from lambda_app.services.v1.healthcheck import HealthStatus, HealthCheckResult
 from lambda_app.services.v1.healthcheck.resources import MysqlConnectionHealthCheck, RedisConnectionHealthCheck, \
     SQSConnectionHealthCheck, SelfConnectionHealthCheck
 from lambda_app.services.v1.healthcheck_service import HealthCheckService
+from tests import ROOT_DIR
 from tests.component.componenttestutils import BaseComponentTestCase
+from tests.component.helpers.database.mysql_helper import MySQLHelper
+from tests.component.helpers.events.aws.sqs_helper import SQSHelper
+from tests.unit.helpers.aws.sqs_helper import get_sqs_event_sample
 from tests.unit.testutils import get_function_name
 
 
@@ -23,8 +28,51 @@ class HealthCheckServiceTestCase(BaseComponentTestCase):
         # fixture
         if cls.EXECUTE_FIXTURE:
             logger = get_logger()
-            # logger.info('Fixture: create database')
-            # todo a implementar
+
+            logger.info("Fixture: MYSQL Database connection")
+            logger.info("Fixture: drop table")
+
+            mysql_connection = MySQLHelper.get_connection()
+            table_name = ProductRepository.BASE_TABLE
+            cls.fixture_table(logger, mysql_connection, table_name)
+
+            logger.info('Fixture: create sqs queue')
+
+            queue_url = cls.CONFIG.APP_QUEUE
+            cls.fixture_sqs(logger, queue_url)
+
+    @classmethod
+    def fixture_sqs(cls, logger, queue_url):
+        queue_name = SQSHelper.get_queue_name(queue_url)
+        deleted = SQSHelper.delete_queue(queue_url)
+        if deleted:
+            logger.info(f'Deleting queue name: {queue_name}')
+
+        attributes = {'DelaySeconds': '1'}
+        result = SQSHelper.create_queue(queue_url, attributes)
+        if result is not None:
+            logger.info(f'queue {queue_name} created')
+        else:
+            logger.error(f'queue {queue_name} not created')
+
+        event = get_sqs_event_sample()
+        message = event['Records'][0]
+        SQSHelper.create_message(message, queue_url)
+        logger.info('created message: {}'.format(message))
+
+    @classmethod
+    def fixture_table(cls, logger, mysql_connection, table_name):
+        dropped = MySQLHelper.drop_table(mysql_connection, table_name)
+        if dropped:
+            logger.info(f"Table dropped:: {table_name}")
+        file_name = ROOT_DIR + f"tests/datasets/database/structure/mysql/create.table.store.{table_name}.sql"
+        created = MySQLHelper.create_table(mysql_connection, table_name, file_name)
+        if created:
+            logger.info(f"Table created:: {table_name}")
+        file_name = ROOT_DIR + f"tests/datasets/database/seeders/mysql/seeder.table.store.{table_name}.sql"
+        populated = MySQLHelper.sow_table(mysql_connection, table_name, file_name)
+        if populated:
+            logger.info(f"Table populated:: {table_name}")
 
     def setUp(self):
         super().setUp()

@@ -4,11 +4,10 @@ from unittest_data_provider import data_provider
 
 from lambda_app.config import get_config
 from lambda_app.events.aws.sqs import SQSEvents
-from lambda_app.logging import get_logger
 from tests.component.componenttestutils import BaseComponentTestCase
-from tests.component.helpers.events.aws.sqs_helper import SQSHelper
 from tests.unit.helpers.events_helper import get_cancelamento_event
-from tests.unit.testutils import get_function_name
+from tests.unit.mocks.boto3_mocks import session_mock
+from tests.unit.testutils import get_function_name, BaseUnitTestCase
 
 
 def get_sqs_event_sample():
@@ -16,8 +15,7 @@ def get_sqs_event_sample():
     return (event,),
 
 
-class SQSEventsTestCase(BaseComponentTestCase):
-    EXECUTE_FIXTURE = True
+class SQSEventsTestCase(BaseUnitTestCase):
     CONFIG = None
 
     @classmethod
@@ -26,41 +24,18 @@ class SQSEventsTestCase(BaseComponentTestCase):
         cls.CONFIG = get_config()
         cls.CONFIG.SQS_ENDPOINT = cls.SQS_LOCALSTACK
 
-        # fixture
-        if cls.EXECUTE_FIXTURE:
-            logger = get_logger()
-            logger.info('Fixture: create sqs queue')
-
-            queue_url = cls.CONFIG.APP_QUEUE
-            cls.fixture_sqs(logger, queue_url)
-
-    @classmethod
-    def fixture_sqs(cls, logger, queue_url):
-        queue_name = SQSHelper.get_queue_name(queue_url)
-        deleted = SQSHelper.delete_queue(queue_url)
-        if deleted:
-            logger.info(f'Deleting queue name: {queue_name}')
-
-        attributes = {'DelaySeconds': '1'}
-        result = SQSHelper.create_queue(queue_url, attributes)
-        if result is not None:
-            logger.info(f'queue {queue_name} created')
-        else:
-            logger.error(f'queue {queue_name} not created')
-
-        event = get_cancelamento_event()
-        message = event['Records'][0]
-        if 'body' in message:
-            message = message['body']
-        SQSHelper.create_message(message, queue_url)
-        logger.info('created message: {}'.format(message))
-
     def setUp(self):
         super().setUp()
         self.sqs = SQSEvents()
 
+        # sobrescreve com mocks
+        self.sqs.session = session_mock
+        # setamos uma profile default só para usar o mock da session
+        self.sqs.profile = "default"
+
     def test_connect(self):
         self.logger.info('Running test: %s', get_function_name(__name__))
+
         connection = self.sqs.connect()
         self.assertIsNotNone(connection)
 
@@ -68,6 +43,7 @@ class SQSEventsTestCase(BaseComponentTestCase):
     def test_send_message(self, message):
         self.logger.info('Running test: %s', get_function_name(__name__))
         queue_url = self.CONFIG.APP_QUEUE
+        # return mock response
         response = self.sqs.send_message(message, queue_url)
 
         self.logger.info(response)

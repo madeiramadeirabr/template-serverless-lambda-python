@@ -7,6 +7,8 @@ from boto3.resources.base import ServiceResource
 from botocore.session import Session
 from mock.mock import MagicMock
 
+from tests.unit.mocks.boto3_mocks.resources import table_mock, queue_mock
+
 profile = os.environ['AWS_PROFILE'] if 'AWS_PROFILE' in os.environ else None
 
 
@@ -30,23 +32,17 @@ def resource(service_name, region_name=None, api_version=None,
     :return: boto3.resources.base.ServiceResource
     """
 
-    # resource_mock = Mock(ServiceResource)
+
     resource_mock = Mock()
-    resource_mock.Table.return_value = table_mock
+    if service_name == 'sqs':
+
+        resource_mock.get_queue_by_name.return_value = queue_mock
+
+    elif service_name == 'dynamodb':
+        resource_mock.Table.return_value = table_mock
 
     return resource_mock
 
-
-
-
-iterable = MagicMock(return_value=iter([MagicMock(return_value=1), MagicMock(return_value=2)]))
-table_mock = Mock()
-# table_mock.scan = Mock()
-table_mock.scan.side_effect = lambda:  {
-    'Items': []
-}
-table_mock.item_count = 0
-table_mock.put_item.side_effect = lambda: {"success": "true"}
 
 botocore_session = Mock(Session)
 botocore_session.profile = profile
@@ -54,5 +50,4 @@ botocore_session.profile = profile
 session_mock = Mock(spec=boto3.session.Session)
 session_mock._session = botocore_session
 session_mock.resource.side_effect = resource
-
-connection_mock = session_mock.resource('dynamodb', region_name="sa-east-1")
+session_mock.profile = profile

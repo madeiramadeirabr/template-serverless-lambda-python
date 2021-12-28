@@ -1,6 +1,6 @@
 import os
 
-from flask_app.events.aws.sqs import SQSEvents
+from lambda_app.events.aws.sqs import SQSEvents
 
 
 class SQSHelper:

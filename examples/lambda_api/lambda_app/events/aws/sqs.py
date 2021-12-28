@@ -9,6 +9,7 @@ import boto3
 _RETRY_COUNT = 0
 _MAX_RETRY_ATTEMPTS = 3
 
+
 class SQSEvents:
 
     def __init__(self, logger=None, config=None):
@@ -18,21 +19,24 @@ class SQSEvents:
         self.config = config if config is not None else get_config()
         # last_exception
         self.exception = None
+        # session
+        self.profile = os.environ['AWS_PROFILE'] if 'AWS_PROFILE' in os.environ else None
+        self.session = boto3.session.Session(profile_name=self.profile)
 
     def connect(self, retry=False):
         global _RETRY_COUNT, _MAX_RETRY_ATTEMPTS
         connection = None
         try:
             endpoint_url = self.config.SQS_ENDPOINT
-            profile = os.environ['AWS_PROFILE'] if 'AWS_PROFILE' in os.environ else None
+
             queue_name = os.path.basename(os.environ['APP_QUEUE']) if 'APP_QUEUE' in os.environ else None
-            self.logger.info('SQSEvents - profile: {}'.format(profile))
+            self.logger.info('SQSEvents - profile: {}'.format(self.profile))
             self.logger.info('SQSEvents - endpoint_url: {}'.format(endpoint_url))
             self.logger.info('SQSEvents - queue_name: {}'.format(queue_name))
             self.logger.info('SQSEvents - self.config.REGION_NAME: {}'.format(self.config.REGION_NAME))
 
-            if profile:
-                session = boto3.session.Session(profile_name=profile)
+            if self.profile:
+                session = self.session
                 connection = session.resource(
                     'sqs',
                     endpoint_url=endpoint_url,
@@ -70,10 +74,12 @@ class SQSEvents:
                 if not retry:
                     _RETRY_COUNT += 1
                     # Fix para tratar diff entre docker/local
-                    if self.config.SQS_ENDPOINT == 'http://0.0.0.0:4566' or self.config.SQS_ENDPOINT == 'http://localstack:4566':
+                    if self.config.SQS_ENDPOINT == 'http://0.0.0.0:4566' or \
+                            self.config.SQS_ENDPOINT == 'http://localstack:4566':
                         old_value = self.config.SQS_ENDPOINT
                         self.config.SQS_ENDPOINT = 'http://localhost:4566'
-                        self.logger.info('Changing the endpoint from {} to {}'.format(old_value, self.config.SQS_ENDPOINT))
+                        self.logger.info(
+                            'Changing the endpoint from {} to {}'.format(old_value, self.config.SQS_ENDPOINT))
                     connection = self.connect(retry=True)
         return connection
 
@@ -166,7 +172,3 @@ class SQSEvents:
             result = False
 
         return result
-
-
-
-

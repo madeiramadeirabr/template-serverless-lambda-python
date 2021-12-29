@@ -5,7 +5,7 @@ from lambda_app.http_resources.request_control import Order
 from lambda_app.logging import get_logger
 from lambda_app.repositories.mysql import AbstractRepository
 from lambda_app.vos.product import ProductVO
-from vendor import pymysql
+import pymysql
 
 
 class ProductRepository(AbstractRepository):

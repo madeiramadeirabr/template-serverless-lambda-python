@@ -1,6 +1,6 @@
 from lambda_app.database.mysql import get_connection
 from lambda_app.logging import get_logger
-from vendor import pymysql
+import pymysql
 
 
 class AbstractRepository:
@@ -21,7 +21,9 @@ class AbstractRepository:
             self.logger.info("SQL: {}".format(sql))
             self.logger.info("SQL Values: {}".format(params))
 
-        if isinstance(self.connection, pymysql.connections.Connection):
+        # issubclass(connection_mock.__class__, pymysql.connections.Connection)
+        if isinstance(self.connection, pymysql.connections.Connection) \
+                or issubclass(self.connection.__class__, pymysql.connections.Connection):
             # always connect because is treadsafe
             self.connection.connect()
             # with self.connection.cursor() as cursor:
@@ -36,3 +38,5 @@ class AbstractRepository:
 
     def _close(self):
         self.connection.close()
+
+

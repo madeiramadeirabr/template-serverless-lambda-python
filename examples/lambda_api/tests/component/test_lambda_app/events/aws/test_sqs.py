@@ -1,4 +1,3 @@
-import os
 import unittest
 
 from unittest_data_provider import data_provider
@@ -9,7 +8,6 @@ from lambda_app.logging import get_logger
 from tests.component.componenttestutils import BaseComponentTestCase
 from tests.component.helpers.events.aws.sqs_helper import SQSHelper
 from tests.unit.helpers.events_helper import get_cancelamento_event
-from tests.unit.helpers.ocoren_helper import get_ocoren_cancelamento_sample
 from tests.unit.testutils import get_function_name
 
 
@@ -57,18 +55,22 @@ class SQSEventsTestCase(BaseComponentTestCase):
         SQSHelper.create_message(message, queue_url)
         logger.info('created message: {}'.format(message))
 
+    def setUp(self):
+        super().setUp()
+        self.sqs = SQSEvents()
+
     def test_connect(self):
         self.logger.info('Running test: %s', get_function_name(__name__))
-        sqs = SQSEvents()
-        connection = sqs.connect()
+        connection = self.sqs.connect()
         self.assertIsNotNone(connection)
 
     @data_provider(get_sqs_event_sample)
     def test_send_message(self, message):
         self.logger.info('Running test: %s', get_function_name(__name__))
-        sqs = SQSEvents()
         queue_url = self.CONFIG.APP_QUEUE
-        response = sqs.send_message(message, queue_url)
+        response = self.sqs.send_message(message, queue_url)
+
+        self.logger.info(response)
 
         self.assertIsNotNone(response)
         self.assertIsInstance(response, dict)

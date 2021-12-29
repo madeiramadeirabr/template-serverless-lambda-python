@@ -4,7 +4,6 @@ from unittest_data_provider import data_provider
 
 from lambda_app.config import get_config
 from lambda_app.events.aws.sqs import SQSEvents
-from tests.component.componenttestutils import BaseComponentTestCase
 from tests.unit.helpers.events_helper import get_cancelamento_event
 from tests.unit.mocks.boto3_mocks import session_mock
 from tests.unit.testutils import get_function_name, BaseUnitTestCase
@@ -20,18 +19,15 @@ class SQSEventsTestCase(BaseUnitTestCase):
 
     @classmethod
     def setUpClass(cls):
-        BaseComponentTestCase.setUpClass()
+        BaseUnitTestCase.setUpClass()
         cls.CONFIG = get_config()
         cls.CONFIG.SQS_ENDPOINT = cls.SQS_LOCALSTACK
 
     def setUp(self):
         super().setUp()
-        self.sqs = SQSEvents()
-
-        # sobrescreve com mocks
-        self.sqs.session = session_mock
-        # setamos uma profile default só para usar o mock da session
-        self.sqs.profile = "default"
+        self.config = get_config()
+        # mock dependencies
+        self.sqs = SQSEvents(logger=self.logger, config=self.config, profile="default", session=session_mock)
 
     def test_connect(self):
         self.logger.info('Running test: %s', get_function_name(__name__))

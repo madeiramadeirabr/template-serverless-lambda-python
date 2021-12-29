@@ -27,6 +27,9 @@ class MySQLTestCase(BaseUnitTestCase):
     def test_connection_error(self):
         self.logger.info('Running test: %s', get_function_name(__name__))
 
+        # **************************
+        # Mocking result
+        # **************************
         # sobrescreve o comportamento do mock
         connection_mock.connect.side_effect = mock_raise_exception
 
@@ -41,6 +44,15 @@ class MySQLTestCase(BaseUnitTestCase):
         connection = get_connection(config)
 
         self.assertIsNone(connection)
+
+    @classmethod
+    def tearDownClass(cls):
+        # **************************
+        # Mocking result
+        # **************************
+        # sobrescreve o comportamento do mock
+        connection_mock.connect.return_value = True
+        connection_mock.connect.side_effect = lambda: True
 
 
 if __name__ == '__main__':

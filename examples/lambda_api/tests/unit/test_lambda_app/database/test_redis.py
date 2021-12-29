@@ -16,6 +16,12 @@ class RedisTestCase(BaseComponentTestCase):
     def test_connection(self):
         self.logger.info('Running test: %s', get_function_name(__name__))
 
+        # **************************
+        # Mocking result
+        # **************************
+        # sobrescreve o comportamento do mock
+        server.connected = True
+
         config = get_config()
         self.logger.info('REDIS_HOST: {}'.format(config.REDIS_HOST))
         self.logger.info('REDIS_PORT: {}'.format(config.REDIS_PORT))
@@ -27,9 +33,11 @@ class RedisTestCase(BaseComponentTestCase):
     def test_connection_error(self):
         self.logger.info('Running test: %s', get_function_name(__name__))
 
+        # **************************
+        # Mocking result
+        # **************************
         # sobrescreve o comportamento do mock
         server.connected = False
-
 
         config = get_config()
         # forca os parametros
@@ -42,6 +50,13 @@ class RedisTestCase(BaseComponentTestCase):
 
         self.assertIsNone(connection)
 
+    @classmethod
+    def tearDownClass(cls):
+        # **************************
+        # Mocking result
+        # **************************
+        # sobrescreve o comportamento do mock
+        server.connected = True
 
 if __name__ == '__main__':
     unittest.main()

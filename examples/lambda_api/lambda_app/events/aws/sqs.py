@@ -12,16 +12,19 @@ _MAX_RETRY_ATTEMPTS = 3
 
 class SQSEvents:
 
-    def __init__(self, logger=None, config=None):
+    def __init__(self, logger=None, config=None, profile=None, session=None):
         # logger
         self.logger = logger if logger is not None else get_logger()
         # configurations
         self.config = config if config is not None else get_config()
         # last_exception
         self.exception = None
+        # profile
+        self.profile = profile if profile is not None else \
+            os.environ['AWS_PROFILE'] if 'AWS_PROFILE' in os.environ else None
         # session
-        self.profile = os.environ['AWS_PROFILE'] if 'AWS_PROFILE' in os.environ else None
-        self.session = boto3.session.Session(profile_name=self.profile)
+        self.session = session if session is not None else \
+            boto3.session.Session(profile_name=self.profile)
 
     def connect(self, retry=False):
         global _RETRY_COUNT, _MAX_RETRY_ATTEMPTS

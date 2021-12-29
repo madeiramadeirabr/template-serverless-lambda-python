@@ -13,6 +13,8 @@ from tests.component.helpers.database.mysql_helper import MySQLHelper
 from tests.component.helpers.events.aws.sqs_helper import SQSHelper
 from tests.unit.helpers.aws.sqs_helper import get_sqs_event_sample
 from tests.unit.testutils import get_function_name
+from lambda_app.database.mysql import get_connection as mysql_get_connection
+from lambda_app.database.redis import get_connection as redis_get_connection
 
 
 class HealthCheckServiceTestCase(BaseComponentTestCase):
@@ -77,18 +79,18 @@ class HealthCheckServiceTestCase(BaseComponentTestCase):
     def setUp(self):
         super().setUp()
         self.config = get_config()
+        self.mysql_connection = mysql_get_connection()
+        self.redis_connection = redis_get_connection()
         self.service = HealthCheckService(self.logger, self.config)
 
     def test_add_check(self):
         self.logger.info('Running test: %s', get_function_name(__name__))
-        self.service.add_check("MysqlConnection", MysqlConnectionHealthCheck(self.logger, self.config), ["db"])
-
-        # self.assertEqual(len(self.service.entries), 1)
+        self.service.add_check("MysqlConnection", MysqlConnectionHealthCheck(
+            self.logger, self.config, self.mysql_connection), ["db"])
 
         result = self.service.get_result()
-        print(result)
+        self.logger.info(result)
 
-        # self.assertEqual(result["status"], HealthStatus.HEALTHY)
         self.assertIsInstance(result, dict)
         self.assertTrue('status' in result)
 
@@ -97,25 +99,22 @@ class HealthCheckServiceTestCase(BaseComponentTestCase):
         self.service.add_check("Lambda test", lambda: HealthCheckResult.healthy("test success"), ["lambda_test"])
 
         result = self.service.get_result()
-        print(result)
+        self.logger.info(result)
 
-        # self.assertEqual(result["status"], HealthStatus.HEALTHY)
         self.assertIsInstance(result, dict)
         self.assertTrue('status' in result)
 
     def test_add_multi_checks(self):
         self.logger.info('Running test: %s', get_function_name(__name__))
         self.service.add_check("self", SelfConnectionHealthCheck(self.logger, self.config), [])
-        self.service.add_check("mysql", MysqlConnectionHealthCheck(self.logger, self.config), ["db"])
-        self.service.add_check("redis", RedisConnectionHealthCheck(self.logger, self.config), ["redis"])
-        # self.service.add_check("SQSConnection", SQSConnectionHealthCheck(self.logger, self.config), ["db"])
-
-        #self.assertEqual(len(self.service.entries), 3)
+        self.service.add_check("mysql", MysqlConnectionHealthCheck(
+            self.logger, self.config, self.mysql_connection), ["db"])
+        self.service.add_check("redis", RedisConnectionHealthCheck(
+            self.logger, self.config, self.redis_connection), ["redis"])
 
         result = self.service.get_result()
-        print(result)
+        self.logger.info(result)
 
-        # self.assertEqual(result["status"], HealthStatus.HEALTHY)
         self.assertIsInstance(result, dict)
         self.assertTrue('status' in result)
 
@@ -126,7 +125,7 @@ class HealthCheckServiceTestCase(BaseComponentTestCase):
         self.service.add_check("redis", RedisConnectionHealthCheck(self.logger, self.config), ["redis"])
 
         response = self.service.get_response()
-        print(response.data)
+        self.logger.info(response.data)
         self.assertIsNotNone(response.data)
 
 

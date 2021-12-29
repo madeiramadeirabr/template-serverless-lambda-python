@@ -36,6 +36,18 @@ class HealthCheckResult:
     def degraded(description):
         return HealthCheckResult(HealthStatus.DEGRADED, description)
 
+    def __str__(self):
+        return self.to_dict()
+
+    def __repr__(self):
+        return self.to_json()
+
+    def to_dict(self):
+        return {'status': self.status, 'description': self.description}
+
+    def to_json(self):
+        return json.dumps(self.to_dict())
+
 
 class EntrySchema(Schema):
     status = fields.Str(example=HealthStatus.HEALTHY.value)

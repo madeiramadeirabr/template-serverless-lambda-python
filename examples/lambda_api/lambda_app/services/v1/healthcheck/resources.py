@@ -9,20 +9,20 @@ from lambda_app.events.aws.sqs import SQSEvents
 
 
 class SelfConnectionHealthCheck(AbstractHealthCheck):
-    def __init__(self, logger=None, config=None):
+    def __init__(self, logger=None, config=None, http_client=None):
         super().__init__(logger=logger, config=config)
+        self.http_client = http_client if http_client is not None else requests
 
     def check_health(self):
         result = False
         description = "Unable to connect"
         check_result = HealthCheckResult.unhealthy(description)
-        response = None
         try:
             result = True
             url = os.environ["API_SERVER"] if "API_SERVER" in os.environ else None
             url = url + "/docs"
             self.logger.info("requesting url: {}".format(url))
-            response = requests.get(url)
+            response = self.http_client.get(url)
             if response:
                 if response.status_code == 200:
                     result = True

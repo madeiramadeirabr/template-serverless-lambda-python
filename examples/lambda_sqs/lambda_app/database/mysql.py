@@ -2,7 +2,7 @@ from time import sleep
 
 from lambda_app.config import get_config
 from lambda_app.logging import get_logger
-from vendor import pymysql
+import pymysql
 
 logger = get_logger()
 
@@ -16,6 +16,7 @@ def reset():
     _CONNECTION = False
 
 
+# TODO aplicar class aos moldes da pasta aws
 def get_connection(config=None, connect=True, retry=False):
     global _CONNECTION, _RETRY_COUNT, _MAX_RETRY_ATTEMPTS
     if not _CONNECTION:

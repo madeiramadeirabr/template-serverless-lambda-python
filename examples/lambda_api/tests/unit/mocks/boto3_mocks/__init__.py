@@ -2,10 +2,7 @@ import os
 from unittest.mock import Mock
 
 import boto3
-from boto3.dynamodb.table import TableResource
-from boto3.resources.base import ServiceResource
 from botocore.session import Session
-from mock.mock import MagicMock
 
 from tests.unit.mocks.boto3_mocks.resources import table_mock, queue_mock
 

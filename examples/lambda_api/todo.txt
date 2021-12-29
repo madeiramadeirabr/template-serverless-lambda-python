@@ -1,3 +1,14 @@
+
+Tarefas:
+Corrigir migrations
+Remover config do projeto para evitar problemas
+fazer scripts do localstack como sqs ler as variaveis do .projectrc
+Adicionar na config questão do python38-env
+Deixar independente de flask para cenários de SQS
+Criar versões simplificada de SQS
+
+
+Outros:
 https://www.serverless.com/blog/flask-python-rest-api-serverless-lambda-dynamodb
 https://www.serverless.com/framework/docs/providers/aws/examples/hello-world/python/
 https://www.serverless.com/framework/docs/providers/aws/cli-reference/create/#available-templates
@@ -5,3 +16,4 @@ https://www.serverless.com/framework/docs/providers/aws/cli-reference/create/#av
 
 tratar esse caso
 https://stackoverflow.com/questions/34802316/make-flasks-url-for-use-the-https-scheme-in-an-aws-load-balancer-without-mess
+

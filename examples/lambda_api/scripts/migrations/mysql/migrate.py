@@ -175,7 +175,7 @@ try:
     reset()
     reset_config()
     # load integration
-    APP_TYPE = os.environ['APP_TYPE'] if 'APP_TYPE' in os.environ else 'Flask'
+    APP_TYPE = os.environ['APP_TYPE']
     if APP_TYPE == 'Flask':
         load_dot_env()
     else:

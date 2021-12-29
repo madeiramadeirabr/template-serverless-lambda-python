@@ -5,10 +5,9 @@ from lambda_app.decorators.events import SQSRecord, SQSEvent
 from tests import ROOT_DIR
 
 
-
 def create_chalice_sqs_record(event_dict, context=None):
     event = event_dict
-    if  event_dict[0]:
+    if event_dict[0]:
         event = event_dict[0]
     else:
         if not 'body' in event_dict and not 'messageId' in event_dict:
@@ -28,6 +27,7 @@ def create_chalice_sqs_event(event_dict, context=None):
         records.append(sqs_message_stub)
 
     return SQSEvent(sqs_event, context)
+
 
 def get_sqs_event_stub():
     with open(path.join(ROOT_DIR, 'tests/datasources/events/sqs/sqs.event.stub.json')) as f:

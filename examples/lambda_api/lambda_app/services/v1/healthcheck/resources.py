@@ -5,7 +5,7 @@ import requests
 from lambda_app.services.v1.healthcheck import AbstractHealthCheck, HealthCheckResult
 from lambda_app.database.mysql import get_connection
 from lambda_app.database.redis import get_connection as redis_get_connection
-from lambda_app.events.aws.sqs import SQSEvents
+from lambda_app.aws.sqs import SQSEvents
 
 
 class SelfConnectionHealthCheck(AbstractHealthCheck):

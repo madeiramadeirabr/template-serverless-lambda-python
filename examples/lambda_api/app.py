@@ -43,9 +43,6 @@ app = LambdaFlask(__name__)
 @app.route('/')
 def index():
     body = {"app": '%s:%s' % (APP_NAME, APP_VERSION)}
-    # logger.info('Env: {} App Info: {}'.format(config.APP_ENV, body))
-    # Temporário para debug
-    # logger.info('Env Vars: {}'.format(config.to_dict()))
     return http_helper.create_response(body=body, status_code=200)
 
 

@@ -1,6 +1,6 @@
 import os
 
-from lambda_app.events.aws.sqs import SQSEvents
+from lambda_app.aws.sqs import SQSEvents
 
 
 class SQSHelper:

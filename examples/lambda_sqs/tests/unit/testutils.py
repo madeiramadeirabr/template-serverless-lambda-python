@@ -1,8 +1,12 @@
 import logging
+import os
 import random
 import string
 import traceback
 import unittest
+
+from lambda_app.boot import reset, load_dot_env, load_env
+from lambda_app.config import reset as reset_config, get_config
 
 
 def random_string(string_length=10):
@@ -19,9 +23,24 @@ def get_function_name(class_name=""):
 
 
 class BaseUnitTestCase(unittest.TestCase):
+    SQS_LOCALSTACK = 'http://localhost:4566'
+    REDIS_LOCALSTACK = 'localhost'
+    CONFIG = None
+
     @classmethod
     def setUpClass(cls):
-        pass
+        # pass
+        # reset config and env
+        reset()
+        reset_config()
+        # load integration
+        APP_TYPE = os.environ['APP_TYPE']
+        if APP_TYPE == 'Flask':
+            load_dot_env()
+        else:
+            load_env()
+
+        cls.CONFIG = get_config()
 
     """
     Classe base para testes de unidade

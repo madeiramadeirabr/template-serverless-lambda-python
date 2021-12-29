@@ -16,6 +16,7 @@ def reset():
     _CONNECTION = False
 
 
+# TODO aplicar class aos moldes da pasta aws
 def get_connection(config=None, connect=True, retry=False):
     global _CONNECTION, _RETRY_COUNT, _MAX_RETRY_ATTEMPTS
     if not _CONNECTION:

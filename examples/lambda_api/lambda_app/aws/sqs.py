@@ -31,12 +31,18 @@ class SQSEvents:
         connection = None
         try:
             endpoint_url = self.config.SQS_ENDPOINT
+            region_name = self.config.REGION_NAME
+
+            # region validation
+            if region_name is None:
+                region_name = os.environ['REGION_NAME'] if 'REGION_NAME' in os.environ else 'us-east-2'
 
             queue_name = os.path.basename(os.environ['APP_QUEUE']) if 'APP_QUEUE' in os.environ else None
+
             self.logger.info('SQSEvents - profile: {}'.format(self.profile))
             self.logger.info('SQSEvents - endpoint_url: {}'.format(endpoint_url))
             self.logger.info('SQSEvents - queue_name: {}'.format(queue_name))
-            self.logger.info('SQSEvents - self.config.REGION_NAME: {}'.format(self.config.REGION_NAME))
+            self.logger.info('SQSEvents - self.config.REGION_NAME: {}'.format(region_name))
 
             if self.profile:
                 session = self.session

@@ -1,17 +1,14 @@
-import os
 import unittest
 
 from unittest_data_provider import data_provider
-from tests.unit.testutils import get_function_name
 
+from lambda_app.aws.sqs import SQSEvents
 from lambda_app.config import get_config
-from lambda_app.events.aws.sqs import SQSEvents
 from lambda_app.logging import get_logger
 from tests.component.componenttestutils import BaseComponentTestCase
 from tests.component.helpers.events.aws.sqs_helper import SQSHelper
 from tests.unit.helpers.events_helper import get_cancelamento_event
-from tests.unit.helpers.ocoren_helper import get_ocoren_cancelamento_sample
-
+from tests.unit.testutils import get_function_name
 
 
 def get_sqs_event_sample():

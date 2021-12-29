@@ -6,6 +6,7 @@ from lambda_app.events.tracker import EventTracker
 from lambda_app.exceptions import ApiException
 from lambda_app.helper import generate_hash
 from lambda_app.logging import get_logger
+from lambda_app.services.v1.ocoren_event_service import OcorenEventService
 from lambda_app.vos.events import EventVO
 
 
@@ -28,7 +29,7 @@ class EventManager:
         self.config = config if config is not None else get_config()
         # database connection
         self.redis_connection = redis_connection if redis_connection is not None else get_connection()
-        self.event_service = event_service if event_service is not None else None
+        self.event_service = event_service if event_service is not None else OcorenEventService(self.logger)
         self.event_tracker = event_tracker if event_tracker is not None else EventTracker(self.logger)
         self.exception = None
 

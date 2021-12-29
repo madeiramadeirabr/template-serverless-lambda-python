@@ -3,7 +3,7 @@ import unittest
 from unittest_data_provider import data_provider
 
 from lambda_app.config import get_config
-from lambda_app.events.aws.sqs import SQSEvents
+from lambda_app.aws.sqs import SQSEvents
 from tests.unit.helpers.events_helper import get_cancelamento_event
 from tests.unit.mocks.boto3_mocks import session_mock
 from tests.unit.testutils import get_function_name, BaseUnitTestCase

@@ -3,7 +3,7 @@ import unittest
 from unittest_data_provider import data_provider
 
 from lambda_app.config import get_config
-from lambda_app.events.aws.sqs import SQSEvents
+from lambda_app.aws.sqs import SQSEvents
 from lambda_app.logging import get_logger
 from tests.component.componenttestutils import BaseComponentTestCase
 from tests.component.helpers.events.aws.sqs_helper import SQSHelper

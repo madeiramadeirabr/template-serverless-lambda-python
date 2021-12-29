@@ -1,5 +1,5 @@
 from lambda_app.config import get_config
-from lambda_app.events.aws.sqs import SQSEvents
+from lambda_app.aws.sqs import SQSEvents
 from lambda_app.logging import get_logger
 from lambda_app.vos.events import EventVO
 

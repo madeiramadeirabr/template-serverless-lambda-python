@@ -22,8 +22,7 @@ import json
 def get_queue_message():
     queue_url = os.getenv("APP_QUEUE")
     event = SQSHelper.get_message(queue_url)
-
-    return (event,),
+    return (event,)
 
 
 def get_queue_events_samples():
@@ -32,6 +31,7 @@ def get_queue_events_samples():
     sqs_event = create_chalice_sqs_event(event)
 
     return (sqs_event,),
+
 
 # AttributeError: module 'typing' has no attribute '_classvar'
 # This error occours on Python 3.8
@@ -49,36 +49,21 @@ class AppTestCase(BaseComponentTestCase):
         cls.CONFIG = get_config()
         cls.CONFIG.SQS_ENDPOINT = cls.SQS_LOCALSTACK
 
-        BaseComponentTestCase.setUpClass()
-        mysql_connection = MySQLHelper.get_connection()
-
         # fixture
         if cls.EXECUTE_FIXTURE:
             logger = get_logger()
+
+            logger.info("Fixture: MYSQL Database connection")
+            logger.info('Fixture: create sqs queue')
+
+            mysql_connection = MySQLHelper.get_connection()
+            table_name = OcorenRepository.BASE_TABLE
+            cls.fixture_table(logger, mysql_connection, table_name)
+
             logger.info('Fixture: create sqs queue')
 
             queue_url = cls.CONFIG.APP_QUEUE
             cls.fixture_sqs(logger, queue_url)
-
-            logger.info("Fixture: drop table")
-
-            table_name = OcorenRepository.BASE_TABLE
-            cls.fixture_table(logger, mysql_connection, table_name)
-
-
-    @classmethod
-    def fixture_table(cls, logger, mysql_connection, table_name):
-        dropped = MySQLHelper.drop_table(mysql_connection, table_name)
-        if dropped:
-            logger.info(f"Table dropped:: {table_name}")
-        file_name = ROOT_DIR + f"tests/datasets/database/structure/mysql/create.table.store.{table_name}.sql"
-        created = MySQLHelper.create_table(mysql_connection, table_name, file_name)
-        if created:
-            logger.info(f"Table created:: {table_name}")
-        file_name = ROOT_DIR + f"tests/datasets/database/seeders/mysql/seeder.table.store.{table_name}.sql"
-        populated = MySQLHelper.sow_table(mysql_connection, table_name, file_name)
-        if populated:
-            logger.info(f"Table populated:: {table_name}")
 
     @classmethod
     def fixture_sqs(cls, logger, queue_url):
@@ -101,9 +86,20 @@ class AppTestCase(BaseComponentTestCase):
         # print(message)
         SQSHelper.create_message(message, queue_url)
         logger.info('created message: {}'.format(message))
-        # message = SQSHelper.get_message(queue_url)
-        # logger.info('reading message: {}'.format(message))
-        # print(message)
+
+    @classmethod
+    def fixture_table(cls, logger, mysql_connection, table_name):
+        dropped = MySQLHelper.drop_table(mysql_connection, table_name)
+        if dropped:
+            logger.info(f"Table dropped:: {table_name}")
+        file_name = ROOT_DIR + f"tests/datasets/database/structure/mysql/create.table.store.{table_name}.sql"
+        created = MySQLHelper.create_table(mysql_connection, table_name, file_name)
+        if created:
+            logger.info(f"Table created:: {table_name}")
+        file_name = ROOT_DIR + f"tests/datasets/database/seeders/mysql/seeder.table.store.{table_name}.sql"
+        populated = MySQLHelper.sow_table(mysql_connection, table_name, file_name)
+        if populated:
+            logger.info(f"Table populated:: {table_name}")
 
     @data_provider(get_queue_message)
     def test_index(self, event):

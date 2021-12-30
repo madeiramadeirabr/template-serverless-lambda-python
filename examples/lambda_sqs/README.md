@@ -30,6 +30,17 @@ There are no routes for this project.
 * MySQL
 * Redis
 
+## Details about requirements files
+### requirements.txt
+Collection of common application modules, light modules.
+
+### requirements.txt
+Collection of specific application modules, heavy modules that can be converted to layers if necessary.
+
+### requirements-tests.txt
+Collection of specific test application modules.
+
+
 ## Installation
 
 ### Installing AWS CLI
@@ -45,6 +56,11 @@ app install pip
 Execute the follow command:
 ```
 aws configure
+```
+### Installing python venv support
+Execute the follow command:
+```
+apt install python38-env
 ```
 
 ### Creating network

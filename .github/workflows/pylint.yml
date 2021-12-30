@@ -42,8 +42,11 @@ jobs:
         - name: Execute pylint
           run: |
             source ./scripts/variables.sh
+            ROOT_DIR =$(pwd) 
             for example_path in "${arr[@]}"
             do
                echo "Pylint in ${example_path} ..."
-               pylint --rcfile ./.pylintrc ${example_path}/app.py ${example_path}/lambda_app
+               # change dir to enable the pylint to find the modules of the app
+               cd ${example_path}
+               pylint --rcfile ${ROOT_DIR}.pylintrc app.py lambda_app
             done

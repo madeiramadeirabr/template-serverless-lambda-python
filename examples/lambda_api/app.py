@@ -2,6 +2,7 @@
 
 This module contains the handler method
 """
+import boot
 import os
 import base64
 from lambda_app.services.v1.healthcheck import HealthCheckSchema
@@ -27,11 +28,10 @@ from lambda_app.openapi import spec, get_doc, generate_openapi_yml
 from lambda_app.openapi import api_schemas
 from lambda_app.services.event_manager import EventManager
 from lambda_app import helper
-from lambda_app.boot import load_dot_env
 
 # load env
 ENV = helper.get_environment()
-load_dot_env(ENV)
+boot.load_dot_env(ENV)
 
 
 # config

@@ -14,6 +14,25 @@ def get_log_level():
     return log_level
 
 
+def get_console_logger():
+    log_level = get_log_level()
+    log_name = "console-{}".format(APP_NAME)
+    log_filename = None
+    log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    logging.basicConfig(format=log_format, filename=log_filename, level=log_level)
+    logger = logging.getLogger(log_name)
+    return logger
+
+
+def get_stream_handler():
+    return get_console_logger().parent.handlers[0]
+
+
+def set_debug_mode(logger, level=None):
+    logger.addHandler(get_stream_handler())
+    logger.level = level if level is not None else logging.INFO
+
+
 def get_logger():
     global _LOGGER
     if not _LOGGER:

@@ -33,7 +33,7 @@ class Configuration:
 
     @staticmethod
     def get_env_keys():
-        from lambda_app.boot import get_env_keys
+        from boot import get_env_keys
         return get_env_keys()
 
 

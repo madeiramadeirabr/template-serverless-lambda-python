@@ -92,7 +92,7 @@ class AppTestCase(BaseComponentTestCase):
         event = create_aws_api_gateway_proxy_request_event('GET', '/')
         context = FakeLambdaContext()
 
-        response = serverless_wsgi.handle_request(app.app, event, context)
+        response = serverless_wsgi.handle_request(app.APP, event, context)
 
         self.assertTrue('statusCode' in response)
         self.assertTrue('body' in response)
@@ -109,7 +109,7 @@ class AppTestCase(BaseComponentTestCase):
         event = create_aws_api_gateway_proxy_request_event('GET', '/alive')
         context = FakeLambdaContext()
 
-        response = serverless_wsgi.handle_request(app.app, event, context)
+        response = serverless_wsgi.handle_request(app.APP, event, context)
 
         self.assertTrue('statusCode' in response)
         self.assertTrue('body' in response)

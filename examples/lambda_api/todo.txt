@@ -3,7 +3,6 @@ Tarefas:
 Corrigir migrations
 Remover config do projeto para evitar problemas
 fazer scripts do localstack como sqs ler as variaveis do .projectrc
-Adicionar na config questão do python38-env
 Deixar independente de flask para cenários de SQS
 Criar versões simplificada de SQS
 

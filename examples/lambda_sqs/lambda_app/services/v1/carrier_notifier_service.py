@@ -31,7 +31,7 @@ class CarrierNotifierService:
 
         event_tracker = EventTracker(self.logger)
         event_hash = None
-
+        # todo extrair essa logica daqui, o servico nao tem que fazer isso
         records = self.get_records_from_sqs_event(sqs_event)
         if records is not None:
             process_counter = 0
@@ -55,7 +55,11 @@ class CarrierNotifierService:
                     self.logger.info('event_vo: {}'.format(event_vo.to_dict()))
                     created = self.repository.create(event_vo)
 
-                    self.redis_repository.create("event_{}".format(event_hash), str(event_vo.to_dict()))
+                    try:
+                        self.redis_repository.create("event_{}".format(event_hash), str(event_vo.to_dict()))
+                    except Exception as err:
+                        self.logger.error("Already in redis")
+                        self.logger.error(err)
                     # self.redis_repository.list(where="*")
 
                     if not created:

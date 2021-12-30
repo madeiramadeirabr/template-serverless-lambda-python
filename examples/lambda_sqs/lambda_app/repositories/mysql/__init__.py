@@ -28,8 +28,12 @@ class AbstractRepository:
             self.connection.connect()
             # with self.connection.cursor() as cursor:
             cursor = self.connection.cursor()
-            cursor.execute(sql, params)
-            result = cursor
+            try:
+                cursor.execute(sql, params)
+            except Exception as err:
+                self.logger.error(err)
+            finally:
+                result = cursor
             # close connection only in read
             # self.connection.close()
         else:

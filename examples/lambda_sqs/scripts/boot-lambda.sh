@@ -18,7 +18,6 @@ else
 fi
 
 current_file_path_basename=$(basename -- "$current_file_path")
-#echo "xxxxx current_file_path_basename $current_file_path_basename"
 
 if [ -z "$current_file_path_basename" ] || [ $current_file_path = "./" ]; then
 #  echo 'aq'
@@ -50,14 +49,12 @@ echo 'Installing dependencies...'
 echo "Requirements file: ${current_parent_folder}requirements.txt"
 if test -f ${current_parent_folder}requirements.txt; then
   python3 -m pip install -r ${current_parent_folder}requirements.txt -t ${current_parent_folder}vendor
-#  cat ${current_parent_folder}requirements.txt
   echo "requirements..."
 fi
 
 echo "Requirements file: ${current_parent_folder}requirements-vendor.txt"
 if test -f ${current_parent_folder}requirements-vendor.txt; then
   python3 -m pip install -r ${current_parent_folder}requirements-vendor.txt -t ${current_parent_folder}vendor
-#  cat ${current_parent_folder}requirements-vendor.txt
   echo "requirements vendor..."
 fi
 

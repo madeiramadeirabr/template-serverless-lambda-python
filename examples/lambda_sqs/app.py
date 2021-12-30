@@ -2,17 +2,18 @@
 
 This module contains the handler method
 """
+import boot
 from lambda_app.lambda_flask import LambdaFlask
 from lambda_app import APP_NAME, APP_VERSION
-from lambda_app.logging import get_logger
+from lambda_app.logging import get_logger, set_debug_mode
 from lambda_app.services.v1.carrier_notifier_service import CarrierNotifierService
 from lambda_app.config import get_config
 from lambda_app import helper
-from lambda_app.boot import load_dot_env
+
 
 # load env
 ENV = helper.get_environment()
-load_dot_env(ENV)
+boot.load_dot_env(ENV)
 
 # config
 CONFIG = get_config()
@@ -22,6 +23,12 @@ DEBUG = helper.debug_mode()
 LOGGER = get_logger()
 
 APP = LambdaFlask(APP_NAME)
+# override the APP logger
+APP.logger = LOGGER
+# override the log configs
+if DEBUG:
+    # override to the level desired
+    set_debug_mode(LOGGER)
 
 # general vars
 APP_QUEUE = CONFIG.APP_QUEUE

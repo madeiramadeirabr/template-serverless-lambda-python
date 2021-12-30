@@ -13,27 +13,32 @@ name: Execute the pylint analysis
 #  push: # Triggers on each pushed commit
 #    branches:
 #      - 'master'
-on: [push]
+on: [ push ]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  setup-environment:
+    name: Setup deployment environment (Ubuntu 18.04 - Python 3.x)
+    runs-on: ubuntu-18.04
     strategy:
       matrix:
-        # python-version: [ '3.x', 'pypy-3.7', 'pypy-3.8' ]
-        python-version: ["3.8", "3.9", "3.10"]
-    name: Python ${{ matrix.python-version }} sample
+        python-version: [ "3.8", "3.9", "3.10" ]
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
-          cache: 'pip'
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pylint
-      - name: Analysing the code with pylint
-        run: pylint app.py lambda_app tests
+  pylint:
+    runs-on: ubuntu-18.04
+    needs: setup-environment
+    steps:
+        - uses: actions/checkout@v2
+        - name: Install pylint
+          run: |
+            python -m pip install --upgrade pip
+            pip install pylint
+        - name: Execute pylint
+          run: |
+            # pylint --rcfile .pylintrc ./app.py ./lambda_app ./tests/unit ./tests/integration ./tests/component
+            pylint --rcfile .pylintrc ./app.py ./lambda_app

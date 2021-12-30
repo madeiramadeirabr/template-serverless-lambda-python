@@ -32,10 +32,12 @@ jobs:
           architecture: x64
           cache: 'pip'
       - run: pip install -r requirements.txt
-  pylint:
+  lint:
     runs-on: ubuntu-latest
     needs: setup-environment
     steps:
+      with:
+        cache: 'pip'
       - uses: actions/checkout@v2
       - name: Install dependencies
         run: pylint ./examples/*/app.py ./examples/*/*

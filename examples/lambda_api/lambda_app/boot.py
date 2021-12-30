@@ -14,6 +14,7 @@ if not current_path[-1] == '/':
 
 ROOT_DIR = current_path
 _LOADED = False
+_ENV_KEYS = []
 
 try:
     import chalicelib
@@ -41,8 +42,14 @@ def is_loaded():
 
 
 def reset():
-    global _LOADED
+    global _LOADED, _ENV_KEYS
     _LOADED = False
+    _ENV_KEYS = []
+
+
+def get_env_keys():
+    global _ENV_KEYS
+    return _ENV_KEYS
 
 
 def get_internal_logger():
@@ -65,12 +72,13 @@ def load_dot_env(env='development', force=False):
 
     logger = get_internal_logger()
 
-    global _LOADED
+    global _LOADED, _ENV_KEYS
     if not _LOADED or force:
         logger.info('Boot - Loading env: {}'.format(env))
 
         # Default
         for k, v in _DEFAULT_ENV_CONFIGS.items():
+            _ENV_KEYS.append(k)
             if k == 'APP_ENV':
                 v = env
             os.environ[k] = v
@@ -80,6 +88,7 @@ def load_dot_env(env='development', force=False):
             env_vars = dotenv_values(config_path)
 
             for k, v in env_vars.items():
+                _ENV_KEYS.append(k)
                 os.environ[k] = v
             _LOADED = True
         else:
@@ -99,6 +108,7 @@ def load_dot_env(env='development', force=False):
 
 
 def load_secrets(env='staging'):
+    global _ENV_KEYS
     from lambda_app.aws.secrets import Secrets
     logger = get_internal_logger()
     result = False
@@ -128,13 +138,14 @@ def load_env(env='dev', force=False):
 
     logger = get_internal_logger()
 
-    global _LOADED
+    global _LOADED,_ENV_KEYS
     if not _LOADED or force:
 
         logger.info('Boot - Loading env: {}'.format(env))
 
         # Default
         for k, v in _DEFAULT_ENV_CONFIGS.items():
+            _ENV_KEYS.append(k)
             if k == 'APP_ENV':
                 v = env
             os.environ[k] = v
@@ -156,6 +167,7 @@ def load_env(env='dev', force=False):
             if env in configs['stages']:
                 env_vars = configs['stages'][env]['environment_variables']
                 for k, v in env_vars.items():
+                    _ENV_KEYS.append(k)
                     os.environ[k] = v
                 _LOADED = True
             else:

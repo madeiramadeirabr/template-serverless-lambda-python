@@ -32,11 +32,41 @@ Service routes map.
 * Redis
 * Swagger
 
+## Details about requirements files
+### requirements.txt
+Collection of common application modules, light modules.
+
+### requirements.txt
+Collection of specific application modules, heavy modules that can be converted to layers if necessary.
+
+### requirements-tests.txt
+Collection of specific test application modules.
+
 ## Kong configuration
 Configure Kong API Gateway to work compatible with API Gateway.
 
 
 ## Installation
+### Installing AWS CLI
+Documentation:
+https://docs.aws.amazon.com/pt_br/cli/latest/userguide/install-cliv2.html
+
+Execute the follow command:
+```
+apt install awscli
+apt install zip
+app install pip
+```
+Execute the follow command:
+```
+aws configure
+```
+
+### Installing python venv support
+Execute the follow command:
+```
+apt install python38-env
+```
 
 ### Running Locally
 To create the `venv` and install the modules execute:

@@ -1,7 +1,7 @@
 if test -f .projectrc; then
   source .projectrc
-elif test -f ./bin/.projectrc; then
-  source ./bin/.projectrc
+elif test -f ./scripts/.projectrc; then
+  source ./scripts/.projectrc
 fi
 
 if [ -z "$PROJECT_NAME" ]; then

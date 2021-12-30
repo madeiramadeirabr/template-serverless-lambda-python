@@ -138,7 +138,7 @@ def load_env(env='dev', force=False):
 
     logger = get_internal_logger()
 
-    global _LOADED,_ENV_KEYS
+    global _LOADED, _ENV_KEYS
     if not _LOADED or force:
 
         logger.info('Boot - Loading env: {}'.format(env))
@@ -208,3 +208,6 @@ def print_env(app, logger):
     # logger.info('Database: %s' % os.getenv('DB_HOST'))
     logger.info('Log Level: %s' % os.getenv('LOG_LEVEL'))
     logger.info('Debug: %s' % os.getenv('DEBUG'))
+
+
+register_vendor()

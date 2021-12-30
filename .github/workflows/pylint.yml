@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        python-version: [ "3.8", "3.9", "3.10" ]
+        python-version: [ "3.8", "3.9" ]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
@@ -38,13 +38,17 @@ jobs:
           run: |
             python -m pip install --upgrade pip
             pip install pylint
+        # todo: futuramente separar em mais passos (um para cada pasta)
         - name: Execute pylint
           run: |
-            # pylint ./examples/*/app.py ./examples/*/lambda_app ./examples/*/tests/unit ./examples/*/tests/integration ./examples/*/tests/component
-            # pylint --rcfile ./.pylintrc ./examples/*/app.py ./examples/*/lambda_app
             source ./scripts/variables.sh
+            ROOT_DIR=$(pwd)/ 
             for example_path in "${arr[@]}"
             do
                echo "Pylint in ${example_path} ..."
-               pylint --rcfile ./.pylintrc ${example_path}app.py ${example_path}lambda_app
+               # change dir to enable the pylint to find the modules of the app
+               cd ${example_path}
+               echo "Current dir is..."
+               echo $(pwd)
+               pylint --rcfile ${ROOT_DIR}.pylintrc ./app.py ./lambda_app
             done

@@ -7,7 +7,7 @@ from enum import Enum
 
 import pytz
 
-from lambda_app.logging import get_logger
+from lambda_app.logging import get_logger, get_console_logger
 
 TZ_AMERICA_SAO_PAULO = 'America/Sao_Paulo'
 
@@ -64,7 +64,6 @@ def to_dict(obj, force_str=False):
     if force_str:
         return {k: str(v) for k, v in data.items() if v is not None}
     else:
-        # return {k: v for k, v in data.items() if v is not None}
         _dict = {}
         for k, v in data.items():
             if isinstance(v, Enum):
@@ -78,7 +77,7 @@ def to_dict(obj, force_str=False):
 
 
 def to_json(obj):
-    return json.dumps(obj, default=str)
+    return json.dumps(obj)
 
 
 def debug_mode():
@@ -146,12 +145,19 @@ def is_https():
     return result
 
 
-def print_routes(app, logger):
+def is_count_request(app):
+    request = app.current_request.query_params
+    return True if request is not None and (request.get('count') == "true" or request.get('count') == "1") else False
+
+
+def print_routes(app, logger=None):
     """
     :param logger:
     :param (chalice.Chalice) app:
     :return:
     """
+    if logger is None:
+        logger = get_console_logger()
     logger.info('List of routes:')
 
     if has_attr(app, 'get_routes'):

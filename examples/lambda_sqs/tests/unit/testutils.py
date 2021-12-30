@@ -5,7 +5,7 @@ import string
 import traceback
 import unittest
 
-from lambda_app.boot import reset, load_dot_env, load_env
+from boot import reset, load_dot_env, load_env
 from lambda_app.config import reset as reset_config, get_config
 
 

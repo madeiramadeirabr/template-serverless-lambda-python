@@ -1,7 +1,7 @@
 import os
 import sys
 
-from lambda_app.boot import load_env, set_root_dir
+from boot import load_env, set_root_dir
 
 if __package__:
     current_path = os.path.abspath(os.path.dirname(__file__)).replace('/' + str(__package__), '', 1)

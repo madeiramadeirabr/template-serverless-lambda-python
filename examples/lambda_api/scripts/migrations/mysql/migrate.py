@@ -36,7 +36,7 @@ def register_paths():
 register_paths()
 
 from lambda_app.logging import get_logger
-from lambda_app.boot import reset, load_dot_env, load_env
+from boot import reset, load_dot_env, load_env
 from lambda_app.config import reset as reset_config, get_config
 from lambda_app.database.mysql import get_connection
 

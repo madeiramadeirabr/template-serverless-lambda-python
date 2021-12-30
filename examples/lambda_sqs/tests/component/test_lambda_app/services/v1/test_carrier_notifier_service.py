@@ -30,6 +30,7 @@ def get_queue_events_samples():
 
     return (sqs_event,),
 
+
 def get_queue_events_error_samples():
     event = get_cancelamento_error_event()
     qevent = get_cancelamento_quote_error_event()
@@ -102,9 +103,8 @@ class CarrierNotifierServiceTestCase(BaseComponentTestCase):
     def test_process_by_error_events(self, sqs_event):
         self.logger.info('Running test: %s', get_function_name(__name__))
 
-        result = self.service.process(sqs_event=sqs_event)
-
-        self.assertTrue(result)
+        with self.assertRaises(Exception):
+            self.service.process(sqs_event=sqs_event)
 
 
 if __name__ == '__main__':

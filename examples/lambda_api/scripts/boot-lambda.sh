@@ -49,7 +49,9 @@ echo '----------------------------------------'
 echo 'Installing dependencies...'
 echo "Requirements file: ${current_parent_folder}requirements.txt"
 if test -f ${current_parent_folder}requirements.txt; then
-  python3 -m pip install -r ${current_parent_folder}requirements.txt -t ${current_parent_folder}vendor
+  # python3 -m pip install -r ${current_parent_folder}requirements.txt -t ${current_parent_folder}vendor
+  # Lets install the dependencies direct into the venv instead vendor folder
+#  python3 -m pip install -r ${current_parent_folder}requirements.txt -t ${current_parent_folder}
 #  cat ${current_parent_folder}requirements.txt
   echo "requirements..."
 fi
@@ -57,6 +59,8 @@ fi
 echo "Requirements file: ${current_parent_folder}requirements-vendor.txt"
 if test -f ${current_parent_folder}requirements-vendor.txt; then
   python3 -m pip install -r ${current_parent_folder}requirements-vendor.txt -t ${current_parent_folder}vendor
+  # Lets install the dependencies direct into the venv instead vendor folder
+#  python3 -m pip install -r ${current_parent_folder}requirements-vendor.txt -t ${current_parent_folder}
 #  cat ${current_parent_folder}requirements-vendor.txt
   echo "requirements vendor..."
 fi

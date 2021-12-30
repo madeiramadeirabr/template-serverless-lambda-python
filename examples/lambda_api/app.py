@@ -1,15 +1,12 @@
-import base64
+"""This is the main file of the lambda application
+
+This module contains the handler method
+"""
 import os
-from lambda_app.boot import load_dot_env,register_vendor
-register_vendor()
-
-from lambda_app import helper
-
-env = helper.get_environment()
-load_dot_env(env)
-
+import base64
 from lambda_app.services.v1.healthcheck import HealthCheckSchema
-from lambda_app.services.v1.healthcheck.resources import MysqlConnectionHealthCheck, RedisConnectionHealthCheck, \
+from lambda_app.services.v1.healthcheck.resources import \
+    MysqlConnectionHealthCheck, RedisConnectionHealthCheck, \
     SQSConnectionHealthCheck, SelfConnectionHealthCheck
 from lambda_app.services.v1.healthcheck_service import HealthCheckService
 from lambda_app.config import get_config
@@ -22,39 +19,52 @@ from lambda_app.http_resources.response import ApiResponse
 from lambda_app.services.v1.ocoren_event_service import OcorenEventService
 from lambda_app.vos.events import EventVO
 from lambda_app.logging import get_logger
-from lambda_app import APP_NAME, APP_VERSION, http_helper, helper
+from lambda_app import APP_NAME, APP_VERSION, http_helper
 from lambda_app.helper import open_vendor_file, print_routes
 from lambda_app.http_helper import CUSTOM_DEFAULT_HEADERS
 from lambda_app.lambda_flask import LambdaFlask
 from lambda_app.openapi import spec, get_doc, generate_openapi_yml
 from lambda_app.openapi import api_schemas
 from lambda_app.services.event_manager import EventManager
+from lambda_app import helper
+from lambda_app.boot import load_dot_env
+
+# load env
+ENV = helper.get_environment()
+load_dot_env(ENV)
+
 
 # config
-config = get_config()
+CONFIG = get_config()
 # debug
-debug = helper.debug_mode()
+DEBUG = helper.debug_mode()
 # logger
-logger = get_logger()
+LOGGER = get_logger()
 
-app = LambdaFlask(__name__)
+APP = LambdaFlask(__name__)
 
 
-@app.route('/')
+@APP.route('/')
 def index():
+    """
+    API Root path
+    :return:
+    :rtype: str
+    """
     body = {"app": '%s:%s' % (APP_NAME, APP_VERSION)}
     return http_helper.create_response(body=body, status_code=200)
 
 
 # general vars
-APP_QUEUE = config.APP_QUEUE
+APP_QUEUE = CONFIG.APP_QUEUE
 
 
-@app.route('/alive')
+@APP.route('/alive')
 def alive():
     """
-
+    Health check path
     :return:
+    :rtype: str
 
     ---
 
@@ -68,42 +78,58 @@ def alive():
                             schema: HealthCheckSchema
         """
     service = HealthCheckService()
-    service.add_check("self", SelfConnectionHealthCheck(logger, config), [])
-    service.add_check("mysql", MysqlConnectionHealthCheck(logger, config), ["db"])
-    service.add_check("redis", RedisConnectionHealthCheck(logger, config), ["redis"])
-    service.add_check("queue", SQSConnectionHealthCheck(logger, config), ["queue"])
+    service.add_check("self", SelfConnectionHealthCheck(LOGGER, CONFIG), [])
+    service.add_check(
+        "mysql", MysqlConnectionHealthCheck(LOGGER, CONFIG), ["db"])
+    service.add_check("redis", RedisConnectionHealthCheck(
+        LOGGER, CONFIG), ["redis"])
+    service.add_check("queue", SQSConnectionHealthCheck(
+        LOGGER, CONFIG), ["queue"])
 
     return service.get_response()
 
 
-@app.route('/favicon-32x32.png')
+@APP.route('/favicon-32x32.png')
 def favicon():
     headers = CUSTOM_DEFAULT_HEADERS.copy()
     headers['Content-Type'] = "image/png"
     data = base64.b64decode(
-        'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAkFBMVEUAAAAQM0QWNUYWNkYXNkYALjoWNUYYOEUXN0YaPEUPMUAUM0QVNUYWNkYWNUYWNUUWNUYVNEYWNkYWNUYWM0eF6i0XNkchR0OB5SwzZj9wyTEvXkA3az5apTZ+4C5DgDt31C9frjU5bz5uxTI/eDxzzjAmT0IsWUEeQkVltzR62S6D6CxIhzpKijpJiDpOkDl4b43lAAAAFXRSTlMAFc304QeZ/vj+ECB3xKlGilPXvS2Ka/h0AAABfklEQVR42oVT2XaCMBAdJRAi7pYJa2QHxbb//3ctSSAUPfa+THLmzj4DBvZpvyauS9b7kw3PWDkWsrD6fFQhQ9dZLfVbC5M88CWCPERr+8fLZodJ5M8QJbjbGL1H2M1fIGfEm+wJN+bGCSc6EXtNS/8FSrq2VX6YDv++XLpJ8SgDWMnwqznGo6alcTbIxB2CHKn8VFikk2mMV2lEnV+CJd9+jJlxXmMr5dW14YCqwgbFpO8FNvJxwwM4TPWPo5QalEsRMAcusXpi58/QUEWPL0AK1ThM5oQCUyXPoPINkdd922VBw4XgTV9zDGWWFrgjIQs4vwvOg6xr+6gbCTqE+DYhlMGX0CF2OknK5gQ2JrkDh/W6TOEbYDeVecKbJtyNXiCfGmW7V93J2hDus1bDfhxWbIZVYDXITA7Lo6E0Ktgg9eB4KWuR44aj7ppBVPazhQH7/M/KgWe9X1qAg8XypT6nxIMJH+T94QCsLvj29IYwZxyO9/F8vCbO9tX5/wDGjEZ7vrgFZwAAAABJRU5ErkJggg==')
-    return http_helper.create_response(body=data, status_code=200, headers=headers)
+        'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAkFBMVEUAAAAQM0QWNUYWNkYXNkYALjo'
+        'WNUYYOEUXN0YaPEUPMUAUM0QVNUYWNkYWNUYWNUUWNUYVNEYWNkYWNUYWM0eF6i0XNkchR0OB5SwzZj'
+        '9wyTEvXkA3az5apTZ+4C5DgDt31C9frjU5bz5uxTI/eDxzzjAmT0IsWUEeQkVltzR62S6D6CxIhzpKi'
+        'jpJiDpOkDl4b43lAAAAFXRSTlMAFc304QeZ/vj+ECB3xKlGilPXvS2Ka/h0AAABfklEQVR42oVT2XaC'
+        'MBAdJRAi7pYJa2QHxbb//3ctSSAUPfa+THLmzj4DBvZpvyauS9b7kw3PWDkWsrD6fFQhQ9dZLfVbC5M'
+        '88CWCPERr+8fLZodJ5M8QJbjbGL1H2M1fIGfEm+wJN+bGCSc6EXtNS/8FSrq2VX6YDv++XLpJ8SgDWM'
+        'nwqznGo6alcTbIxB2CHKn8VFikk2mMV2lEnV+CJd9+jJlxXmMr5dW14YCqwgbFpO8FNvJxwwM4TPWPo'
+        '5QalEsRMAcusXpi58/QUEWPL0AK1ThM5oQCUyXPoPINkdd922VBw4XgTV9zDGWWFrgjIQs4vwvOg6xr'
+        '+6gbCTqE+DYhlMGX0CF2OknK5gQ2JrkDh/W6TOEbYDeVecKbJtyNXiCfGmW7V93J2hDus1bDfhxWbIZ'
+        'VYDXITA7Lo6E0Ktgg9eB4KWuR44aj7ppBVPazhQH7/M/KgWe9X1qAg8XypT6nxIMJH+T94QCsLvj29I'
+        'YwZxyO9/F8vCbO9tX5/wDGjEZ7vrgFZwAAAABJRU5ErkJggg==')
+    return http_helper.create_response(
+        body=data, status_code=200, headers=headers)
 
 
-@app.route('/docs')
+@APP.route('/docs')
 def docs():
     headers = CUSTOM_DEFAULT_HEADERS.copy()
     headers['Content-Type'] = "text/html"
     html_file = open_vendor_file('./public/swagger/index.html', 'r')
     html = html_file.read()
-    return http_helper.create_response(body=html, status_code=200, headers=headers)
+    return http_helper.create_response(
+        body=html, status_code=200, headers=headers)
 
 
-@app.route('/openapi.yml')
+@APP.route('/openapi.yml')
 def openapi():
     headers = CUSTOM_DEFAULT_HEADERS.copy()
     headers['Content-Type'] = "text/yaml"
     html_file = open_vendor_file('./public/swagger/openapi.yml', 'r')
     html = html_file.read()
-    return http_helper.create_response(body=html, status_code=200, headers=headers)
+    return http_helper.create_response(
+        body=html, status_code=200, headers=headers)
 
 
-@app.route('/v1/event/<event_type>', methods=['POST'])
+@APP.route('/v1/event/<event_type>', methods=['POST'])
 def event_create(event_type):
     """
     :param event_type:
@@ -135,18 +161,19 @@ def event_create(event_type):
                     application/json:
                         schema: EventCreateErrorResponseSchema
         """
-    request = ApiRequest().parse_request(app)
-    logger.info('event_type: {}'.format(event_type))
-    logger.info('request: {}'.format(request))
+    request = ApiRequest().parse_request(APP)
+    LOGGER.info('event_type: {}'.format(event_type))
+    LOGGER.info('request: {}'.format(request))
 
-    event_tracker = EventTracker(logger)
+    event_tracker = EventTracker(LOGGER)
 
     status_code = 200
     response = ApiResponse(request)
     response.set_hateos(False)
     try:
         # event_type validation
-        if EventType.from_value(event_type) not in EventType.get_public_events():
+        if EventType.from_value(
+                event_type) not in EventType.get_public_events():
             exception = ApiException(MessagesEnum.EVENT_TYPE_UNKNOWN_ERROR)
             exception.set_message_params([event_type])
             raise exception
@@ -157,7 +184,7 @@ def event_create(event_type):
         # else:
         #     event_service = ProductEventService()
         event_service = OcorenEventService()
-        service = EventManager(logger=logger, event_service=event_service)
+        service = EventManager(logger=LOGGER, event_service=event_service)
         result = service.process(event_vo)
         event_hash = event_vo.hash
 
@@ -174,7 +201,7 @@ def event_create(event_type):
             else:
                 raise ApiException(MessagesEnum.INTERNAL_SERVER_ERROR)
     except Exception as err:
-        logger.error(err)
+        LOGGER.error(err)
         result = False
         event_hash = None
         if isinstance(err, ApiException):
@@ -204,7 +231,7 @@ def event_create(event_type):
     return response.get_response(status_code)
 
 
-@app.route('/v1/event/<event_type>', methods=['GET'])
+@APP.route('/v1/event/<event_type>', methods=['GET'])
 def event_list(event_type):
     """
     :param event_type:
@@ -230,9 +257,9 @@ def event_list(event_type):
                     application/json:
                         schema: EventListErrorResponseSchema
         """
-    request = ApiRequest().parse_request(app)
-    logger.info('event_type: {}'.format(event_type))
-    logger.info('request: {}'.format(request))
+    request = ApiRequest().parse_request(APP)
+    LOGGER.info('event_type: {}'.format(event_type))
+    LOGGER.info('request: {}'.format(request))
 
     # event_tracker = EventTracker(logger)
     #
@@ -293,7 +320,6 @@ def event_list(event_type):
     #     "params": params
     # }
 
-
     data = {}
 
     response.set_data(data)
@@ -305,11 +331,13 @@ def event_list(event_type):
 
 # doc
 spec.path(view=alive, path="/alive", operations=get_doc(alive))
-spec.path(view=event_list, path="/v1/event/{event_type}", operations=get_doc(event_list))
-spec.path(view=event_create, path="/v1/event/{event_type}", operations=get_doc(event_create))
+spec.path(view=event_list,
+          path="/v1/event/{event_type}", operations=get_doc(event_list))
+spec.path(view=event_create,
+          path="/v1/event/{event_type}", operations=get_doc(event_create))
 
-print_routes(app, logger)
-logger.info('Running at {}'.format(os.environ['APP_ENV']))
+print_routes(APP, LOGGER)
+LOGGER.info('Running at {}'.format(os.environ['APP_ENV']))
 
 # generate de openapi.yml
-generate_openapi_yml(spec, logger, force=True)
+generate_openapi_yml(spec, LOGGER, force=True)

@@ -7,8 +7,10 @@ from apispec.ext.marshmallow import MarshmallowPlugin
 from lambda_app import APP_NAME, APP_VERSION
 # Create an APISpec
 from lambda_app.config import get_config
-from lambda_app.helper import open_vendor_file
+from lambda_app.helper import open_vendor_file, get_environment
 from lambda_app.logging import get_logger
+
+env = get_environment()
 
 servers = [
     {
@@ -17,7 +19,7 @@ servers = [
     }
 ]
 
-if get_config().APP_ENV == "development":
+if env == "development":
     servers.append({
         "url": os.environ["LOCAL_API_SERVER"] if "LOCAL_API_SERVER" in os.environ else "http://localhost:5000",
         "description": os.environ["LOCAL_API_SERVER_DESCRIPTION"] \

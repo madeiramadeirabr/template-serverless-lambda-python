@@ -41,7 +41,7 @@ jobs:
         - name: Execute pylint
           run: |
             source ./scripts/variables.sh
-            ROOT_DIR=$(pwd) 
+            ROOT_DIR=$(pwd)/ 
             for example_path in "${arr[@]}"
             do
                echo "Pylint in ${example_path} ..."

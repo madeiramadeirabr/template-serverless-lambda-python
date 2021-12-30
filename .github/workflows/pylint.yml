@@ -20,12 +20,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # python-version: [ '3.x', 'pypy-3.7', 'pypy-3.8' ]
-        python-version: ["3.8", "3.9", "3.10"]
-    name: Python ${{ matrix.python-version }} sample
+        python-version: [ "3.8", "3.9", "3.10" ]
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
@@ -36,4 +34,5 @@ jobs:
           python -m pip install --upgrade pip
           pip install pylint
       - name: Analysing the code with pylint
-      - run: pylint ./examples/*/app.py ./examples/*/*
+      - run: |
+          pylint ./examples/*/app.py ./examples/*/*

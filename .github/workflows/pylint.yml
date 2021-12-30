@@ -40,4 +40,4 @@ jobs:
             pip install pylint
         - name: Execute pylint
           run: |
-            pylint ./examples/*/app.py ./examples/*/*
+            pylint ./examples/*/app.py ./examples/*/lambda_app ./examples/*/tests/unit ./examples/*/tests/integration ./examples/*/tests/component

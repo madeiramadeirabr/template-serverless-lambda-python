@@ -13,7 +13,7 @@ name: Execute the pylint analysis
 #  push: # Triggers on each pushed commit
 #    branches:
 #      - 'master'
-on: [push]
+on: [ push ]
 
 jobs:
   setup-environment:
@@ -40,5 +40,5 @@ jobs:
             pip install pylint
         - name: Execute pylint
           run: |
-            # pylint ./app.py ./lambda_app ./tests/unit ./tests/integration ./tests/component
-            pylint ./app.py ./lambda_app
+            # pylint --rcfile .pylintrc ./app.py ./lambda_app ./tests/unit ./tests/integration ./tests/component
+            pylint --rcfile .pylintrc ./app.py ./lambda_app

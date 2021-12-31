@@ -52,9 +52,6 @@ class ApiRequest:
     def __str__(self):
         return self.to_json()
 
-    def __repr__(self):
-        return str(self.to_json())
-
     def to_dict(self, force_str=False):
         data = helper.to_dict(self, force_str)
         data['_request'] = None
@@ -101,6 +98,12 @@ class ApiRequest:
         self.server_type = parsed_request.server_type
         self._request = request
 
-        # logger = helper.get_logger()
-        # logger.info('Request: {}'.format(self.to_dict()))
         return self
+
+    @staticmethod
+    def factory(method, host, path):
+        api_request = ApiRequest()
+        api_request.method = method
+        api_request.host = host
+        api_request.path = path
+        return api_request

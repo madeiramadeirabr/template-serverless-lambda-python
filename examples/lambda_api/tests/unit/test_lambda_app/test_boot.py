@@ -14,7 +14,7 @@ def get_load_dot_env():
     return (None, True), ('dev', True), ('development', True), ('integration', False), ('staging', False), (
     'production', False)
 
-
+# TODO revisar para não tentar conectar de fato (apenas mocks)
 class BootTestCase(BaseUnitTestCase):
 
     @data_provider(get_env)

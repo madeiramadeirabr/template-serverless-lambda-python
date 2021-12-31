@@ -93,32 +93,38 @@ class MySQLHelper:
     @staticmethod
     def create_table(connection, table_name, file_name):
         result = False
-
-        connection.connect()
-        try:
-            sql = 'SELECT table_name FROM information_schema.tables WHERE table_schema = %s'
-            with connection.cursor() as cursor:
-                cursor.execute(sql, (table_name,))
-                table_exists = cursor.fetchone()
-        except Exception as err:
-             table_exists = False
-
-        if not table_exists:
-            sql_file = open(file_name, 'r')
-            create_table = sql_file.read()
-            sql_file.close()
+        if connection:
+            try:
+                connection.connect()
+            except Exception as err:
+                pass
 
             try:
+                sql = 'SELECT table_name FROM information_schema.tables WHERE table_schema = %s'
                 with connection.cursor() as cursor:
-                    result = cursor.execute(create_table)
-                    print(f"Creating {table_name}...")
+                    cursor.execute(sql, (table_name,))
+                    table_exists = cursor.fetchone()
             except Exception as err:
-                result = False
-                print(f"Not created {table_name}...")
+                 table_exists = False
+
+            if not table_exists:
+                sql_file = open(file_name, 'r')
+                create_table = sql_file.read()
+                sql_file.close()
+
+                try:
+                    with connection.cursor() as cursor:
+                        result = cursor.execute(create_table)
+                        print(f"Creating {table_name}...")
+                except Exception as err:
+                    result = False
+                    print(f"Not created {table_name}...")
+            else:
+                print(f'Table {table_name} already exists')
+            try:
+                connection.close()
+            except Exception as err:
+                pass
         else:
-            print(f'Table {table_name} already exists')
-        try:
-            connection.close()
-        except Exception as err:
-            pass
+            print("Invalid connection")
         return result

@@ -27,13 +27,13 @@ class ApiResponse:
         self.next = {}
         self.last = {}
         self.limit = api_request.limit if api_request is not None else Pagination.LIMIT
-        self.offset = api_request.offset if api_request is not None else  Pagination.OFFSET
+        self.offset = api_request.offset if api_request is not None else Pagination.OFFSET
         self.total = 0
         self.count = 0
 
         self.api_request = api_request
 
-    def set_hateos(self, flag:bool):
+    def set_hateos(self, flag: bool):
         self.hateos = flag
 
     def set_data(self, data):
@@ -58,12 +58,18 @@ class ApiResponse:
 
         headers = self.headers
         status_code = self.status_code
+        success = status_code == 200
+        message = MessagesEnum.OK.message
+        code = MessagesEnum.OK.code
+        label = MessagesEnum.OK.label
+        params = []
 
         if self.exception is not None:
             if isinstance(self.exception, ApiException):
                 code = self.exception.code
                 label = self.exception.label
                 message = self.exception.message
+                params = self.exception.params
             else:
                 message = self.data if not None else MessagesEnum.UNKNOWN_ERROR
                 code = MessagesEnum.NOK.code
@@ -74,7 +80,8 @@ class ApiResponse:
                 "error": {
                     "code": code,
                     "label": label,
-                    "message": message
+                    "message": message,
+                    "params": params
                 }
             }
 
@@ -108,27 +115,31 @@ class ApiResponse:
                 "last": ""
             }
 
-            if self.hateos:
-                body = {
-                    # data
-                    "data": self.data,
-                    # navigation
-                    "control": {
-                        "offset": self.offset,
-                        "limit": self.limit,
-                        "total": self.total,
-                        "count": self.count,
-                    },
-                    # hypermedia info
-                    "meta": self.meta,
-                    # hypermedia links
-                    "links": self.links
-                }
-            else:
-                body = {
-                    # data
-                    "data": self.data
-                }
+            body = {
+                # success
+                "success": success,
+                "label": label,
+                "code": code,
+                "message": message,
+                "params": [],
+                # data
+                "data": self.data,
+                # navigation
+                "control": {
+                    "offset": self.offset,
+                    "limit": self.limit,
+                    "total": self.total,
+                    "count": self.count,
+                },
+                # hypermedia info
+                "meta": self.meta,
+                # hypermedia links
+                "links": self.links
+            }
+
+            if not self.hateos:
+                del body["meta"]
+                del body["links"]
 
         if 'Content-Type' in headers and headers['Content-Type'] == 'application/json':
             body = helper.to_json(body)
@@ -141,9 +152,6 @@ class ApiResponse:
         return list(self.__dict__.keys())
 
     def __str__(self):
-        return self.to_json()
-
-    def __repr__(self):
         return self.to_json()
 
     def to_dict(self, force_str=False):

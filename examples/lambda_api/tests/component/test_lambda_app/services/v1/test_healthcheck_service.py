@@ -2,7 +2,7 @@ import unittest
 
 from lambda_app.config import get_config
 from lambda_app.logging import get_logger
-from lambda_app.repositories.mysql.product_repository import ProductRepository
+from lambda_app.repositories.v1.mysql.product_repository import ProductRepository
 from lambda_app.services.v1.healthcheck import HealthStatus, HealthCheckResult
 from lambda_app.services.v1.healthcheck.resources import MysqlConnectionHealthCheck, RedisConnectionHealthCheck, \
     SQSConnectionHealthCheck, SelfConnectionHealthCheck

@@ -40,33 +40,34 @@ class ProductRepository:
         self.total = total
         self.where = where
 
-        #  limit by request limit option
-        for keys_tuple in batcher(scan_list, limit):
-            keys.append(keys_tuple)
+        if total > 0:
+            #  limit by request limit option
+            for keys_tuple in batcher(scan_list, limit):
+                keys.append(keys_tuple)
 
-        pages = math.ceil(total / limit)
-        if offset == Pagination.OFFSET or offset < Pagination.OFFSET:
-            current_page = 1
-        else:
-            current_page = int(abs(math.ceil(offset / limit)))
-
-        self.logger.info('Total items: {}'.format(total))
-        self.logger.info('Pages: {}'.format(pages))
-        self.logger.info('Current page: {}'.format(current_page))
-
-        for k, keys_tuple in enumerate(keys):
-            page = k + 1
-            if page == current_page:
-
-                for offset, key in enumerate(keys_tuple):
-                    if key is None:
-                        continue
-
-                    key_str = key.decode()
-                    value = self.redis_connection.get(key_str)
-                    result.append({key_str: json.loads(value.decode())})
+            pages = math.ceil(total / limit)
+            if offset == Pagination.OFFSET or offset < Pagination.OFFSET:
+                current_page = 1
             else:
-                continue
+                current_page = int(abs(math.ceil(offset / limit)))
+
+            self.logger.info('Total items: {}'.format(total))
+            self.logger.info('Pages: {}'.format(pages))
+            self.logger.info('Current page: {}'.format(current_page))
+
+            for k, keys_tuple in enumerate(keys):
+                page = k + 1
+                if page == current_page:
+
+                    for offset, key in enumerate(keys_tuple):
+                        if key is None:
+                            continue
+
+                        key_str = key.decode()
+                        value = self.redis_connection.get(key_str)
+                        result.append({key_str: json.loads(value.decode())})
+                else:
+                    continue
 
         return result
 

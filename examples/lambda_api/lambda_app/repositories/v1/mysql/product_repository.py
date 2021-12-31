@@ -3,7 +3,7 @@ from datetime import datetime
 from lambda_app.database.mysql import get_connection
 from lambda_app.http_resources.request_control import Order
 from lambda_app.logging import get_logger
-from lambda_app.repositories.mysql import AbstractRepository
+from lambda_app.repositories.v1.mysql import AbstractRepository
 from lambda_app.vos.product import ProductVO
 import pymysql
 
@@ -82,8 +82,13 @@ class ProductRepository(AbstractRepository):
 
         if sort_by is None:
             sort_by = self.PK
-
-        sort_by = self.BASE_TABLE_ALIAS + '.' + sort_by
+        elif isinstance(sort_by, list):
+            sort_by_arr = []
+            for v in sort_by:
+                sort_by_arr.append(self.BASE_TABLE_ALIAS + '.' + v)
+            sort_by = ",".join(sort_by_arr)
+        else:
+            sort_by = self.BASE_TABLE_ALIAS + '.' + sort_by
 
         sql = "SELECT {} FROM {} as {}".format(fields, self.BASE_TABLE, self.BASE_TABLE_ALIAS)
 
@@ -113,8 +118,13 @@ class ProductRepository(AbstractRepository):
 
         if sort_by is None:
             sort_by = self.PK
-
-        sort_by = self.BASE_TABLE_ALIAS + '.' + sort_by
+        elif isinstance(sort_by, list):
+            sort_by_arr = []
+            for v in sort_by:
+                sort_by_arr.append(self.BASE_TABLE_ALIAS + '.' + v)
+            sort_by = ",".join(sort_by_arr)
+        else:
+            sort_by = self.BASE_TABLE_ALIAS + '.' + sort_by
 
         sql = "SELECT COUNT(1) as total FROM {} as {}".format(self.BASE_TABLE, self.BASE_TABLE_ALIAS)
 

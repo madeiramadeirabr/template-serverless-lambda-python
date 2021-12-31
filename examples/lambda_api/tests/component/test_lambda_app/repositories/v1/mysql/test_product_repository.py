@@ -2,13 +2,16 @@ import unittest
 
 from unittest_data_provider import data_provider
 
-from lambda_app.config import get_config
-from lambda_app.http_resources.request_control import Pagination
-from lambda_app.repositories.redis.product_repository import ProductRepository
+from lambda_app.database.mysql import get_connection
+from lambda_app.http_resources.request_control import Pagination, Order
+from lambda_app.logging import get_logger
+from lambda_app.repositories.v1.mysql.product_repository import ProductRepository
 from lambda_app.vos.product import ProductVO
+from tests import ROOT_DIR
+from tests.component.componenttestutils import BaseComponentTestCase
+from tests.component.helpers.database.mysql_helper import MySQLHelper
 from tests.unit.helpers.product_helper import get_product_sample
-from tests.unit.mocks.database.redis_mock import get_connection
-from tests.unit.testutils import get_function_name, BaseUnitTestCase
+from tests.unit.testutils import get_function_name
 
 
 # def get_request():
@@ -30,44 +33,69 @@ from tests.unit.testutils import get_function_name, BaseUnitTestCase
 
 def get_product():
     product_dict = get_product_sample()
+    product_dict["id"] = None
     product = ProductVO(product_dict)
+
     return (product,),
 
 
 def get_list_data():
-    where = "{}:*".format('product')
+    where = dict()
     offset = Pagination.OFFSET
     limit = Pagination.LIMIT
+    fields = []
+    sort_by = None
+    order_by = None
 
-    return (where, offset, limit),
+    return (where, offset, limit, fields, sort_by, order_by), \
+           (where, offset, limit, ['id', 'name'], sort_by, order_by), \
+           (where, offset, limit, ['id', 'name'], sort_by, Order.DESC), \
+           ({'uuid': 'fecfddd9-7cb8-413b-9de3-ec86de30a888'}, offset, limit, ['id', 'name'], sort_by, Order.DESC),
 
 
-class ProductRepositoryTestCase(BaseUnitTestCase):
+class ProductRepositoryTestCase(BaseComponentTestCase):
     EXECUTE_FIXTURE = True
     CONFIG = None
 
     @classmethod
     def setUpClass(cls):
-        BaseUnitTestCase.setUpClass()
-        cls.CONFIG = get_config()
+        BaseComponentTestCase.setUpClass()
+        mysql_connection = MySQLHelper.get_connection()
+
+        if cls.EXECUTE_FIXTURE:
+            logger = get_logger()
+            logger.info("Fixture: drop table")
+
+            table_name = ProductRepository.BASE_TABLE
+            cls.fixture_table(logger, mysql_connection, table_name)
+
+    @classmethod
+    def fixture_table(cls, logger, mysql_connection, table_name):
+        dropped = MySQLHelper.drop_table(mysql_connection, table_name)
+        if dropped:
+            logger.info(f"Table dropped:: {table_name}")
+        file_name = ROOT_DIR + f"tests/datasets/database/structure/mysql/create.table.store.{table_name}.sql"
+        created = MySQLHelper.create_table(mysql_connection, table_name, file_name)
+        if created:
+            logger.info(f"Table created:: {table_name}")
+        file_name = ROOT_DIR + f"tests/datasets/database/seeders/mysql/seeder.table.store.{table_name}.sql"
+        populated = MySQLHelper.sow_table(mysql_connection, table_name, file_name)
+        if populated:
+            logger.info(f"Table populated:: {table_name}")
 
     def setUp(self):
         super().setUp()
+        self.connection = get_connection()
+        self.repository = ProductRepository(mysql_connection=self.connection)
+        self.repository.debug = True
 
     @data_provider(get_product)
     def test_create(self, product: ProductVO):
         self.logger.info('Running test: %s', get_function_name(__name__))
 
-        key = '%s:%s' % ('product', product.uuid)
-        self.logger.info('key: {}'.format(key))
-
-        config = get_config()
-        connection = get_connection(config)
-
-        repository = ProductRepository(redis_connection=connection)
-        result = repository.create(key, product.to_json())
+        result = self.repository.create(product)
         self.assertTrue(result)
-        self.logger.info('Product created: {}'.format(key))
+        self.logger.info('Product created: {}'.format(product.id))
 
     @data_provider(get_product)
     def test_get(self, product: ProductVO):
@@ -78,35 +106,35 @@ class ProductRepositoryTestCase(BaseUnitTestCase):
         # valor para facilitar a tarefa do fixture
         product.uuid = "8374b976-a74e-475c-b78c-39717468926c"
 
-        key = '%s:%s' % ('product', product.uuid)
-        self.logger.info('key: {}'.format(key))
+        result = self.repository.create(product)
 
-        config = get_config()
-        connection = get_connection(config)
-
-        repository = ProductRepository(redis_connection=connection)
-        result = repository.create(key, product.to_json())
-
-        response = repository.get(key)
+        response = self.repository.get(product.id)
 
         self.assertTrue(result)
         self.assertIsNotNone(response)
-        self.logger.info('Product found: {}'.format(key))
+
+        response = self.repository.get(product.uuid, key='uuid')
+        self.assertIsNotNone(response)
 
     @data_provider(get_list_data)
-    def test_list(self, where, offset, limit):
+    def test_list(self, where, offset, limit, fields, sort_by, order_by):
         self.logger.info('Running test: %s', get_function_name(__name__))
 
-        config = get_config()
-        connection = get_connection(config)
-
-        repository = ProductRepository(redis_connection=connection)
-
-        result = repository.list(where=where, offset=offset, limit=limit)
+        result = self.repository.list(where, offset, limit, fields, sort_by, order_by)
         self.assertIsNotNone(result)
         self.assertTrue(len(result) > 0)
 
         self.logger.info('Product list count: {}'.format(len(result)))
+
+    @data_provider(get_list_data)
+    def test_count(self, where, offset, limit, fields, sort_by, order_by):
+        self.logger.info('Running test: %s', get_function_name(__name__))
+
+        result = self.repository.count(where, sort_by, order_by)
+        self.assertIsNotNone(result)
+        self.assertIsInstance(result, int)
+
+        self.logger.info('Product list count: {}'.format(result))
 
     # @data_provider(get_event)
     # def test_delete(self, event: EventVO):

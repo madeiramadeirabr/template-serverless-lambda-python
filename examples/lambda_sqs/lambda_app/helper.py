@@ -77,7 +77,7 @@ def to_dict(obj, force_str=False):
 
 
 def to_json(obj):
-    return json.dumps(obj)
+    return json.dumps(obj, default=str)
 
 
 def debug_mode():

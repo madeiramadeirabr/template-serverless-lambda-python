@@ -10,3 +10,4 @@ apispec
 marshmallow
 pylint
 autopep8
+gevent

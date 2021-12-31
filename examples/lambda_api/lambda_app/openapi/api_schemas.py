@@ -5,6 +5,26 @@ from lambda_app.http_resources.request_control import Pagination
 from lambda_app.openapi.schemas import DeletionSchema, RequestControlSchema, MetaSchema, LinkSchema
 
 
+# ***************************
+# Product
+# ***************************
+class ProductSchema(Schema):
+    sku = fields.Int(example=657705)
+    quantity = fields.Int(example=1)
+    uuid = fields.UUID(example="3d9f2fdb-f71a-4e6d-8fbf-72b12cc0c381")
+
+
+class ProductListResponseSchema(Schema):
+    data = fields.List(fields.Nested(ProductSchema))
+    control = fields.Nested(RequestControlSchema)
+    meta = fields.Nested(MetaSchema)
+    links = fields.List(fields.Nested(LinkSchema))
+
+
+# ***************************
+# Event
+# ***************************
+
 class EventSchema(Schema):
     type = fields.Str()
     data = fields.Dict()
@@ -19,13 +39,9 @@ class OcorenSchema(Schema):
     pedido = fields.Str(example="Z1223321")
 
 
-class ProductSchema(Schema):
-    sku = fields.Int(example=657705)
-    quantity = fields.Int(example=1)
-
-
 class EventCreateRequest(OcorenSchema):
     pass
+
 
 class EventUpdateRequest(EventCreateRequest):
     pass

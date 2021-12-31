@@ -145,6 +145,34 @@ components:
           format: url
           type: string
       type: object
+    Product:
+      properties:
+        quantity:
+          example: 1
+          type: integer
+        sku:
+          example: 657705
+          type: integer
+        uuid:
+          example: 3d9f2fdb-f71a-4e6d-8fbf-72b12cc0c381
+          format: uuid
+          type: string
+      type: object
+    ProductListResponse:
+      properties:
+        control:
+          $ref: '#/components/schemas/RequestControl'
+        data:
+          items:
+            $ref: '#/components/schemas/Product'
+          type: array
+        links:
+          items:
+            $ref: '#/components/schemas/Link'
+          type: array
+        meta:
+          $ref: '#/components/schemas/Meta'
+      type: object
     RequestControl:
       properties:
         count:
@@ -173,6 +201,55 @@ paths:
                 $ref: '#/components/schemas/HealthCheck'
           description: Success response
       summary: Service Health Method
+  /v1/product:
+    get:
+      parameters:
+      - description: List limit
+        in: query
+        name: limit
+        required: false
+        schema:
+          example: 20
+          type: int
+      - description: List offset
+        in: query
+        name: offset
+        required: false
+        schema:
+          example: 0
+          type: int
+      - description: Filter fields with comma
+        in: query
+        name: fields
+        required: false
+        schema:
+          example: null
+          type: string
+      - description: Ordination of list
+        in: query
+        name: order_by
+        required: false
+        schema:
+          enum:
+          - asc
+          - desc
+          type: string
+      - description: Sorting of the list
+        in: query
+        name: sort_by
+        required: false
+        schema:
+          example: id
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductListResponse'
+          description: Success response
+      summary: Product List
+  /v1/product/{uuid}: {}
   /v1/event/{event_type}:
     get:
       parameters:

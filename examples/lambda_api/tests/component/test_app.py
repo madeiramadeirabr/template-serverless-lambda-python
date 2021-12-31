@@ -5,7 +5,7 @@ import serverless_wsgi
 
 from unittest_data_provider import data_provider
 from lambda_app import APP_NAME, APP_VERSION
-from lambda_app.repositories.mysql.product_repository import ProductRepository
+from lambda_app.repositories.v1.mysql.product_repository import ProductRepository
 from tests import ROOT_DIR
 from tests.component.componenttestutils import BaseComponentTestCase
 from lambda_app.config import get_config

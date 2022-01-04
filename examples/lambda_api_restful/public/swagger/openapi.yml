@@ -1,0 +1,183 @@
+components:
+  schemas:
+    Entry:
+      properties:
+        duration:
+          example: '0:00:00.013737'
+          type: string
+        status:
+          example: healthy
+          type: string
+        tags:
+          items:
+            example: db
+            type: string
+          type: array
+      type: object
+    EntryData:
+      properties:
+        name:
+          $ref: '#/components/schemas/Entry'
+      type: object
+    HealthCheck:
+      properties:
+        entries:
+          $ref: '#/components/schemas/EntryData'
+        status:
+          example: healthy
+          type: string
+        total_duration:
+          example: '0:00:00.013737'
+          type: string
+      type: object
+    Link:
+      properties:
+        href:
+          type: string
+        method:
+          type: string
+        rel:
+          type: string
+      type: object
+    Meta:
+      properties:
+        first:
+          format: url
+          type: string
+        href:
+          format: url
+          type: string
+        last:
+          format: url
+          type: string
+        next:
+          format: url
+          type: string
+        previous:
+          format: url
+          type: string
+      type: object
+    Product:
+      properties:
+        quantity:
+          example: 1
+          type: integer
+        sku:
+          example: 657705
+          type: integer
+        uuid:
+          example: 3d9f2fdb-f71a-4e6d-8fbf-72b12cc0c381
+          format: uuid
+          type: string
+      type: object
+    ProductListResponse:
+      properties:
+        code:
+          type: integer
+        control:
+          $ref: '#/components/schemas/RequestControl'
+        data:
+          items:
+            $ref: '#/components/schemas/Product'
+          type: array
+        label:
+          type: string
+        links:
+          items:
+            $ref: '#/components/schemas/Link'
+          type: array
+        message:
+          type: string
+        meta:
+          $ref: '#/components/schemas/Meta'
+        params:
+          items:
+            type: string
+          type: array
+        success:
+          type: boolean
+      required:
+      - code
+      type: object
+    RequestControl:
+      properties:
+        count:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+        total:
+          type: integer
+      required:
+      - limit
+      type: object
+info:
+  title: template-serverless-lambda-python-lambda-api-restful
+  version: 1.0.0
+openapi: 3.0.2
+paths:
+  /alive:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+          description: Success response
+      summary: Service Health Method
+  /v1/product:
+    get:
+      parameters:
+      - description: List limit
+        in: query
+        name: limit
+        required: false
+        schema:
+          example: 20
+          type: int
+      - description: List offset
+        in: query
+        name: offset
+        required: false
+        schema:
+          example: 0
+          type: int
+      - description: Filter fields with comma
+        in: query
+        name: fields
+        required: false
+        schema:
+          example: null
+          type: string
+      - description: Ordination of list
+        in: query
+        name: order_by
+        required: false
+        schema:
+          enum:
+          - asc
+          - desc
+          type: string
+      - description: Sorting of the list
+        in: query
+        name: sort_by
+        required: false
+        schema:
+          example: id
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductListResponse'
+          description: Success response
+      summary: Product List
+  /v1/product/{uuid}: {}
+servers:
+- description: Development server
+  url: http://localhost:5000
+- description: Development server
+  url: http://localhost:5000

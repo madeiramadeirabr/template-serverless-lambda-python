@@ -2,11 +2,9 @@
 
 This module contains the handler method
 """
-import inspect
+import boot
 import os
 import base64
-import boot
-from lambda_app.services.product_manager import ProductManager
 from lambda_app.services.v1.healthcheck import HealthCheckSchema
 from lambda_app.services.v1.healthcheck.resources import \
     MysqlConnectionHealthCheck, RedisConnectionHealthCheck, \
@@ -20,7 +18,6 @@ from lambda_app.exceptions import ApiException
 from lambda_app.http_resources.request import ApiRequest
 from lambda_app.http_resources.response import ApiResponse
 from lambda_app.services.v1.ocoren_event_service import OcorenEventService as OcorenEventServiceV1
-from lambda_app.services.v1.product_service import ProductService as ProductServiceV1
 from lambda_app.vos.events import EventVO
 from lambda_app.logging import get_logger
 from lambda_app import APP_NAME, APP_VERSION, http_helper
@@ -35,6 +32,7 @@ from lambda_app import helper
 # load env
 ENV = helper.get_environment()
 boot.load_dot_env(ENV)
+
 
 # config
 CONFIG = get_config()
@@ -129,101 +127,6 @@ def openapi():
     html = html_file.read()
     return http_helper.create_response(
         body=html, status_code=200, headers=headers)
-
-
-@APP.route('/v1/product', methods=['GET'])
-def product_list():
-    """
-    ---
-    get:
-        summary: Product List
-        parameters:
-            - name: limit
-              in: query
-              description: "List limit"
-              required: false
-              schema:
-                type: int
-                example: 20
-            - name: offset
-              in: query
-              description: "List offset"
-              required: false
-              schema:
-                type: int
-                example: 0
-            - name: fields
-              in: query
-              description: "Filter fields with comma"
-              required: false
-              schema:
-                type: string
-                example:
-            - name: order_by
-              in: query
-              description: "Ordination of list"
-              required: false
-              schema:
-                type: string
-                enum:
-                 - "asc"
-                 - "desc"
-            - name: sort_by
-              in: query
-              description: "Sorting of the list"
-              required: false
-              schema:
-                type: string
-                example: id
-        responses:
-            200:
-                description: Success response
-                content:
-                    application/json:
-                        schema: ProductListResponseSchema
-    """
-    request = ApiRequest().parse_request(APP)
-    LOGGER.info('request: {}'.format(request))
-
-    status_code = 200
-    response = ApiResponse(request)
-    response.set_hateos(False)
-
-    manager = ProductManager(logger=LOGGER, product_service=ProductServiceV1(logger=LOGGER))
-    manager.debug(DEBUG)
-    try:
-        response.set_data(manager.list(request))
-        response.set_total(manager.count(request))
-    except Exception as err:
-        LOGGER.error(err)
-        LOGGER.info('aq')
-        error = ApiException(MessagesEnum.LIST_ERROR)
-        status_code = 400
-        if manager.exception:
-            error = manager.exception
-        response.set_exception(error)
-
-    return response.get_response(status_code)
-
-
-@APP.route('/v1/product/<uuid>', methods=['GET'])
-def product_get(uuid):
-    pass
-
-
-@APP.route('/v1/product/<uuid>', methods=['POST'])
-def product_create():
-    pass
-
-
-@APP.route('/v1/product/<uuid>', methods=['PUT'])
-def product_update():
-    pass
-
-
-@APP.route('/v1/product/<uuid>', methods=['DELETE'])
-def product_delete():
-    pass
 
 
 @APP.route('/v1/event/<event_type>', methods=['POST'])
@@ -358,94 +261,20 @@ def event_list(event_type):
     LOGGER.info('event_type: {}'.format(event_type))
     LOGGER.info('request: {}'.format(request))
 
-    # event_tracker = EventTracker(logger)
-    #
     status_code = 200
     response = ApiResponse(request)
     response.set_hateos(False)
-    # try:
-    #     # event_type validation
-    #     if EventType.from_value(event_type) not in EventType.get_public_events():
-    #         exception = ApiException(MessagesEnum.EVENT_TYPE_UNKNOWN_ERROR)
-    #         exception.set_message_params([event_type])
-    #         raise exception
-    #
-    #     event_vo = EventVO(event_type=event_type, data=request.where)
-    #     # if EventType.from_value(event_type) == EventType.OCOREN_EVENT:
-    #     #     event_service = OcorenEventService()
-    #     # else:
-    #     #     event_service = ProductEventService()
-    #     event_service = OcorenEventService()
-    #     service = EventManager(logger=logger, event_service=event_service)
-    #     result = service.process(event_vo)
-    #     event_hash = event_vo.hash
-    #
-    #     event_tracker.track(event_hash, event_vo.to_dict())
-    #
-    #     if result:
-    #         code = MessagesEnum.EVENT_REGISTERED_WITH_SUCCESS.code
-    #         label = MessagesEnum.EVENT_REGISTERED_WITH_SUCCESS.label
-    #         message = MessagesEnum.EVENT_REGISTERED_WITH_SUCCESS.message
-    #         params = None
-    #     else:
-    #         if isinstance(service.exception, ApiException):
-    #             raise service.exception
-    #         else:
-    #             raise ApiException(MessagesEnum.INTERNAL_SERVER_ERROR)
-    # except Exception as err:
-    #     logger.error(err)
-    #     result = False
-    #     event_hash = None
-    #     if isinstance(err, ApiException):
-    #         api_ex = err
-    #         status_code = 400
-    #     else:
-    #         api_ex = ApiException(MessagesEnum.CREATE_ERROR)
-    #         status_code = 500
-    #
-    #     code = api_ex.code
-    #     label = api_ex.label
-    #     message = api_ex.message
-    #     params = api_ex.params
-    #
-    # data = {
-    #     "result": result,
-    #     "event_hash": event_hash,
-    #     "code": code,
-    #     "label": label,
-    #     "message": message,
-    #     "params": params
-    # }
 
     data = {}
 
     response.set_data(data)
     response.set_total(len(data))
 
-    # event_tracker.track(event_hash, data)
     return response.get_response(status_code)
 
 
-# *************
 # doc
-# *************
 spec.path(view=alive, path="/alive", operations=get_doc(alive))
-# *************
-# product
-# *************
-spec.path(view=product_list,
-          path="/v1/product", operations=get_doc(product_list))
-spec.path(view=product_get,
-          path="/v1/product/{uuid}", operations=get_doc(product_get))
-spec.path(view=product_create,
-          path="/v1/product/{uuid}", operations=get_doc(product_create))
-spec.path(view=product_update,
-          path="/v1/product/{uuid}", operations=get_doc(product_update))
-spec.path(view=product_delete,
-          path="/v1/product/{uuid}", operations=get_doc(product_delete))
-# *************
-# event
-# *************
 spec.path(view=event_list,
           path="/v1/event/{event_type}", operations=get_doc(event_list))
 spec.path(view=event_create,
@@ -454,7 +283,5 @@ spec.path(view=event_create,
 print_routes(APP, LOGGER)
 LOGGER.info('Running at {}'.format(os.environ['APP_ENV']))
 
-# *************
 # generate de openapi.yml
-# *************
 generate_openapi_yml(spec, LOGGER, force=True)

@@ -5,10 +5,7 @@ from lambda_app.services.v1.product_service import ProductService as ProductServ
 
 
 class ProductManager:
-    DEBUG = False
-
-    def __init__(self, logger=None, config=None, product_service=None):
-        # logger
+    def __init__(self, logger=None, product_service=None):
         self.logger = logger if logger is not None else get_logger()
         # configurations
         self.config = config if config is not None else get_config()

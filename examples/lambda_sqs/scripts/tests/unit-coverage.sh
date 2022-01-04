@@ -1,5 +1,8 @@
-#python -m xmlrunner discover -t ./ --output-file ./target/unit/junit-report.xml
-coverage run -m unittest discover -s ./tests/unit -t ./
+if [ -z "$1" ]; then
+  coverage run -m unittest discover -s ./tests/unit -t ./
+else
+  coverage run -m unittest discover -s ./tests/unit -t $1
+fi
 coverage report
 coverage xml
 coverage html

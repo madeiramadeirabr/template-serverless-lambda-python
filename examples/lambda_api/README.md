@@ -103,9 +103,14 @@ First you need install the tests requirements:
 
  
 ### Unit tests:
+Executing the tests:
  ```
 ./scripts/venv-exec.sh ./scripts/tests/unit-tests.sh
  ``` 
+Executing a specific file:
+ ```
+./scripts/venv-exec.sh ./scripts/tests/unit-tests.sh /tests/unit/test_app.py
+ ```
 ### Components tests:
 Start the docker containers:
  ```
@@ -116,6 +121,10 @@ Executing the tests:
  ```
 ./scripts/venv-exec.sh ./scripts/tests/component-tests.sh
 ```
+Executing a specific file:
+ ```
+./scripts/venv-exec.sh ./scripts/tests/component-tests.sh /tests/component/test_app.py
+ ```
 ### Integration tests:
 Copy the file `config/integration.env.example` to 
 `config/integration.env` and edit it with de staging parameters.
@@ -124,7 +133,10 @@ Executing the tests:
  ```
 ./scripts/venv-exec.sh ./scripts/tests/integration-tests.sh
 ```
-
+Executing a specific file:
+```
+./scripts/venv-exec.sh ./scripts/tests/integration-tests.sh /tests/integration/test_app.py
+```
 
 ### All tests:
 Executing the tests:

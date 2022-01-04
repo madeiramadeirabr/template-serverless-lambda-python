@@ -49,6 +49,7 @@ https://docs.aws.amazon.com/pt_br/cli/latest/userguide/install-cliv2.html
 
 Execute the follow command:
 ```
+apt install python38-env
 apt install awscli
 apt install zip
 app install pip

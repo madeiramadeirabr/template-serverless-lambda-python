@@ -6,8 +6,16 @@ Example of architecture with Kong API Gateway.
 ![Service-Arch](docs/service-arch.png)
 
 ## General Service Routes Architecture
-Service routes map.
-![Service-Routes](docs/service-routes.png)
+Service routes.
+```
+GET / - Root
+GET /docs - Swagger docs
+GET /alive - Health Check
+GET /v1/event/<event_type> - Event List
+POST /v1/event/<event_type> - Create event
+```
+
+[//]: # (![Service-Routes]&#40;docs/service-routes.png&#41;)
 
 # Prerequisites
 - Python 3.6
@@ -53,6 +61,7 @@ https://docs.aws.amazon.com/pt_br/cli/latest/userguide/install-cliv2.html
 
 Execute the follow command:
 ```
+apt install python38-env
 apt install awscli
 apt install zip
 app install pip

@@ -5,7 +5,7 @@ This module contains the handler method
 import boot
 import os
 import base64
-from lambda_app.services.v1.healthcheck import HealthCheckSchema
+from lambda_app.services.v1.healthcheck import HealthCheckSchema, HealthCheckResult
 from lambda_app.services.v1.healthcheck.resources import \
     MysqlConnectionHealthCheck, RedisConnectionHealthCheck, \
     SQSConnectionHealthCheck, SelfConnectionHealthCheck
@@ -85,6 +85,7 @@ def alive():
         LOGGER, CONFIG), ["redis"])
     service.add_check("queue", SQSConnectionHealthCheck(
         LOGGER, CONFIG), ["queue"])
+    service.add_check("internal", lambda:  HealthCheckResult.unhealthy("connect"), ["example"])
 
     return service.get_response()
 

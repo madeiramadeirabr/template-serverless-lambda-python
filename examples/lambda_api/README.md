@@ -1,13 +1,25 @@
-# template-serverless-lambda-python - Lambda API
+# Lambda API
 Template for build flexible API with AWS Lambda.
 
 ## Service Architecture
 Example of architecture with Kong API Gateway.
 ![Service-Arch](docs/service-arch.png)
 
+## Build environment script workflow
+Example of the workflow to create the environment.
+![Service-Stack](docs/runenv-workflow.drawio.png)
+
 ## General Service Routes Architecture
-Service routes map.
-![Service-Routes](docs/service-routes.png)
+Service routes.
+```
+GET / - Root
+GET /docs - Swagger docs
+GET /alive - Health Check
+GET /v1/event/<event_type> - Event List
+POST /v1/event/<event_type> - Create event
+```
+
+[//]: # (![Service-Routes]&#40;docs/service-routes.png&#41;)
 
 # Prerequisites
 - Python 3.6
@@ -53,6 +65,7 @@ https://docs.aws.amazon.com/pt_br/cli/latest/userguide/install-cliv2.html
 
 Execute the follow command:
 ```
+apt install python38-env
 apt install awscli
 apt install zip
 app install pip
@@ -103,9 +116,14 @@ First you need install the tests requirements:
 
  
 ### Unit tests:
+Executing the tests:
  ```
 ./scripts/venv-exec.sh ./scripts/tests/unit-tests.sh
  ``` 
+Executing a specific file:
+ ```
+./scripts/venv-exec.sh ./scripts/tests/unit-tests.sh /tests/unit/test_app.py
+ ```
 ### Components tests:
 Start the docker containers:
  ```
@@ -116,6 +134,10 @@ Executing the tests:
  ```
 ./scripts/venv-exec.sh ./scripts/tests/component-tests.sh
 ```
+Executing a specific file:
+ ```
+./scripts/venv-exec.sh ./scripts/tests/component-tests.sh /tests/component/test_app.py
+ ```
 ### Integration tests:
 Copy the file `config/integration.env.example` to 
 `config/integration.env` and edit it with de staging parameters.
@@ -124,7 +146,10 @@ Executing the tests:
  ```
 ./scripts/venv-exec.sh ./scripts/tests/integration-tests.sh
 ```
-
+Executing a specific file:
+```
+./scripts/venv-exec.sh ./scripts/tests/integration-tests.sh /tests/integration/test_app.py
+```
 
 ### All tests:
 Executing the tests:

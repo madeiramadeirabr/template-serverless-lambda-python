@@ -60,3 +60,8 @@ config/integration.en
 /node_modules/
 
 /lambda-full.zip
+
+#output lambda
+output/response.json
+/output/
+/include/

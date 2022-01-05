@@ -2,33 +2,29 @@
 
 This module contains the handler method
 """
-import inspect
-import os
 import base64
+import os
+
 import boot
+from lambda_app import APP_NAME, APP_VERSION, http_helper
+from lambda_app import helper
+from lambda_app.config import get_config
+from lambda_app.enums.messages import MessagesEnum
+from lambda_app.exceptions import ApiException
+from lambda_app.helper import open_vendor_file, print_routes
+from lambda_app.http_helper import CUSTOM_DEFAULT_HEADERS
+from lambda_app.http_resources.request import ApiRequest
+from lambda_app.http_resources.response import ApiResponse
+from lambda_app.lambda_flask import LambdaFlask
+from lambda_app.logging import get_logger
+from lambda_app.openapi import spec, get_doc, generate_openapi_yml
 from lambda_app.services.product_manager import ProductManager
-from lambda_app.services.v1.healthcheck import HealthCheckSchema
+from lambda_app.services.v1.healthcheck import HealthCheckResult
 from lambda_app.services.v1.healthcheck.resources import \
     MysqlConnectionHealthCheck, RedisConnectionHealthCheck, \
     SQSConnectionHealthCheck, SelfConnectionHealthCheck
 from lambda_app.services.v1.healthcheck_service import HealthCheckService
-from lambda_app.config import get_config
-from lambda_app.enums.events import EventType
-from lambda_app.enums.messages import MessagesEnum
-from lambda_app.events.tracker import EventTracker
-from lambda_app.exceptions import ApiException
-from lambda_app.http_resources.request import ApiRequest
-from lambda_app.http_resources.response import ApiResponse
 from lambda_app.services.v1.product_service import ProductService as ProductServiceV1
-from lambda_app.vos.events import EventVO
-from lambda_app.logging import get_logger
-from lambda_app import APP_NAME, APP_VERSION, http_helper
-from lambda_app.helper import open_vendor_file, print_routes
-from lambda_app.http_helper import CUSTOM_DEFAULT_HEADERS
-from lambda_app.lambda_flask import LambdaFlask
-from lambda_app.openapi import spec, get_doc, generate_openapi_yml
-from lambda_app.openapi import api_schemas
-from lambda_app import helper
 
 # load env
 ENV = helper.get_environment()
@@ -85,6 +81,7 @@ def alive():
         LOGGER, CONFIG), ["redis"])
     service.add_check("queue", SQSConnectionHealthCheck(
         LOGGER, CONFIG), ["queue"])
+    service.add_check("test", lambda: HealthCheckResult.healthy("connected"), ["example"])
 
     return service.get_response()
 
@@ -222,108 +219,6 @@ def product_update():
 @APP.route('/v1/product/<uuid>', methods=['DELETE'])
 def product_delete():
     pass
-
-
-@APP.route('/v1/event/<event_type>', methods=['POST'])
-def event_create(event_type):
-    """
-    :param event_type:
-    :return:
-    ---
-    post:
-        summary: Create event
-        parameters:
-            - in: path
-              name: event_type
-              description: "Event type"
-              required: true
-              schema:
-                type: string
-                example: ocoren-event
-        requestBody:
-            description: 'Event to be created'
-            required: true
-            content:
-                application/json:
-                    schema: EventCreateRequest
-        responses:
-            200:
-                content:
-                    application/json:
-                        schema: EventCreateResponseSchema
-            4xx:
-                content:
-                    application/json:
-                        schema: EventCreateErrorResponseSchema
-        """
-    request = ApiRequest().parse_request(APP)
-    LOGGER.info('event_type: {}'.format(event_type))
-    LOGGER.info('request: {}'.format(request))
-
-    event_tracker = EventTracker(LOGGER)
-
-    status_code = 200
-    response = ApiResponse(request)
-    response.set_hateos(False)
-    try:
-        # event_type validation
-        if EventType.from_value(
-                event_type) not in EventType.get_public_events():
-            exception = ApiException(MessagesEnum.EVENT_TYPE_UNKNOWN_ERROR)
-            exception.set_message_params([event_type])
-            raise exception
-
-        event_vo = EventVO(event_type=event_type, data=request.where)
-        # if EventType.from_value(event_type) == EventType.OCOREN_EVENT:
-        #     event_service = OcorenEventService()
-        # else:
-        #     event_service = ProductEventService()
-        event_service = OcorenEventServiceV1()
-        service = EventManager(logger=LOGGER, event_service=event_service)
-        result = service.process(event_vo)
-        event_hash = event_vo.hash
-
-        event_tracker.track(event_hash, event_vo.to_dict())
-
-        if result:
-            code = MessagesEnum.EVENT_REGISTERED_WITH_SUCCESS.code
-            label = MessagesEnum.EVENT_REGISTERED_WITH_SUCCESS.label
-            message = MessagesEnum.EVENT_REGISTERED_WITH_SUCCESS.message
-            params = None
-        else:
-            if isinstance(service.exception, ApiException):
-                raise service.exception
-            else:
-                raise ApiException(MessagesEnum.INTERNAL_SERVER_ERROR)
-    except Exception as err:
-        LOGGER.error(err)
-        result = False
-        event_hash = None
-        if isinstance(err, ApiException):
-            api_ex = err
-            status_code = 400
-        else:
-            api_ex = ApiException(MessagesEnum.CREATE_ERROR)
-            status_code = 500
-
-        code = api_ex.code
-        label = api_ex.label
-        message = api_ex.message
-        params = api_ex.params
-
-    data = {
-        "result": result,
-        "event_hash": event_hash,
-        "code": code,
-        "label": label,
-        "message": message,
-        "params": params
-    }
-
-    response.set_data(data)
-
-    event_tracker.track(event_hash, data)
-    return response.get_response(status_code)
 
 
 # *************

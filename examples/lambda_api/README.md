@@ -1,9 +1,13 @@
-# template-serverless-lambda-python - Lambda API
+# Lambda API
 Template for build flexible API with AWS Lambda.
 
 ## Service Architecture
 Example of architecture with Kong API Gateway.
 ![Service-Arch](docs/service-arch.png)
+
+## Build environment script workflow
+Example of the workflow to create the environment.
+![Service-Stack](docs/runenv-workflow.drawio.png)
 
 ## General Service Routes Architecture
 Service routes.

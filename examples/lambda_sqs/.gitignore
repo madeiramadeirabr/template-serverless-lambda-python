@@ -63,3 +63,5 @@ config/integration.en
 
 #output lambda
 output/response.json
+/output/
+/include/

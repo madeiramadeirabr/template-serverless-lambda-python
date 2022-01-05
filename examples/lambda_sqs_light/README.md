@@ -1,9 +1,12 @@
-# template-serverless-lambda-python - Lambda SQS
+# Lambda SQS Light
 Template for build flexible SQS processor with AWS Lambda.
 
 ## Service Architecture
-Example of architecture with AWS SQS and AWS Lambda.
-![Service-Arch](docs/service-arch.png)
+There is no diagram to describe it.
+
+## Build environment script workflow
+Example of the workflow to create the environment.
+![Service-Stack](docs/runenv-workflow.drawio.png)
 
 ## General Service Routes Architecture
 There are no routes for this project.

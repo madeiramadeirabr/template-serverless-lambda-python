@@ -224,7 +224,7 @@ paths:
                 $ref: '#/components/schemas/EventCreateErrorResponse'
       summary: Create event
 servers:
-- description: null
-  url: null
-- description: 'Development server '
+- description: Development server
+  url: http://localhost:5000
+- description: Development server
   url: http://localhost:5000

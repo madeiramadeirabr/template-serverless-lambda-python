@@ -44,7 +44,6 @@ def index(event):
     """
     body = {"app": '%s:%s' % (APP_NAME, APP_VERSION)}
     LOGGER.info('Env: {} App Info: {}'.format(ENV, body))
-    LOGGER.info('Handling event: {}'.format(event.to_dict()))
 
     records = get_records_from_sqs_event(event, LOGGER)
 
@@ -55,7 +54,7 @@ def index(event):
         for record in records:
             process_counter += 1
             event = read_event(record, LOGGER)
-            LOGGER.info(event)
+            LOGGER.info("event: {}".format(event))
 
     # todo implementar lógica aqui
 

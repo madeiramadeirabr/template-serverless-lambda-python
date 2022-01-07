@@ -12,6 +12,8 @@ from lambda_app.http_resources.request_control import Pagination
 
 
 def batcher(iterable, n):
+    if n is None:
+        n = Pagination.LIMIT
     args = [iter(iterable)] * n
     return zip_longest(*args)
 
@@ -26,11 +28,20 @@ class ProductRepository:
         self.where = None
 
     def get(self, key):
-        return self.redis_connection.get(key)
+        result = self.redis_connection.get(key)
+        if result:
+            return result.decode()
+        else:
+            raise DatabaseException(MessagesEnum.FIND_ERROR)
 
     def list(self, where, offset=None, limit=None, fields=None, sort_by=None, order_by=None):
         result = []
         keys = []
+        if not limit:
+            limit = Pagination.LIMIT
+
+        if not offset:
+            offset = Pagination.OFFSET
 
         scan_filter = self.redis_connection.scan_iter(where)
         scan_list = list(scan_filter)
@@ -81,10 +92,13 @@ class ProductRepository:
         return {"total": total}
 
     def create(self, key, data):
-        response = self.get(key)
+        try:
+            response = self.get(key)
+        except Exception as err:
+            response = None
         if response:
             raise DatabaseException(MessagesEnum.CREATE_ERROR)
-        return self.redis_connection.set(key, data)
+        return self.redis_connection.set(key, data, ex=self.expiration)
 
     def update(self, key, data):
         response = self.get(key)

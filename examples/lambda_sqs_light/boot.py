@@ -138,7 +138,7 @@ def load_env(env='dev', force=False):
 
     logger = get_internal_logger()
 
-    global _LOADED, _ENV_KEYS
+    global _LOADED, _ENV_KEYS, _DEFAULT_ENV_CONFIGS
     if not _LOADED or force:
 
         logger.info('Boot - Loading env: {}'.format(env))
@@ -166,10 +166,14 @@ def load_env(env='dev', force=False):
 
             if env in configs['stages']:
                 env_vars = configs['stages'][env]['environment_variables']
-                for k, v in env_vars.items():
-                    _ENV_KEYS.append(k)
-                    os.environ[k] = v
-                _LOADED = True
+                if isinstance(env_vars, dict):
+                    for k, v in env_vars.items():
+                        _ENV_KEYS.append(k)
+                        if k not in os.environ:
+                            os.environ[k] = v
+                    _LOADED = True
+                else:
+                    logger.error("Unable to load env_vars from chalice: {}".format(env_vars))
             else:
                 # solution for projects with development flag instead of dev
                 if env == 'dev':

@@ -1,3 +1,4 @@
+#!/bin/bash
 # Program variables
 program="Package"
 program_flag="${program}:"

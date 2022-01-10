@@ -1,3 +1,4 @@
+#!/bin/bash
 # https://aws.amazon.com/premiumsupport/knowledge-center/lambda-layer-simulated-docker/
 if [ -z "$1" ]; then
   echo 'Function path must be informed'

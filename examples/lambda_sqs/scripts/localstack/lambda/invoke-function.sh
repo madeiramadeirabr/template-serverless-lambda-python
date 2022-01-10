@@ -1,3 +1,4 @@
+#!/bin/bash
 if [ -z "$1" ]; then
   echo 'Function name must be informed'
   exit 1

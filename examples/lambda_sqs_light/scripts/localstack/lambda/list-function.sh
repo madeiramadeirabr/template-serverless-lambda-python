@@ -1,3 +1,4 @@
+#!/bin/bash
 if [ $RUNNING_IN_CONTAINER ]; then
   HOST=localstack
 else

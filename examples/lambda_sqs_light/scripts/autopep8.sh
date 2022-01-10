@@ -1,3 +1,4 @@
+#!/bin/bash
 if [ -z "$1" ]; then
   autopep8 --in-place --recursive
 else

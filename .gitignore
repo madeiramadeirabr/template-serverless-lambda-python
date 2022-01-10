@@ -55,3 +55,5 @@ config/integration.en
 /examples/lambda_s3/vendor/*
 /examples/lambda_sns/vendor/*
 /examples/lambda_sqs/vendor/*
+
+./vendor/*

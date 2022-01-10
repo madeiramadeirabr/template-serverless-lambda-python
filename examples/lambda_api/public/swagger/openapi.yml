@@ -92,20 +92,51 @@ components:
           example: true
           type: boolean
       type: object
+    EventListErrorResponse:
+      properties:
+        code:
+          type: integer
+        label:
+          type: string
+        message:
+          type: string
+        params:
+          items:
+            type: string
+          type: array
+        success:
+          type: boolean
+      required:
+      - code
+      type: object
     EventListResponse:
       properties:
+        code:
+          type: integer
         control:
           $ref: '#/components/schemas/RequestControl'
         data:
           items:
             $ref: '#/components/schemas/Event'
           type: array
+        label:
+          type: string
         links:
           items:
             $ref: '#/components/schemas/Link'
           type: array
+        message:
+          type: string
         meta:
           $ref: '#/components/schemas/Meta'
+        params:
+          items:
+            type: string
+          type: array
+        success:
+          type: boolean
+      required:
+      - code
       type: object
     HealthCheck:
       properties:
@@ -193,7 +224,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EventListErrorResponseSchema'
+                $ref: '#/components/schemas/EventListErrorResponse'
       summary: List event
     post:
       parameters:

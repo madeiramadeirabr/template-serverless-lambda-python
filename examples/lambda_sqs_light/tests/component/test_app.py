@@ -8,7 +8,7 @@ from lambda_app.config import get_config
 from lambda_app.logging import get_logger
 from tests import ROOT_DIR
 from tests.component.componenttestutils import BaseComponentTestCase
-from tests.component.helpers.events.aws.sqs_helper import SQSHelper
+from tests.component.helpers.aws.sqs_helper import SQSHelper
 from tests.unit.helpers.aws.sqs_helper import create_chalice_sqs_event
 from tests.unit.helpers.events_helper import get_cancelamento_event
 from tests.unit.mocks.aws_mocks.aws_lambda_mock import FakeLambdaContext
@@ -68,7 +68,7 @@ class AppTestCase(BaseComponentTestCase):
         message = event['Records'][0]
         if 'body' in message:
             message = message['body']
-        # print(message)
+        # print(mes7sage)
         SQSHelper.create_message(message, queue_url)
         logger.info('created message: {}'.format(message))
 

@@ -10,7 +10,7 @@ from lambda_app.services.v1.healthcheck_service import HealthCheckService
 from tests import ROOT_DIR
 from tests.component.componenttestutils import BaseComponentTestCase
 from tests.component.helpers.database.mysql_helper import MySQLHelper
-from tests.component.helpers.events.aws.sqs_helper import SQSHelper
+from tests.component.helpers.aws.sqs_helper import SQSHelper
 from tests.unit.helpers.aws.sqs_helper import get_sqs_event_sample
 from tests.unit.testutils import get_function_name
 from lambda_app.database.mysql import get_connection as mysql_get_connection

@@ -10,7 +10,7 @@ from lambda_app.logging import get_logger
 from lambda_app.repositories.mysql.ocoren_repository import OcorenRepository
 from lambda_app.services.v1.carrier_notifier_service import CarrierNotifierService
 from tests.component.componenttestutils import BaseComponentTestCase
-from tests.component.helpers.events.aws.sqs_helper import SQSHelper
+from tests.component.helpers.aws.sqs_helper import SQSHelper
 from tests.unit.helpers.aws.sqs_helper import create_chalice_sqs_event, get_sqs_event_sample
 from tests.unit.helpers.events_helper import get_cancelamento_event, get_cancelamento_error_event, \
     get_cancelamento_quote_error_event

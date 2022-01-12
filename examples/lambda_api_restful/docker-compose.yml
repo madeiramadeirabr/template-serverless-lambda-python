@@ -18,7 +18,7 @@ services:
     ports:
       - 5001:5000
     networks:
-      - service-python
+      - service-python-v1
     volumes:
       - ./:/app
   redis:
@@ -28,7 +28,7 @@ services:
     expose:
       - 6379
     networks:
-      - service-python
+      - service-python-v1
   mysql:
     image: mysql:5.7.22
     ports:
@@ -37,7 +37,7 @@ services:
       MYSQL_DATABASE: store
       MYSQL_ROOT_PASSWORD: store
     networks:
-      - service-python
+      - service-python-v1
   localstack:
     image: localstack/localstack
     privileged: true
@@ -55,10 +55,10 @@ services:
       DEBUG: 1
       HOSTNAME_EXTERNAL: localstack
     networks:
-      - service-python
+      - service-python-v1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/localstack:/tmp/localstack
 networks:
-  service-python:
+  service-python-v1:
     external: true

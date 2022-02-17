@@ -1,7 +1,6 @@
 FROM python:3.8.11-alpine3.13
 MAINTAINER Anderson Contreira <anderson.contreira@gmail.com>
 
-ARG PROJECT_NAME=template-serverless-lambda-python
 ARG FLASK_PORT=5000
 ARG ENVIRONMENT_NAME=development
 ENV FLASK_ENV=$ENVIRONMENT_NAME \

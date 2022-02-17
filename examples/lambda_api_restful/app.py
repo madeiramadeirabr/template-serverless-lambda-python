@@ -81,7 +81,8 @@ def alive():
         LOGGER, CONFIG), ["redis"])
     service.add_check("queue", SQSConnectionHealthCheck(
         LOGGER, CONFIG), ["queue"])
-    service.add_check("test", lambda: HealthCheckResult.healthy("connected"), ["example"])
+    service.add_check("test", lambda: HealthCheckResult.unhealthy("connected"), ["example"])
+    service.add_check("test2", lambda: HealthCheckResult.unhealthy("connected"), ["example"])
 
     return service.get_response()
 
@@ -182,7 +183,7 @@ def product_list():
 
     status_code = 200
     response = ApiResponse(request)
-    response.set_hateos(False)
+    response.set_hateos(True)
 
     manager = ProductManager(logger=LOGGER, product_service=ProductServiceV1(logger=LOGGER))
     manager.debug(DEBUG)

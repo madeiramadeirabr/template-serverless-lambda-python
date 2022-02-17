@@ -6,7 +6,7 @@ from lambda_app.aws.sqs import SQSEvents
 from lambda_app.config import get_config
 from lambda_app.logging import get_logger
 from tests.component.componenttestutils import BaseComponentTestCase
-from tests.component.helpers.events.aws.sqs_helper import SQSHelper
+from tests.component.helpers.aws.sqs_helper import SQSHelper
 from tests.unit.helpers.events_helper import get_cancelamento_event
 from tests.unit.testutils import get_function_name
 

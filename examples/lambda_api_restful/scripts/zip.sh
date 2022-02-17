@@ -4,9 +4,9 @@ elif test -f ./scripts/.projectrc; then
   source ./scripts/.projectrc
 fi
 
-if [ -z "$PROJECT_NAME" ]; then
-  echo 'PROJECT_NAME not defined'
+if [ -z "$APP_NAME" ]; then
+  echo 'APP_NAME not defined'
   exit 1
 else
-  zip -r $PROJECT_NAME.zip ./ -x '*.git*' -x './zip.sh*' -x './venv/*' -x './.idea/*'  -x './node_modules/*'
+  zip -r $APP_NAME.zip ./ -x '*.git*' -x './zip.sh*' -x './venv/*' -x './.idea/*'  -x './node_modules/*'
 fi

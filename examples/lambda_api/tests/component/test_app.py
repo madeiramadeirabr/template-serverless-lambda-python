@@ -12,7 +12,7 @@ from lambda_app.config import get_config
 from lambda_app.logging import get_logger
 
 from tests.component.helpers.database.mysql_helper import MySQLHelper
-from tests.component.helpers.events.aws.sqs_helper import SQSHelper
+from tests.component.helpers.aws.sqs_helper import SQSHelper
 from tests.unit.helpers.aws.sqs_helper import get_sqs_event_sample
 from tests.unit.mocks.aws_mocks.aws_lambda_mock import FakeLambdaContext
 from tests.unit.mocks.lambda_event_mocks.request_event import create_aws_api_gateway_proxy_request_event

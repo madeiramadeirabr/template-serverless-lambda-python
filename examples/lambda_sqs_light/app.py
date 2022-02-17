@@ -58,6 +58,7 @@ def index(event):
 
     # todo implementar lógica aqui
 
+    LOGGER.info("deu boa?")
     result = True
 
     return result

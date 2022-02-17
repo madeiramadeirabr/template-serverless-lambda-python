@@ -6,7 +6,7 @@ from lambda_app.logging import get_logger
 from lambda_app.services.v1.healthcheck import HealthStatus, HealthCheckResult
 from lambda_app.services.v1.healthcheck.resources import SQSConnectionHealthCheck
 from tests.component.componenttestutils import BaseComponentTestCase
-from tests.component.helpers.events.aws.sqs_helper import SQSHelper
+from tests.component.helpers.aws.sqs_helper import SQSHelper
 from tests.unit.helpers.aws.sqs_helper import get_sqs_event_sample
 from tests.unit.testutils import get_function_name
 

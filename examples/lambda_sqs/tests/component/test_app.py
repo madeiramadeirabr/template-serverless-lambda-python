@@ -10,7 +10,7 @@ from unittest_data_provider import data_provider
 from lambda_app.config import get_config
 from lambda_app.logging import get_logger
 from tests.component.helpers.database.mysql_helper import MySQLHelper
-from tests.component.helpers.events.aws.sqs_helper import SQSHelper
+from tests.component.helpers.aws.sqs_helper import SQSHelper
 from tests.unit.helpers.aws.sqs_helper import get_sqs_event_sample, create_chalice_sqs_event
 from tests.unit.helpers.events_helper import get_delivery_time_simulator_event_sample, get_cancelamento_event
 from tests.unit.mocks.aws_mocks.aws_lambda_mock import FakeLambdaContext

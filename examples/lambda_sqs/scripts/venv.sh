@@ -16,11 +16,9 @@ echo "current_filename_path_basename: $current_filename_path_basename"
 
 
 if test -f "${current_filename_path}venv/bin/activate"; then
-  python3 -m venv venv
   source ${current_filename_path}venv/bin/activate
 else
-  echo "Unable to find  ${current_filename_path}venv/bin/activate"
-  exit 1
+  python3 -m venv venv
 fi
 
 if test -f "${current_filename_path}scripts/install.sh"; then

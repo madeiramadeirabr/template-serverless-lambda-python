@@ -20,3 +20,4 @@ bash ./scripts/boot.sh
 
 # execute the flask
 # flask run --host 0.0.0.0
+python3 server.py

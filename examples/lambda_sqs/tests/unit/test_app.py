@@ -57,7 +57,7 @@ class AppTestCase(BaseUnitTestCase):
 
     @patch('app.CarrierNotifierService', return_value=service_mock)
     @data_provider(get_queue_events_samples)
-    def test_cancelamento_event_index(self, event):
+    def test_index_with_samples(self, event):
         self.logger.info('Running test: %s', get_function_name(__name__))
         self.logger.info('Event: {}'.format(event))
 

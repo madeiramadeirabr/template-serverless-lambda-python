@@ -22,7 +22,7 @@ class ConnectionHelper:
         try:
             connection = redis.Redis(
                 host=host,
-                port=port
+                port=int(port)
             )
             test = connection.set('connection', 'true')
         except Exception as err:
@@ -32,7 +32,7 @@ class ConnectionHelper:
                 host = 'localhost'
                 connection = redis.Redis(
                     host=host,
-                    port=port
+                    port=int(port)
                 )
                 test = connection.set('connection', 'true')
 

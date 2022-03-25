@@ -1,23 +1,22 @@
+"""
+App Unit Test for Flambda APP
+Version: 1.0.0
+"""
 import json
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 import serverless_wsgi
 
 import app
-import lambda_app.database.mysql
-from lambda_app import APP_NAME, APP_VERSION
-from lambda_app.config import get_config
-from lambda_app.services.v1.healthcheck import HealthCheckResponse
-from lambda_app.services.v1.healthcheck.resources import MysqlConnectionHealthCheck, RedisConnectionHealthCheck, \
-    SQSConnectionHealthCheck
-from lambda_app.services.v1.healthcheck_service import HealthCheckService
+from flambda_app import APP_NAME, APP_VERSION
+from flambda_app.config import get_config
 from tests.unit.mocks.aws_mocks.aws_lambda_mock import FakeLambdaContext
+from tests.unit.mocks.flambda_app_mocks.services.healthcheck_manager_mock import health_check_manager_caller
+from tests.unit.mocks.flambda_app_mocks.services.v1.healthcheck.resources_mock import \
+    mysql_connection_health_check_mock, redis_connection_health_check_mock
 from tests.unit.mocks.lambda_event_mocks.request_event import create_aws_api_gateway_proxy_request_event
 from tests.unit.testutils import BaseUnitTestCase, get_function_name
-
-service_mock = Mock(HealthCheckService)
-service_mock.get_response.side_effect = lambda: HealthCheckResponse().get_response()
 
 
 class AppTestCase(BaseUnitTestCase):
@@ -44,17 +43,18 @@ class AppTestCase(BaseUnitTestCase):
         self.assertTrue('app' in body)
         self.assertEqual(body['app'], "%s:%s" % (APP_NAME, APP_VERSION))
 
-    # TODO terminar a implmentação dos patchs
-    @patch('app.HealthCheckService', return_value=service_mock)
-    @patch('app.MysqlConnectionHealthCheck', spec=MysqlConnectionHealthCheck)
-    @patch('app.RedisConnectionHealthCheck', spec=RedisConnectionHealthCheck)
-    @patch('app.SQSConnectionHealthCheck', spec=SQSConnectionHealthCheck)
-    def test_alive(self, sqs_mock, redis_mock, mysql_mock, hc_mock):
+    @patch('app.HealthCheckManager', health_check_manager_caller)
+    @patch.multiple('flambda_app.services.healthcheck_manager',
+                    MysqlConnectionHealthCheck=mysql_connection_health_check_mock,
+                    RedisConnectionHealthCheck=redis_connection_health_check_mock
+                    )
+    def test_alive(self):
         self.logger.info('Running test: %s', get_function_name(__name__))
 
         event = create_aws_api_gateway_proxy_request_event('GET', '/alive')
         context = FakeLambdaContext()
 
+        # utiliza mocks no lugar do objetos reais
         response = serverless_wsgi.handle_request(app.APP, event, context)
 
         self.assertTrue('statusCode' in response)

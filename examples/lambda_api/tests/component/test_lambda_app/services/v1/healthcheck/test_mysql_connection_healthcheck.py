@@ -1,10 +1,10 @@
 import unittest
 
-from lambda_app.config import get_config
-from lambda_app.database.mysql import get_connection
-from lambda_app.logging import get_logger
-from lambda_app.services.v1.healthcheck import HealthStatus, HealthCheckResult
-from lambda_app.services.v1.healthcheck.resources import MysqlConnectionHealthCheck
+from flambda_app.config import get_config
+from flambda_app.database.mysql import MySQLConnector
+from flambda_app.logging import get_logger
+from flambda_app.services.v1.healthcheck import HealthStatus, HealthCheckResult
+from flambda_app.services.v1.healthcheck.resources import MysqlConnectionHealthCheck
 from tests.component.componenttestutils import BaseComponentTestCase
 from tests.unit.testutils import get_function_name
 
@@ -27,9 +27,9 @@ class MysqlConnectionHealthCheckTestCase(BaseComponentTestCase):
 
     def setUp(self):
         super().setUp()
-        self.connection = get_connection()
+        self.connector = MySQLConnector()
         self.config = get_config()
-        self.service = MysqlConnectionHealthCheck(self.logger, self.config, self.connection)
+        self.service = MysqlConnectionHealthCheck(self.logger, self.config, self.connector)
 
     def test_check_health(self):
         self.logger.info('Running test: %s', get_function_name(__name__))
@@ -37,7 +37,7 @@ class MysqlConnectionHealthCheckTestCase(BaseComponentTestCase):
         result = self.service.check_health()
 
         self.assertIsInstance(result, HealthCheckResult)
-        self.assertEqual(result.status, HealthStatus.HEALTHY)
+        self.assertEqual(HealthStatus.HEALTHY, result.status)
 
 
 if __name__ == '__main__':

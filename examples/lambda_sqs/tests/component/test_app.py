@@ -33,12 +33,9 @@ def get_queue_events_samples():
     return (sqs_event,),
 
 
-# AttributeError: module 'typing' has no attribute '_classvar'
-# This error occours on Python 3.8
-# If you will consume items from the queue, dont boot the lambda
 class AppTestCase(BaseComponentTestCase):
     """
-
+    Obs: If you will execute this test, please execute the ./scripts/testenv.sh instead ./scripts/runenv.sh
     """
     EXECUTE_FIXTURE = True
     CONFIG = None
@@ -116,7 +113,7 @@ class AppTestCase(BaseComponentTestCase):
         self.assertTrue(response)
 
     @data_provider(get_queue_events_samples)
-    def test_cancelamento_event_index(self, event):
+    def test_index_with_samples(self, event):
         self.logger.info('Running test: %s', get_function_name(__name__))
         self.logger.info('Event: {}'.format(event))
 

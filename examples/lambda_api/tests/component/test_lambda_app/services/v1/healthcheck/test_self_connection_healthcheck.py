@@ -1,10 +1,9 @@
 import unittest
 
-from lambda_app.config import get_config
-from lambda_app.database.mysql import get_connection
-from lambda_app.logging import get_logger
-from lambda_app.services.v1.healthcheck import HealthStatus, HealthCheckResult
-from lambda_app.services.v1.healthcheck.resources import SelfConnectionHealthCheck
+from flambda_app.config import get_config
+from flambda_app.logging import get_logger
+from flambda_app.services.v1.healthcheck import HealthStatus, HealthCheckResult
+from flambda_app.services.v1.healthcheck.resources import SelfConnectionHealthCheck
 from tests.component.componenttestutils import BaseComponentTestCase
 from tests.unit.testutils import get_function_name
 

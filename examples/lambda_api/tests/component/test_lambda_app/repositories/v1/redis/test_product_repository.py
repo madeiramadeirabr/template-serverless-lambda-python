@@ -2,12 +2,12 @@ import unittest
 
 from unittest_data_provider import data_provider
 
-from lambda_app.config import get_config
-from lambda_app.database.redis import get_connection
-from lambda_app.http_resources.request_control import Pagination
-from lambda_app.logging import get_logger
-from lambda_app.repositories.v1.redis.product_repository import ProductRepository
-from lambda_app.vos.product import ProductVO
+from flambda_app.config import get_config
+from flambda_app.database.redis import RedisConnector
+from flambda_app.request_control import Pagination
+from flambda_app.logging import get_logger
+from flambda_app.repositories.v1.redis.product_repository import ProductRepository
+from flambda_app.vos.product import ProductVO
 from tests.component.componenttestutils import BaseComponentTestCase
 from tests.component.helpers.database.redis_helper import RedisHelper
 from tests.unit.helpers.product_helper import get_product_sample
@@ -83,7 +83,7 @@ class ProductRepositoryTestCase(BaseComponentTestCase):
         self.logger.info('key: {}'.format(key))
 
         config = get_config()
-        connection = get_connection(config)
+        connection = RedisConnector().get_connection(config)
 
         repository = ProductRepository(redis_connection=connection)
         result = repository.create(key, product.to_json())
@@ -103,7 +103,7 @@ class ProductRepositoryTestCase(BaseComponentTestCase):
         self.logger.info('key: {}'.format(key))
 
         config = get_config()
-        connection = get_connection(config)
+        connection = RedisConnector().get_connection(config)
 
         repository = ProductRepository(redis_connection=connection)
         result = repository.create(key, product.to_json())
@@ -119,7 +119,7 @@ class ProductRepositoryTestCase(BaseComponentTestCase):
         self.logger.info('Running test: %s', get_function_name(__name__))
 
         config = get_config()
-        connection = get_connection(config)
+        connection = RedisConnector().get_connection(config)
 
         repository = ProductRepository(redis_connection=connection)
 

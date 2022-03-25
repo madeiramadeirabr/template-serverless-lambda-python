@@ -2,11 +2,11 @@ import unittest
 
 from unittest_data_provider import data_provider
 
-from lambda_app.database.mysql import get_connection
-from lambda_app.http_resources.request_control import Pagination, Order
-from lambda_app.logging import get_logger
-from lambda_app.repositories.v1.mysql.product_repository import ProductRepository
-from lambda_app.vos.product import ProductVO
+from flambda_app.database.mysql import MySQLConnector
+from flambda_app.request_control import Pagination, Order
+from flambda_app.logging import get_logger
+from flambda_app.repositories.v1.mysql.product_repository import ProductRepository
+from flambda_app.vos.product import ProductVO
 from tests import ROOT_DIR
 from tests.component.componenttestutils import BaseComponentTestCase
 from tests.component.helpers.database.mysql_helper import MySQLHelper
@@ -65,27 +65,14 @@ class ProductRepositoryTestCase(BaseComponentTestCase):
         if cls.EXECUTE_FIXTURE:
             logger = get_logger()
             logger.info("Fixture: drop table")
-
+            database_name="store"
             table_name = ProductRepository.BASE_TABLE
-            cls.fixture_table(logger, mysql_connection, table_name)
+            cls.fixture_table(logger, mysql_connection, table_name, database_name)
 
-    @classmethod
-    def fixture_table(cls, logger, mysql_connection, table_name):
-        dropped = MySQLHelper.drop_table(mysql_connection, table_name)
-        if dropped:
-            logger.info(f"Table dropped:: {table_name}")
-        file_name = ROOT_DIR + f"tests/datasets/database/structure/mysql/create.table.store.{table_name}.sql"
-        created = MySQLHelper.create_table(mysql_connection, table_name, file_name)
-        if created:
-            logger.info(f"Table created:: {table_name}")
-        file_name = ROOT_DIR + f"tests/datasets/database/seeders/mysql/seeder.table.store.{table_name}.sql"
-        populated = MySQLHelper.sow_table(mysql_connection, table_name, file_name)
-        if populated:
-            logger.info(f"Table populated:: {table_name}")
 
     def setUp(self):
         super().setUp()
-        self.connection = get_connection()
+        self.connection = MySQLConnector().get_connection()
         self.repository = ProductRepository(mysql_connection=self.connection)
         self.repository.debug = True
 

@@ -1,20 +1,20 @@
 import unittest
 
-from lambda_app.config import get_config
-from lambda_app.logging import get_logger
-from lambda_app.repositories.v1.mysql.product_repository import ProductRepository
-from lambda_app.services.v1.healthcheck import HealthStatus, HealthCheckResult
-from lambda_app.services.v1.healthcheck.resources import MysqlConnectionHealthCheck, RedisConnectionHealthCheck, \
+from flambda_app.config import get_config
+from flambda_app.logging import get_logger
+from flambda_app.repositories.v1.mysql.product_repository import ProductRepository
+from flambda_app.services.v1.healthcheck import HealthStatus, HealthCheckResult
+from flambda_app.services.v1.healthcheck.resources import MysqlConnectionHealthCheck, RedisConnectionHealthCheck, \
     SQSConnectionHealthCheck, SelfConnectionHealthCheck
-from lambda_app.services.v1.healthcheck_service import HealthCheckService
+from flambda_app.services.v1.healthcheck_service import HealthCheckService
 from tests import ROOT_DIR
 from tests.component.componenttestutils import BaseComponentTestCase
 from tests.component.helpers.database.mysql_helper import MySQLHelper
 from tests.component.helpers.aws.sqs_helper import SQSHelper
 from tests.unit.helpers.aws.sqs_helper import get_sqs_event_sample
 from tests.unit.testutils import get_function_name
-from lambda_app.database.mysql import get_connection as mysql_get_connection
-from lambda_app.database.redis import get_connection as redis_get_connection
+from flambda_app.database.mysql import MySQLConnector
+from flambda_app.database.redis import RedisConnector
 
 
 class HealthCheckServiceTestCase(BaseComponentTestCase):
@@ -79,8 +79,8 @@ class HealthCheckServiceTestCase(BaseComponentTestCase):
     def setUp(self):
         super().setUp()
         self.config = get_config()
-        self.mysql_connection = mysql_get_connection()
-        self.redis_connection = redis_get_connection()
+        self.mysql_connection = MySQLConnector().get_connection()
+        self.redis_connection = RedisConnector().get_connection()
         self.service = HealthCheckService(self.logger, self.config)
 
     def test_add_check(self):

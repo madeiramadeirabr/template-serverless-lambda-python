@@ -95,23 +95,32 @@ components:
     EventListErrorResponse:
       properties:
         code:
+          example: 7
           type: integer
+        details:
+          type: string
         label:
+          example: common.error.internal_server_error
           type: string
         message:
+          example: Internal Server Error
           type: string
         params:
           items:
             type: string
           type: array
         success:
+          example: false
           type: boolean
+        trace:
+          type: string
       required:
       - code
       type: object
     EventListResponse:
       properties:
         code:
+          example: 1
           type: integer
         control:
           $ref: '#/components/schemas/RequestControl'
@@ -120,12 +129,14 @@ components:
             $ref: '#/components/schemas/Event'
           type: array
         label:
+          example: common.success
           type: string
         links:
           items:
             $ref: '#/components/schemas/Link'
           type: array
         message:
+          example: Success
           type: string
         meta:
           $ref: '#/components/schemas/Meta'
@@ -134,6 +145,7 @@ components:
             type: string
           type: array
         success:
+          example: true
           type: boolean
       required:
       - code
@@ -203,6 +215,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/HealthCheck'
           description: Success response
+        '424':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+          description: Failed dependency response
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+          description: Service unavailable response
       summary: Service Health Method
   /v1/event/{event_type}:
     get:
@@ -255,5 +279,7 @@ paths:
                 $ref: '#/components/schemas/EventCreateErrorResponse'
       summary: Create event
 servers:
-- description: null
-  url: null
+- description: Development server
+  url: http://localhost:5000
+- description: Development server
+  url: http://localhost:5000

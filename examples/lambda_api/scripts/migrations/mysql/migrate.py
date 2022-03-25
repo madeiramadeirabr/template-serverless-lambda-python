@@ -35,10 +35,10 @@ def register_paths():
 # register the paths
 register_paths()
 
-from lambda_app.logging import get_logger
+from flambda_app.logging import get_logger
 from boot import reset, load_dot_env, load_env
-from lambda_app.config import reset as reset_config, get_config
-from lambda_app.database.mysql import get_connection
+from flambda_app.config import reset as reset_config, get_config
+from flambda_app.database.mysql import get_connection
 
 logger = get_logger()
 logger.info("ROOT_DIR " + ROOT_DIR)

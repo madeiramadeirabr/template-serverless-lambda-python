@@ -1,7 +1,7 @@
 # prioriza a importação dos testes para funcionar as libs da vendor
 import os
 
-from lambda_app.logging import get_logger
+from flambda_app.logging import get_logger
 from tests.unit.mocks.boto3_mocks import session_mock
 
 logger = get_logger()

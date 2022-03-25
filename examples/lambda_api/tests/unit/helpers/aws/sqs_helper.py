@@ -1,7 +1,7 @@
 import json
 from os import path
 
-from lambda_app.decorators.events import SQSRecord, SQSEvent
+from flambda_app.decorators.events import SQSRecord, SQSEvent
 from tests import ROOT_DIR
 
 

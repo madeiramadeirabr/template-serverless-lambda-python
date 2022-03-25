@@ -68,6 +68,6 @@ jobs:
           pip install pylint
       - name: Execute pylint
         run: |
-          # pylint ./app.py ./lambda_app ./tests/unit ./tests/integration ./tests/component
-          # pylint ./app.py ./boot.py ./flambda_app
+          # pylint ./app.py ./flambda_app ./tests/unit ./tests/integration ./tests/component
+          # pylint ./app.py ./boot.py ./fflambda_app
           ./scripts/pylint.sh

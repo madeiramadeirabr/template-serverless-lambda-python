@@ -1,0 +1,2 @@
+class EventService:
+    pass

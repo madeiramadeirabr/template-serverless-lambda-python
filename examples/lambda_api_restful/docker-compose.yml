@@ -16,7 +16,7 @@ services:
       - "redis"
       - "mysql"
     ports:
-      - 5001:5000
+      - 5000:5000
     networks:
       - service-python-v1
     volumes:

@@ -1,3 +1,7 @@
+"""
+AWS Lambda Events Mock for test resources
+Version: 1.0.0
+"""
 def create_aws_api_gateway_proxy_request_event(method="GET", path="/", headers=None, body=""):
     is_base64_encoded = True
     if method in ["POST", "PUT"]:

@@ -1,3 +1,7 @@
+"""
+Product Helper module for test resources
+Version: 1.0.0
+"""
 import json
 from os import path
 

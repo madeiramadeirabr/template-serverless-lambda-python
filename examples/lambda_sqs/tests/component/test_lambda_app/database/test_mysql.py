@@ -1,8 +1,12 @@
+"""
+MySQL Component Test for Flambda APP
+Version: 1.0.0
+"""
 import unittest
 
 from tests.component.componenttestutils import BaseComponentTestCase
-from lambda_app.config import get_config
-from lambda_app.database.mysql import get_connection, reset
+from flambda_app.config import get_config
+from flambda_app.database.mysql import MySQLConnector, reset
 from tests.unit.testutils import get_function_name
 
 
@@ -17,11 +21,11 @@ class MySQLTestCase(BaseComponentTestCase):
         self.logger.info('Running test: %s', get_function_name(__name__))
 
         config = get_config()
-        self.logger.info('DB_HOST: {}'.format(config.DB_HOST))
-        self.logger.info('DB_USER: {}'.format(config.DB_USER))
+        self.logger.info('DB_HOST: {}'.format(config.get('DB_HOST', None)))
+        self.logger.info('DB_USER: {}'.format(config.get('DB_USER', None)))
         self.logger.info('DB: {}'.format(config.DB))
 
-        connection = get_connection()
+        connection = MySQLConnector().get_connection()
 
         self.assertIsNotNone(connection)
 
@@ -33,10 +37,10 @@ class MySQLTestCase(BaseComponentTestCase):
         config.DB_HOST = 'localhost'
         config.DB_USER = 'undefined'
 
-        self.logger.info('DB_HOST: {}'.format(config.DB_HOST))
-        self.logger.info('DB_USER: {}'.format(config.DB_USER))
+        self.logger.info('DB_HOST: {}'.format(config.get('DB_HOST', None)))
+        self.logger.info('DB_USER: {}'.format(config.get('DB_USER', None)))
         self.logger.info('DB: {}'.format(config.DB))
-        connection = get_connection(config)
+        connection = MySQLConnector(config=config).get_connection()
 
         self.assertIsNone(connection)
 

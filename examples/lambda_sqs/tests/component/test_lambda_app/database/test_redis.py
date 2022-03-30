@@ -1,8 +1,12 @@
+"""
+Redis Component Test for Flambda APP
+Version: 1.0.0
+"""
 import unittest
 
 from tests.component.componenttestutils import BaseComponentTestCase
-from lambda_app.config import get_config
-from lambda_app.database.redis import get_connection, reset
+from flambda_app.config import get_config
+from flambda_app.database.redis import RedisConnector, reset
 from tests.unit.testutils import get_function_name
 
 
@@ -17,12 +21,29 @@ class RedisTestCase(BaseComponentTestCase):
         self.logger.info('Running test: %s', get_function_name(__name__))
 
         config = get_config()
-        self.logger.info('REDIS_HOST: {}'.format(config.REDIS_HOST))
-        self.logger.info('REDIS_PORT: {}'.format(config.REDIS_PORT))
+        self.logger.info('REDIS_HOST: {}'.format(config.get('REDIS_HOST', None)))
+        self.logger.info('REDIS_PORT: {}'.format(config.get('REDIS_PORT', None)))
 
-        connection = get_connection()
+        connection = RedisConnector().get_connection()
 
         self.assertIsNotNone(connection)
+
+    def test_connection_singleton(self):
+        self.logger.info('Running test: %s', get_function_name(__name__))
+
+        config = get_config()
+        self.logger.info('REDIS_HOST: {}'.format(config.get('REDIS_HOST', None)))
+        self.logger.info('REDIS_PORT: {}'.format(config.get('REDIS_PORT', None)))
+
+        connector = RedisConnector()
+        first_connection = connector.get_connection()
+        last_connection = None
+        for i in range(0, 3):
+            last_connection = connector.get_connection()
+
+        self.assertIsNotNone(first_connection)
+        self.assertIsNotNone(last_connection)
+        self.assertEquals(first_connection, last_connection)
 
     def test_connection_error(self):
         self.logger.info('Running test: %s', get_function_name(__name__))
@@ -34,7 +55,7 @@ class RedisTestCase(BaseComponentTestCase):
 
         self.logger.info('REDIS_HOST: {}'.format(config.REDIS_HOST))
         self.logger.info('REDIS_PORT: {}'.format(config.REDIS_PORT))
-        connection = get_connection(config)
+        connection = RedisConnector(config=config).get_connection()
 
         self.assertIsNone(connection)
 

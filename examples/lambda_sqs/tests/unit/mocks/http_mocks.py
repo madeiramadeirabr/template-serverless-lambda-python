@@ -1,3 +1,7 @@
+"""
+HTTP Mock for test resources
+Version: 1.0.0
+"""
 import requests
 from mock.mock import Mock, MagicMock
 from requests.models import Response

@@ -1,4 +1,7 @@
-import os
+"""
+Flask Request Mock for test resources
+Version: 1.0.0
+"""
 from unittest.mock import Mock
 
 from flask import request as Request

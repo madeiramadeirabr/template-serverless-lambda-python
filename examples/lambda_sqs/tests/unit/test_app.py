@@ -35,9 +35,8 @@ class AppTestCase(BaseUnitTestCase):
 
     @classmethod
     def setUpClass(cls):
-        BaseComponentTestCase.setUpClass()
+        BaseUnitTestCase.setUpClass()
         cls.CONFIG = get_config()
-        cls.CONFIG.SQS_ENDPOINT = cls.SQS_LOCALSTACK
 
     @patch('app.CarrierNotifierService', return_value=service_mock)
     @data_provider(get_queue_message)

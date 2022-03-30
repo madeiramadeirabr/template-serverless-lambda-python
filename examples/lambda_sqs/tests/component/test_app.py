@@ -1,4 +1,5 @@
 import os
+import time
 import unittest
 from time import sleep
 
@@ -21,7 +22,13 @@ import json
 
 def get_queue_message():
     queue_url = os.getenv("APP_QUEUE")
+
+    message = get_cancelamento_event()
+    SQSHelper.create_message(message, queue_url)
+    time.sleep(1)
+
     event = SQSHelper.get_message(queue_url)
+
     return (event,)
 
 
@@ -66,6 +73,9 @@ class AppTestCase(BaseComponentTestCase):
 
     @data_provider(get_queue_message)
     def test_index(self, event):
+        """
+        TODO precisa de ajustes para funcionar
+        """
         self.logger.info('Running test: %s', get_function_name(__name__))
         self.logger.info('Event: {}'.format(event))
 

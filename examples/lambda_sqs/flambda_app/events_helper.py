@@ -58,6 +58,7 @@ def get_records_from_sqs_event(sqs_event, logger=None):
             if not helper.empty(sqs_event.to_dict()):
                 try:
                     sqs_event_dict = sqs_event.to_dict()
+                    # todo tratar <class 'boto3.resources.factory.sqs.Message'>
                     if 'Records' in sqs_event_dict:
                         sqs_event_dict = sqs_event_dict['Records']
                     for record in sqs_event_dict:

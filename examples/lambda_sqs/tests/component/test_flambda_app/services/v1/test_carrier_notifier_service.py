@@ -58,7 +58,7 @@ class CarrierNotifierServiceTestCase(BaseComponentTestCase):
 
     def setUp(self):
         super().setUp()
-        self.connection = MySQLConnector.get_connection()
+        self.connection = MySQLConnector().get_connection()
         self.repository = OcorenRepository(self.logger, self.connection)
         self.service = CarrierNotifierService(self.logger, self.repository)
 

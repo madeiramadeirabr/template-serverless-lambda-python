@@ -3,26 +3,28 @@
 This module contains the handler method
 """
 import boot
-from lambda_app.events_helper import get_records_from_sqs_event, read_event
-from lambda_app.lambda_flask import LambdaFlask
-from lambda_app import APP_NAME, APP_VERSION
-from lambda_app.logging import get_logger, set_debug_mode
-from lambda_app.config import get_config
-from lambda_app import helper
+from flambda_app.events_helper import get_records_from_sqs_event, read_event
+from flambda_app.flambda import Flambda
+from flambda_app import APP_NAME, APP_VERSION
+from flambda_app.logging import get_logger, set_debug_mode
+from flambda_app.config import get_config
+from flambda_app import helper
 
 
-# load env
-ENV = helper.get_environment()
-boot.load_dot_env(ENV)
+# load directly by boot
+ENV = boot.get_environment()
+# boot.load_dot_env(ENV)
+
 
 # config
 CONFIG = get_config()
 # debug
 DEBUG = helper.debug_mode()
-# Logger
-LOGGER = get_logger()
 
-APP = LambdaFlask(APP_NAME)
+# keep in this order, the app generic stream handler will be removed
+APP = Flambda(APP_NAME)
+# Logger
+LOGGER = get_logger(force=True)
 # override the APP logger
 APP.logger = LOGGER
 # override the log configs

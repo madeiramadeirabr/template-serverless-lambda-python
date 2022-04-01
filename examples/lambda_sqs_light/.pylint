@@ -90,7 +90,9 @@ disable=raw-checker-failed,
         suppressed-message,
         useless-suppression,
         deprecated-pragma,
-        use-symbolic-message-instead
+        use-symbolic-message-instead,
+        logging-fstring-interpolation,
+        logging-format-interpolation
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -140,7 +142,8 @@ never-returning-functions=sys.exit,argparse.parse_error
 
 # The type of string formatting that logging methods do. `old` means using %
 # formatting, `new` is for `{}` formatting.
-logging-format-style=old
+# https://stackoverflow.com/questions/34619790/pylint-message-logging-format-interpolation
+logging-format-style=new
 
 # Logging modules to check that the string format arguments are in logging
 # function parameter format.

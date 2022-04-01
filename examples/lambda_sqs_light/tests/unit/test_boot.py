@@ -1,18 +1,25 @@
+"""
+Boot Unit Test for Flambda APP
+Version: 1.0.0
+"""
 import os
 import unittest
+from unittest.mock import patch
+
 from boot import load_dot_env, reset, is_loaded, load_env
+from tests.unit.mocks.flambda_app_mocks.aws.secrets_mock import secrets_mock_caller
 from tests.unit.testutils import BaseUnitTestCase, get_function_name
 from unittest_data_provider import data_provider
 
 
 def get_env():
     return (None, True), ('dev', True), ('development', True), ('integration', True), ('staging', True), (
-    'production', True)
+        'production', True)
 
 
 def get_load_dot_env():
-    return (None, True), ('dev', True), ('development', True), ('integration', False), ('staging', False), (
-    'production', False)
+    return (None, True), ('dev', True), ('development', True), ('integration', True), ('staging', True), (
+        'production', True)
 
 
 class BootTestCase(BaseUnitTestCase):
@@ -25,10 +32,11 @@ class BootTestCase(BaseUnitTestCase):
         if APP_TYPE == 'Chalice':
             reset()
             load_env(env)
-            self.assertEqual(is_loaded(), expected)
+            self.assertEqual(expected, is_loaded())
         else:
             self.skipTest('test_load_env - Ignored because the APP_TYPE {}'.format(APP_TYPE))
 
+    @patch('flambda_app.aws.secrets.Secrets', secrets_mock_caller)
     @data_provider(get_load_dot_env)
     def test_load_dot_env(self, env, expected):
         self.logger.info('Running test: %s - %s', get_function_name(__name__), env)
@@ -42,7 +50,7 @@ class BootTestCase(BaseUnitTestCase):
                     expected = True
             reset()
             load_dot_env(env)
-            self.assertEqual(is_loaded(), expected)
+            self.assertEqual(expected, is_loaded())
         else:
             self.skipTest('test_load_dot_env - Ignored because the APP_TYPE {}'.format(APP_TYPE))
 

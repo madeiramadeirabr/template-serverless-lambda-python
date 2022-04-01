@@ -42,3 +42,21 @@ if [ debug ]; then
   echo "current_parent_folder: $current_parent_folder"
   echo '----------------------------------------'
 fi
+
+if test -f ${current_parent_folder}/scripts/migrations/mysql/migrate.py; then
+  echo '----------------------------------------'
+  echo 'Booting database...'
+  echo '----------------------------------------'
+  # TODO futuramente usar o Flask migrate ou outra alternativa
+  echo 'Creating tables...'
+  python3 ${current_parent_folder}/scripts/migrations/mysql/migrate.py ${current_parent_folder}/tests/datasets/database/structure/mysql/create.table.store.ocorens.sql
+  python3 ${current_parent_folder}/scripts/migrations/mysql/migrate.py ${current_parent_folder}/tests/datasets/database/structure/mysql/create.table.store.products.sql
+
+  read -p "Press enter to continue..."
+
+  echo 'Inserting data in the table...'
+  python3 ${current_parent_folder}/scripts/migrations/mysql/migrate.py ${current_parent_folder}/tests/datasets/database/seeders/mysql/seeder.table.store.ocorens.sql
+  python3 ${current_parent_folder}/scripts/migrations/mysql/migrate.py ${current_parent_folder}/tests/datasets/database/seeders/mysql/seeder.table.store.products.sql
+fi
+
+

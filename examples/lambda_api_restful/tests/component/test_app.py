@@ -4,6 +4,7 @@ Version: 1.0.0
 """
 import json
 import os
+import time
 import unittest
 
 import serverless_wsgi
@@ -16,6 +17,7 @@ from flambda_app.repositories.v1.mysql.product_repository import ProductReposito
 from tests.component.componenttestutils import BaseComponentTestCase
 from tests.component.helpers.aws.sqs_helper import SQSHelper
 from tests.component.helpers.database.mysql_helper import MySQLHelper
+from tests.unit.helpers.events_helper import get_cancelamento_event
 from tests.unit.mocks.aws_mocks.aws_lambda_mock import FakeLambdaContext
 from tests.unit.mocks.lambda_event_mocks.request_event import create_aws_api_gateway_proxy_request_event
 from tests.unit.testutils import get_function_name
@@ -23,7 +25,13 @@ from tests.unit.testutils import get_function_name
 
 def get_queue_message():
     queue_url = os.getenv("APP_QUEUE")
+
+    message = get_cancelamento_event()
+    SQSHelper.create_message(message, queue_url)
+    time.sleep(1)
+
     event = SQSHelper.get_message(queue_url)
+
     return (event,)
 
 

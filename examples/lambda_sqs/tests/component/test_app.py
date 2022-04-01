@@ -29,7 +29,7 @@ def get_queue_message():
 
     event = SQSHelper.get_message(queue_url)
 
-    return (event,)
+    return (event,),
 
 
 def get_queue_events_samples():

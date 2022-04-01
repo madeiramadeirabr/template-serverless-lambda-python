@@ -4,3 +4,4 @@
 - [] Incluir Swagger para Flask
 - [] Avaliar uso de Kong
 - [] Api mocks para exemplos específicos (S3/SNS)
+ 

@@ -255,3 +255,13 @@ def get_function_name(class_name=""):
     if not class_name:
         fn_name = traceback.extract_stack(None, 2)[0][2]
     return fn_name
+
+
+def convert_list_to_dict(item_list, key_name):
+    result = dict()
+    if isinstance(item_list, list):
+        for item in item_list:
+            if isinstance(item, dict) and key_name in item.keys():
+                result[item.get(key_name)] = item
+
+    return result

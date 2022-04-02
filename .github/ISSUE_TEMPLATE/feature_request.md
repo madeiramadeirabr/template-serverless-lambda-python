@@ -1,42 +1,51 @@
 ---
-name: Feature request
-about: Request a new feature or improvement
-title: feat - [component/context] - request title
-labels: enhancement
-assignees: ''
+name: Feature Request
+about: Request a feature or enhancement
+title: "feat - [component/context] - feature request title"
+labels: "feature requested"
+assignees: ""
 ---
 
-<!-- ## Thank you for creating a request 😄!
+## Thanks for filing an issue 😄!
 
-Don't forget to check that there are no other open/closed issues before creating your issue. Someone may have already asked this question/request.
-Please fill in as many of the fields as possible to facilitate the resolution or clarification of your question ❤️.
-
--->
+Please search open/closed issues before submitting. Someone might have asked the same thing before 😉!
 
 #### 1. Description:
 
-> Describe your request in one or two sentences:
+Please describe your request in one or two sentences:
+
+> ...
 
 ---
 
-#### 2. Problem/Justification of Request:
+#### 2. Problem Statement/Justification:
 
-> Please describe the reason for this request to be added or changed. If it's related to a problem, please describe it as well.
+Please provide valid reason(s) why this should be added.
+If this feature is related to a problem you've noticed, mention it as well.
+
+> ...
 
 ---
 
-#### 3. Proposed Solution:
+#### 3. Proposed Solution or AP:
 
-> Describe your idea for a solution to the problem.
+Please provide valid reason(s) why this should be added.
+If this feature is related to a problem you've noticed, mention it as well.
+
+> ...
 
 ---
 
 #### 4. Alternatives:
 
-> What other alternatives were considered before ordering this feature?
+What alternative solutions have you considered before making this request?
+
+> ...
 
 ---
 
 #### 5. Additional Information:
 
-> Information, details or resources (links, screenshots, etc.) that will facilitate this task.
+What resources (links, screenshots, etc.) do you have to assist this effort?
+
+> ...

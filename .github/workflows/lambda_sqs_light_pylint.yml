@@ -17,7 +17,7 @@ on: [ push ]
 
 jobs:
   setup-environment:
-    name: Lambda SQS - Setup deployment environment (Ubuntu 18.04 - Python 3.x)
+    name: Lambda SQS Light - Setup deployment environment (Ubuntu 18.04 - Python 3.x)
     runs-on: ubuntu-18.04
     strategy:
       matrix:
@@ -31,7 +31,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           architecture: x64
   setup-project:
-    name: Lambda SQS - Setup project (Ubuntu 18.04 - Python 3.x)
+    name: Lambda SQS Light - Setup project (Ubuntu 18.04 - Python 3.x)
     runs-on: ubuntu-18.04
     strategy:
       matrix:
@@ -47,10 +47,10 @@ jobs:
       - name: Set up requirements ${{ matrix.python-version }}
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r ./examples/lambda_sqs/requirements.txt -t .
-          python -m pip install -r ./examples/lambda_sqs/requirements-vendor.txt -t .
+          python -m pip install -r ./examples/lambda_sqs_light/requirements.txt -t .
+          python -m pip install -r ./examples/lambda_sqs_light/requirements-vendor.txt -t .
   pylint:
-    name: Lambda SQS - Setup pylint (Ubuntu 18.04)
+    name: Lambda SQS Light - Setup pylint (Ubuntu 18.04)
     runs-on: ubuntu-18.04
     strategy:
       matrix:
@@ -68,5 +68,5 @@ jobs:
           pip install pylint
       - name: Execute pylint
         run: |
-          cd ./examples/lambda_sqs
+          cd ./examples/lambda_sqs_light
           ./scripts/pylint.sh

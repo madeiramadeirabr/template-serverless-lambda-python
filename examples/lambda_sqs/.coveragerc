@@ -3,7 +3,7 @@
 source =
     ./chalicelib/
     ./flask_app/
-    ./lambda_app/
+    ./flambda_app/
     ./app.py
 
 [run]

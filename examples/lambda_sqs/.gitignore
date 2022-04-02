@@ -17,8 +17,6 @@ venv
 /docker/elk/logs/elasticsearch.log
 /.infrastructure/.terraform/
 /.chalice/deployments/
-/target/
-/target/dynamodb-local/
 *_us-east-2.db
 *_sa-east-1.db
 /docker/aws/credentials
@@ -27,9 +25,9 @@ venv
 /.coverage
 
 # mantem a vendor
-!/vendor
+!vendor
 # ignora os demais arquivos
-/vendor/*
+vendor/*
 # mantem essa pasta
 !/vendor/public
 # mantem essa pasta
@@ -65,3 +63,9 @@ config/integration.en
 output/response.json
 /output/
 /include/
+/env/integration.env
+/env/production.env
+/env/staging.env
+/env/_staging.env
+/env/_integration.env
+/env/_production.env

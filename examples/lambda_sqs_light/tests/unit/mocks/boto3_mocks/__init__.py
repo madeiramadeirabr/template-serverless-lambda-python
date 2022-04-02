@@ -29,7 +29,6 @@ def resource(service_name, region_name=None, api_version=None,
     :return: boto3.resources.base.ServiceResource
     """
 
-
     resource_mock = Mock()
     if service_name == 'sqs':
 

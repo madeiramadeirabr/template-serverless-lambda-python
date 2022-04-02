@@ -4,8 +4,8 @@ from mock.mock import patch, Mock
 from unittest_data_provider import data_provider
 
 import app
-from lambda_app.config import get_config
-from lambda_app.services.v1.carrier_notifier_service import CarrierNotifierService
+from flambda_app.config import get_config
+from flambda_app.services.v1.carrier_notifier_service import CarrierNotifierService
 from tests.component.componenttestutils import BaseComponentTestCase
 from tests.unit.helpers.aws.sqs_helper import create_chalice_sqs_event
 from tests.unit.helpers.events_helper import get_cancelamento_event
@@ -35,9 +35,8 @@ class AppTestCase(BaseUnitTestCase):
 
     @classmethod
     def setUpClass(cls):
-        BaseComponentTestCase.setUpClass()
+        BaseUnitTestCase.setUpClass()
         cls.CONFIG = get_config()
-        cls.CONFIG.SQS_ENDPOINT = cls.SQS_LOCALSTACK
 
     @patch('app.CarrierNotifierService', return_value=service_mock)
     @data_provider(get_queue_message)
@@ -57,7 +56,7 @@ class AppTestCase(BaseUnitTestCase):
 
     @patch('app.CarrierNotifierService', return_value=service_mock)
     @data_provider(get_queue_events_samples)
-    def test_cancelamento_event_index(self, event):
+    def test_index_with_samples(self, event):
         self.logger.info('Running test: %s', get_function_name(__name__))
         self.logger.info('Event: {}'.format(event))
 

@@ -1,2 +1,6 @@
 boto3
 pymysql
+elasticsearch>=7.0.0, <8.0
+newrelic
+autopep8
+pylint

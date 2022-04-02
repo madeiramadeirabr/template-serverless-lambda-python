@@ -1,2 +1,0 @@
-ERROR - Object of type 'SQSRecord' is not JSON serializable
-2022-01-12 11:24:16,897 - template-serverless-lambda-python-lambda-sqs - ERROR - Object of type 'SQSRecord' is not JSON serializable

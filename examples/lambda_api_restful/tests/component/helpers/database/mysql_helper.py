@@ -1,11 +1,11 @@
-import json
+"""
+MySQL Helper Module for test resources
+Version: 1.0.0
+"""
+
 import os
-import boto3
 
-from os import path
-
-from lambda_app.database.mysql import get_connection
-from tests import ROOT_DIR
+from flambda_app.database.mysql import MySQLConnector
 
 if __package__:
     current_path = os.path.abspath(os.path.dirname(__file__)).replace('/' + str(__package__), '', 1)
@@ -19,7 +19,7 @@ if not current_path[-1] == '/':
 class ConnectionHelper:
     @staticmethod
     def get_mysql_local_connection():
-        return get_connection()
+        return MySQLConnector().get_connection()
 
 
 class MySQLHelper:
@@ -105,7 +105,7 @@ class MySQLHelper:
                     cursor.execute(sql, (table_name,))
                     table_exists = cursor.fetchone()
             except Exception as err:
-                 table_exists = False
+                table_exists = False
 
             if not table_exists:
                 sql_file = open(file_name, 'r')

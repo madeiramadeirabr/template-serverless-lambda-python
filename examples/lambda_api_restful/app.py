@@ -6,61 +6,79 @@ import base64
 import os
 
 import boot
-from lambda_app import APP_NAME, APP_VERSION, http_helper
-from lambda_app import helper
-from lambda_app.config import get_config
-from lambda_app.enums.messages import MessagesEnum
-from lambda_app.exceptions import ApiException
-from lambda_app.helper import open_vendor_file, print_routes
-from lambda_app.http_helper import CUSTOM_DEFAULT_HEADERS
-from lambda_app.http_resources.request import ApiRequest
-from lambda_app.http_resources.response import ApiResponse
-from lambda_app.lambda_flask import LambdaFlask
-from lambda_app.logging import get_logger
-from lambda_app.openapi import spec, get_doc, generate_openapi_yml
-from lambda_app.services.product_manager import ProductManager
-from lambda_app.services.v1.healthcheck import HealthCheckResult
-from lambda_app.services.v1.healthcheck.resources import \
-    MysqlConnectionHealthCheck, RedisConnectionHealthCheck, \
-    SQSConnectionHealthCheck, SelfConnectionHealthCheck
-from lambda_app.services.v1.healthcheck_service import HealthCheckService
-from lambda_app.services.v1.product_service import ProductService as ProductServiceV1
+from flambda_app import APP_NAME, APP_VERSION, http_helper
+from flambda_app import helper
+from flambda_app.config import get_config
+from flambda_app.enums.messages import MessagesEnum
+from flambda_app.exceptions import ApiException, ValidationException, CustomException
+from flambda_app.flambda import Flambda
+from flambda_app.helper import open_vendor_file, print_routes
+from flambda_app.http_helper import CUSTOM_DEFAULT_HEADERS, set_hateos_links, set_hateos_meta, \
+    get_favicon_32x32_data, get_favicon_16x16_data
+from flambda_app.http_resources.request import ApiRequest
+from flambda_app.http_resources.response import ApiResponse
+from flambda_app.logging import get_logger, set_debug_mode
+from flambda_app.openapi import api_schemas
+from flambda_app.openapi import spec, get_doc, generate_openapi_yml
+from flambda_app.services.healthcheck_manager import HealthCheckManager
+from flambda_app.services.product_manager import ProductManager
+from flambda_app.services.v1.product_service import ProductService as ProductServiceV1
 
-# load env
-ENV = helper.get_environment()
-boot.load_dot_env(ENV)
+# load directly by boot
+ENV = boot.get_environment()
+# boot.load_dot_env(ENV)
+
 
 # config
 CONFIG = get_config()
 # debug
 DEBUG = helper.debug_mode()
-# logger
-LOGGER = get_logger()
 
-APP = LambdaFlask(__name__)
+# keep in this order, the app generic stream handler will be removed
+APP = Flambda(APP_NAME)
+# Logger
+LOGGER = get_logger(force=True)
+# override the APP logger
+APP.logger = LOGGER
+# override the log configs
+if DEBUG:
+    # override to the level desired
+    set_debug_mode(LOGGER)
+
+API_ROOT = os.environ['API_ROOT'] if 'API_ROOT' in os.environ else None
+API_ROOT_ENDPOINT = API_ROOT if API_ROOT != "" else '/'
 
 
-@APP.route('/')
+@APP.route(API_ROOT_ENDPOINT)
 def index():
     """
     API Root path
-    :return:
-    :rtype: str
+
+    :return: Returns the name and the current version of the project
+
+    # pylint: disable=line-too-long
+    See: https://madeiramadeira.atlassian.net/wiki/spaces/CAR/pages/2244149708/WIP+-+Guidelines+-+RESTful+e+HATEOS#Raiz-do-projeto
+
+    :rtype: flask.Response
     """
-    body = {"app": '%s:%s' % (APP_NAME, APP_VERSION)}
+    body = {"app": f'{APP_NAME}:{APP_VERSION}'}
     return http_helper.create_response(body=body, status_code=200)
 
 
-# general vars
-APP_QUEUE = CONFIG.APP_QUEUE
-
-
-@APP.route('/alive')
+@APP.route(API_ROOT + '/alive')
 def alive():
     """
     Health check path
-    :return:
-    :rtype: str
+
+    :return Returns an intelligent healthcheck that describe what resource are working or not.
+
+    # pylint: disable=line-too-long
+    See https://madeiramadeira.atlassian.net/wiki/spaces/CAR/pages/2226749441/Guidelines+para+projetos#Health-Check
+
+    # pylint: disable=line-too-long
+    See https://docs.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/monitor-app-health
+
+    :rtype: flask.Response
 
     ---
 
@@ -72,43 +90,87 @@ def alive():
                     content:
                         application/json:
                             schema: HealthCheckSchema
+                424:
+                    description: Failed dependency response
+                    content:
+                        application/json:
+                            schema: HealthCheckSchema
+                503:
+                    description: Service unavailable response
+                    content:
+                        application/json:
+                            schema: HealthCheckSchema
         """
-    service = HealthCheckService()
-    service.add_check("self", SelfConnectionHealthCheck(LOGGER, CONFIG), [])
-    service.add_check(
-        "mysql", MysqlConnectionHealthCheck(LOGGER, CONFIG), ["db"])
-    service.add_check("redis", RedisConnectionHealthCheck(
-        LOGGER, CONFIG), ["redis"])
-    service.add_check("queue", SQSConnectionHealthCheck(
-        LOGGER, CONFIG), ["queue"])
-    service.add_check("test", lambda: HealthCheckResult.unhealthy("connected"), ["example"])
-    service.add_check("test2", lambda: HealthCheckResult.unhealthy("connected"), ["example"])
-
-    return service.get_response()
+    service = HealthCheckManager()
+    return service.check()
 
 
-@APP.route('/favicon-32x32.png')
+@APP.route(API_ROOT + '/favicon-32x32.png')
 def favicon():
+    """
+    Favicon path
+
+    :return Returns a favicon for the browser with size 32x32
+    :rtype: flask.Response
+    """
     headers = CUSTOM_DEFAULT_HEADERS.copy()
     headers['Content-Type'] = "image/png"
-    data = base64.b64decode(
-        'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAkFBMVEUAAAAQM0QWNUYWNkYXNkYALjo'
-        'WNUYYOEUXN0YaPEUPMUAUM0QVNUYWNkYWNUYWNUUWNUYVNEYWNkYWNUYWM0eF6i0XNkchR0OB5SwzZj'
-        '9wyTEvXkA3az5apTZ+4C5DgDt31C9frjU5bz5uxTI/eDxzzjAmT0IsWUEeQkVltzR62S6D6CxIhzpKi'
-        'jpJiDpOkDl4b43lAAAAFXRSTlMAFc304QeZ/vj+ECB3xKlGilPXvS2Ka/h0AAABfklEQVR42oVT2XaC'
-        'MBAdJRAi7pYJa2QHxbb//3ctSSAUPfa+THLmzj4DBvZpvyauS9b7kw3PWDkWsrD6fFQhQ9dZLfVbC5M'
-        '88CWCPERr+8fLZodJ5M8QJbjbGL1H2M1fIGfEm+wJN+bGCSc6EXtNS/8FSrq2VX6YDv++XLpJ8SgDWM'
-        'nwqznGo6alcTbIxB2CHKn8VFikk2mMV2lEnV+CJd9+jJlxXmMr5dW14YCqwgbFpO8FNvJxwwM4TPWPo'
-        '5QalEsRMAcusXpi58/QUEWPL0AK1ThM5oQCUyXPoPINkdd922VBw4XgTV9zDGWWFrgjIQs4vwvOg6xr'
-        '+6gbCTqE+DYhlMGX0CF2OknK5gQ2JrkDh/W6TOEbYDeVecKbJtyNXiCfGmW7V93J2hDus1bDfhxWbIZ'
-        'VYDXITA7Lo6E0Ktgg9eB4KWuR44aj7ppBVPazhQH7/M/KgWe9X1qAg8XypT6nxIMJH+T94QCsLvj29I'
-        'YwZxyO9/F8vCbO9tX5/wDGjEZ7vrgFZwAAAABJRU5ErkJggg==')
-    return http_helper.create_response(
-        body=data, status_code=200, headers=headers)
+    data = get_favicon_32x32_data()
+
+    if helper.is_running_on_lambda():
+        data_b64 = {
+            'headers': headers,
+            'statusCode': 200,
+            'body': data,
+            'isBase64Encoded': True
+        }
+        data = helper.to_json(data_b64)
+        headers = {"Content-Type": "application/json"}
+    else:
+        data = base64.b64decode(data)
+
+    return http_helper.create_response(body=data, status_code=200, headers=headers)
 
 
-@APP.route('/docs')
+@APP.route(API_ROOT + '/favicon-16x16.png')
+def favicon16():
+    """
+    Favicon path
+
+    :return Returns a favicon for the browser with size 16x16
+    :rtype: flask.Response
+    """
+    headers = CUSTOM_DEFAULT_HEADERS.copy()
+    headers['Content-Type'] = "image/png"
+    data = get_favicon_16x16_data()
+
+    if helper.is_running_on_lambda():
+        data_b64 = {
+            'headers': headers,
+            'statusCode': 200,
+            'body': data,
+            'isBase64Encoded': True
+        }
+        data = helper.to_json(data_b64)
+        headers = {"Content-Type": "application/json"}
+    else:
+        data = base64.b64decode(data)
+
+    return http_helper.create_response(body=data, status_code=200, headers=headers)
+
+
+@APP.route(API_ROOT + '/docs')
 def docs():
+    """
+    Swagger OpenApi documentation
+
+    :return Returns the Swagger UI interface for test operations
+
+    # pylint: disable=line-too-long
+    See https://madeiramadeira.atlassian.net/wiki/spaces/CAR/pages/2226749441/Guidelines+para+projetos#Swagger
+
+    :rtype flask.Response
+    """
     headers = CUSTOM_DEFAULT_HEADERS.copy()
     headers['Content-Type'] = "text/html"
     html_file = open_vendor_file('./public/swagger/index.html', 'r')
@@ -117,8 +179,18 @@ def docs():
         body=html, status_code=200, headers=headers)
 
 
-@APP.route('/openapi.yml')
+@APP.route(API_ROOT + '/openapi.yml')
 def openapi():
+    """
+    Swagger OpenApi documentation route
+
+    :return Returns the openapi.yml generated the API specification file
+
+    # pylint: disable=line-too-long
+    See https://madeiramadeira.atlassian.net/wiki/spaces/CAR/pages/2226749441/Guidelines+para+projetos#Swagger
+
+    :rtype flask.Response
+    """
     headers = CUSTOM_DEFAULT_HEADERS.copy()
     headers['Content-Type'] = "text/yaml"
     html_file = open_vendor_file('./public/swagger/openapi.yml', 'r')
@@ -127,13 +199,23 @@ def openapi():
         body=html, status_code=200, headers=headers)
 
 
-@APP.route('/v1/product', methods=['GET'])
+# product routes
+@APP.route(API_ROOT + '/v1/product', methods=['GET'])
 def product_list():
     """
-    ---
-    get:
-        summary: Product List
-        parameters:
+    Product list route
+
+    :return Endpoint with RESTful pattern
+
+    # pylint: disable=line-too-long
+    See https://madeiramadeira.atlassian.net/wiki/spaces/CAR/pages/2244149708/WIP+-+Guidelines+-+RESTful+e+HATEOS
+
+    :rtype flask.Response
+
+        ---
+        get:
+            summary: Product List
+            parameters:
             - name: limit
               in: query
               description: "List limit"
@@ -171,15 +253,25 @@ def product_list():
               schema:
                 type: string
                 example: id
-        responses:
-            200:
-                description: Success response
-                content:
-                    application/json:
-                        schema: ProductListResponseSchema
-    """
+            responses:
+                200:
+                    description: Success response
+                    content:
+                        application/json:
+                            schema: HateosProductListResponseSchema
+                4xx:
+                    description: Error response
+                    content:
+                        application/json:
+                            schema: ProductListErrorResponseSchema
+                5xx:
+                    description: Service fail response
+                    content:
+                        application/json:
+                            schema: ProductListErrorResponseSchema
+        """
     request = ApiRequest().parse_request(APP)
-    LOGGER.info('request: {}'.format(request))
+    LOGGER.info(f'request: {request}')
 
     status_code = 200
     response = ApiResponse(request)
@@ -188,11 +280,17 @@ def product_list():
     manager = ProductManager(logger=LOGGER, product_service=ProductServiceV1(logger=LOGGER))
     manager.debug(DEBUG)
     try:
-        response.set_data(manager.list(request))
-        response.set_total(manager.count(request))
-    except Exception as err:
+        data = manager.list(request.to_dict())
+        response.set_data(data)
+        response.set_total(manager.count(request.to_dict()))
+
+        # hateos
+        response.links = None
+        set_hateos_meta(request, response)
+        # LOGGER.info(data)
+        # LOGGER.info(response.data)
+    except CustomException as err:
         LOGGER.error(err)
-        LOGGER.info('aq')
         error = ApiException(MessagesEnum.LIST_ERROR)
         status_code = 400
         if manager.exception:
@@ -202,30 +300,357 @@ def product_list():
     return response.get_response(status_code)
 
 
-@APP.route('/v1/product/<uuid>', methods=['GET'])
+@APP.route(API_ROOT + '/v1/product/<uuid>', methods=['GET'])
 def product_get(uuid):
-    pass
+    """
+    Product get route
+
+    :return Endpoint with RESTful pattern
+
+    # pylint: disable=line-too-long
+    See https://madeiramadeira.atlassian.net/wiki/spaces/CAR/pages/2244149708/WIP+-+Guidelines+-+RESTful+e+HATEOS
+
+    :rtype flask.Response
+        ---
+        get:
+            summary: Product Get
+            parameters:
+            - in: path
+              name: uuid
+              description: "Product Id"
+              required: true
+              schema:
+                type: string
+                format: uuid
+                example: 4bcad46b-6978-488f-8153-1c49f8a45244
+            - name: fields
+              in: query
+              description: "Filter fields with comma"
+              required: false
+              schema:
+                type: string
+                example:
+            responses:
+                200:
+                    description: Success response
+                    content:
+                        application/json:
+                            schema: HateosProductGetResponseSchema
+                4xx:
+                    description: Error response
+                    content:
+                        application/json:
+                            schema: ProductGetErrorResponseSchema
+                5xx:
+                    description: Service fail response
+                    content:
+                        application/json:
+                            schema: ProductGetErrorResponseSchema
+    """
+    request = ApiRequest().parse_request(APP)
+    LOGGER.info(f'request: {request}')
+
+    status_code = 200
+    response = ApiResponse(request)
+    response.set_hateos(True)
+
+    manager = ProductManager(logger=LOGGER, product_service=ProductServiceV1(logger=LOGGER))
+    manager.debug(DEBUG)
+    try:
+        response.set_data(manager.get(request.to_dict(), uuid))
+
+        # hateos
+        set_hateos_links(request, response, uuid)
+        set_hateos_meta(request, response, uuid)
+
+    except CustomException as error:
+        LOGGER.error(error)
+        if not isinstance(error, ValidationException):
+            error = ApiException(MessagesEnum.FIND_ERROR)
+        status_code = 400
+        if manager.exception:
+            error = manager.exception
+        response.set_exception(error)
+
+    return response.get_response(status_code)
 
 
-@APP.route('/v1/product/<uuid>', methods=['POST'])
+@APP.route(API_ROOT + '/v1/product', methods=['POST'])
 def product_create():
-    pass
+    """
+    Product create route
+
+    :return Endpoint with RESTful pattern
+
+    # pylint: disable=line-too-long
+    See https://madeiramadeira.atlassian.net/wiki/spaces/CAR/pages/2244149708/WIP+-+Guidelines+-+RESTful+e+HATEOS
+
+    :rtype flask.Response
+        ---
+        post:
+            summary: Product Create
+            requestBody:
+                description: 'Product to be created'
+                required: true
+                content:
+                    application/json:
+                        schema: ProductCreateRequestSchema
+            responses:
+                200:
+                    description: Success response
+                    content:
+                        application/json:
+                            schema: ProductCreateResponseSchema
+                4xx:
+                    description: Error response
+                    content:
+                        application/json:
+                            schema: ProductCreateErrorResponseSchema
+                5xx:
+                    description: Service fail response
+                    content:
+                        application/json:
+                            schema: ProductCreateErrorResponseSchema
+            """
+    request = ApiRequest().parse_request(APP)
+    LOGGER.info(f'request: {request}')
+
+    status_code = 200
+    response = ApiResponse(request)
+    response.set_hateos(False)
+
+    manager = ProductManager(logger=LOGGER, product_service=ProductServiceV1(logger=LOGGER))
+    manager.debug(DEBUG)
+    try:
+        response.set_data(manager.create(request.to_dict()))
+        # response.set_total(manager.count(request))
+
+        # hateos
+        # set_hateos_links(request, response, uuid)
+        # set_hateos_meta(request, response, uuid)
+    except CustomException as error:
+        LOGGER.error(error)
+        if not isinstance(error, ValidationException):
+            error = ApiException(MessagesEnum.CREATE_ERROR)
+        status_code = 400
+        if manager.exception:
+            error = manager.exception
+        response.set_exception(error)
+
+    return response.get_response(status_code)
 
 
 @APP.route('/v1/product/<uuid>', methods=['PUT'])
-def product_update():
-    pass
+def product_update(uuid):
+    """
+    Product update route
+
+    :return Endpoint with RESTful pattern
+
+    # pylint: disable=line-too-long
+    See https://madeiramadeira.atlassian.net/wiki/spaces/CAR/pages/2244149708/WIP+-+Guidelines+-+RESTful+e+HATEOS
+
+    :rtype flask.Response
+        ---
+        put:
+            summary: Complete Product Update
+            parameters:
+            - in: path
+              name: uuid
+              description: "Product Id"
+              required: true
+              schema:
+                type: string
+                format: uuid
+                example: 4bcad46b-6978-488f-8153-1c49f8a45244
+            requestBody:
+                description: 'Product to be updated'
+                required: true
+                content:
+                    application/json:
+                        schema: ProductCompleteUpdateRequestSchema
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema: ProductUpdateResponseSchema
+                4xx:
+                    description: Error response
+                    content:
+                        application/json:
+                            schema: ProductUpdateErrorResponseSchema
+                5xx:
+                    description: Service fail response
+                    content:
+                        application/json:
+                            schema: ProductUpdateErrorResponseSchema
+            """
+    request = ApiRequest().parse_request(APP)
+    LOGGER.info(f'request: {request}')
+
+    status_code = 200
+    response = ApiResponse(request)
+    response.set_hateos(False)
+
+    manager = ProductManager(logger=LOGGER, product_service=ProductServiceV1(logger=LOGGER))
+    manager.debug(DEBUG)
+    try:
+
+        response.set_data(manager.update(request.to_dict(), uuid))
+        # response.set_total(manager.count(request))
+    except CustomException as error:
+        LOGGER.error(error)
+        if not isinstance(error, ValidationException):
+            error = ApiException(MessagesEnum.UPDATE_ERROR)
+        status_code = 400
+        if manager.exception:
+            error = manager.exception
+        response.set_exception(error)
+
+    return response.get_response(status_code)
 
 
 @APP.route('/v1/product/<uuid>', methods=['DELETE'])
-def product_delete():
-    pass
+def product_delete(uuid):
+    """
+    Product delete route
+
+    :return Endpoint with RESTful pattern
+
+    # pylint: disable=line-too-long
+    See https://madeiramadeira.atlassian.net/wiki/spaces/CAR/pages/2244149708/WIP+-+Guidelines+-+RESTful+e+HATEOS
+
+    :rtype flask.Response
+            ---
+            delete:
+                summary: Soft Product Delete
+                parameters:
+                - in: path
+                  name: uuid
+                  description: "Product Id"
+                  required: true
+                  schema:
+                    type: string
+                    format: uuid
+                    example: 4bcad46b-6978-488f-8153-1c49f8a45244
+                responses:
+                    200:
+                        description: Success response
+                        content:
+                            application/json:
+                                schema: ProductSoftDeleteResponseSchema
+                    4xx:
+                        description: Error response
+                        content:
+                            application/json:
+                                schema: ProductSoftDeleteErrorResponseSchema
+                    5xx:
+                        description: Service fail response
+                        content:
+                            application/json:
+                                schema: ProductSoftDeleteErrorResponseSchema
+                    """
+    request = ApiRequest().parse_request(APP)
+    LOGGER.info(f'request: {request}')
+
+    status_code = 200
+    response = ApiResponse(request)
+    response.set_hateos(False)
+
+    manager = ProductManager(logger=LOGGER, product_service=ProductServiceV1(logger=LOGGER))
+    manager.debug(DEBUG)
+    try:
+        data = {"deleted": manager.delete(request.to_dict(), uuid)}
+        response.set_data(data)
+        # response.set_total(manager.count(request))
+    except CustomException as error:
+        LOGGER.error(error)
+        if not isinstance(error, ValidationException):
+            error = ApiException(MessagesEnum.DELETE_ERROR)
+        status_code = 400
+        if manager.exception:
+            error = manager.exception
+        response.set_exception(error)
+
+    return response.get_response(status_code)
+
+
+@APP.route('/v1/product/<uuid>', methods=['PATCH'])
+def product_soft_update(uuid):
+    """
+    Product soft update route
+
+    :return Endpoint with RESTful pattern
+
+    # pylint: disable=line-too-long
+    See https://madeiramadeira.atlassian.net/wiki/spaces/CAR/pages/2244149708/WIP+-+Guidelines+-+RESTful+e+HATEOS
+
+    :rtype flask.Response
+        ---
+        patch:
+            summary: Soft Product Update
+            parameters:
+            - in: path
+              name: uuid
+              description: "Product Id"
+              required: true
+              schema:
+                type: string
+                format: uuid
+                example: 4bcad46b-6978-488f-8153-1c49f8a45244
+            requestBody:
+                description: 'Product field to be updated'
+                required: true
+                content:
+                    application/json:
+                        schema: ProductSoftUpdateRequestSchema
+
+            responses:
+                200:
+                    description: Success response
+                    content:
+                        application/json:
+                            schema: ProductUpdateResponseSchema
+                4xx:
+                    description: Error response
+                    content:
+                        application/json:
+                            schema: ProductUpdateErrorResponseSchema
+                5xx:
+                    description: Service fail response
+                    content:
+                        application/json:
+                            schema: ProductUpdateErrorResponseSchema
+                """
+    request = ApiRequest().parse_request(APP)
+    LOGGER.info(f'request: {request}')
+
+    status_code = 200
+    response = ApiResponse(request)
+    response.set_hateos(False)
+
+    manager = ProductManager(logger=LOGGER, product_service=ProductServiceV1(logger=LOGGER))
+    manager.debug(DEBUG)
+    try:
+
+        response.set_data(manager.soft_update(request.to_dict(), uuid))
+        # response.set_total(manager.count(request))
+    except CustomException as error:
+        LOGGER.error(error)
+        if not isinstance(error, ValidationException):
+            error = ApiException(MessagesEnum.UPDATE_ERROR)
+        status_code = 400
+        if manager.exception:
+            error = manager.exception
+        response.set_exception(error)
+
+    return response.get_response(status_code)
 
 
 # *************
 # doc
 # *************
-spec.path(view=alive, path="/alive", operations=get_doc(alive))
+spec.path(view=alive, path=API_ROOT + "/alive", operations=get_doc(alive))
 # *************
 # product
 # *************
@@ -234,16 +659,17 @@ spec.path(view=product_list,
 spec.path(view=product_get,
           path="/v1/product/{uuid}", operations=get_doc(product_get))
 spec.path(view=product_create,
-          path="/v1/product/{uuid}", operations=get_doc(product_create))
+          path="/v1/product", operations=get_doc(product_create))
 spec.path(view=product_update,
           path="/v1/product/{uuid}", operations=get_doc(product_update))
+spec.path(view=product_soft_update,
+          path="/v1/product/{uuid}", operations=get_doc(product_soft_update))
 spec.path(view=product_delete,
           path="/v1/product/{uuid}", operations=get_doc(product_delete))
-
 print_routes(APP, LOGGER)
-LOGGER.info('Running at {}'.format(os.environ['APP_ENV']))
+LOGGER.info(f'Running at {ENV}')
 
-# *************
 # generate de openapi.yml
-# *************
 generate_openapi_yml(spec, LOGGER, force=True)
+
+api_schemas.register()

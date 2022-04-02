@@ -1,20 +1,29 @@
+"""
+SQS Helper module for test resources
+Version: 1.0.0
+"""
 import os
 
-from lambda_app.aws.sqs import SQSEvents
+from flambda_app.aws.sqs import SQS
 
 
 class SQSHelper:
+    _sqs = None
 
     @classmethod
     def get_message(cls, queue_url):
-        sqs = SQSEvents()
-        message_array = sqs.get_message(queue_url)
+        # keep one instance only
+        if cls._sqs is None:
+            cls._sqs = SQS()
+        message_array = cls._sqs.get_message(queue_url)
         return message_array
 
     @classmethod
     def create_message(cls, message, queue_url):
-        sqs = SQSEvents()
-        return sqs.send_message(message, queue_url)
+        # keep one instance only
+        if cls._sqs is None:
+            cls._sqs = SQS()
+        return cls._sqs.send_message(message, queue_url)
 
     @classmethod
     def event_to_dict(cls, event):
@@ -40,14 +49,18 @@ class SQSHelper:
     @classmethod
     def delete_queue(cls, queue_url):
         queue_name = cls.get_queue_name(queue_url)
-        sqs = SQSEvents()
-        return sqs.delete_queue(queue_name)
+        # keep one instance only
+        if cls._sqs is None:
+            cls._sqs = SQS()
+        return cls._sqs.delete_queue(queue_name)
 
     @classmethod
     def create_queue(cls, queue_url, attributes=None):
         queue_name = cls.get_queue_name(queue_url)
-        sqs = SQSEvents()
-        return sqs.create_queue(queue_name, attributes)
+        # keep one instance only
+        if cls._sqs is None:
+            cls._sqs = SQS()
+        return cls._sqs.create_queue(queue_name, attributes)
 
     @classmethod
     def get_queue_name(cls, queue_url):

@@ -17,14 +17,21 @@ venv
 /docker/elk/logs/elasticsearch.log
 /.infrastructure/.terraform/
 /.chalice/deployments/
-/target/
-/target/dynamodb-local/
 *_us-east-2.db
 *_sa-east-1.db
 /docker/aws/credentials
 /deployment.zip
 /sam.json
 /.coverage
+
+# mantem a vendor
+!vendor
+# ignora os demais arquivos
+vendor/*
+# mantem essa pasta
+!/vendor/public
+# mantem essa pasta
+!/vendor/datasources
 
 # Coverage results and execution report
 !/target/integration/report.xml
@@ -50,9 +57,15 @@ imagedefinitions.json
 config/integration.en
 /node_modules/
 
-/examples/lambda_api/vendor/*
-/examples/lambda_cron/vendor/*
-/examples/lambda_s3/vendor/*
-/examples/lambda_sns/vendor/*
-/examples/lambda_sqs/vendor/*
-/vendor/
+/lambda-full.zip
+
+#output lambda
+output/response.json
+/output/
+/include/
+/env/integration.env
+/env/production.env
+/env/staging.env
+/env/_staging.env
+/env/_integration.env
+/env/_production.env

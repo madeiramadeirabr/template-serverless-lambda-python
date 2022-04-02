@@ -1,11 +1,11 @@
-import json
+"""
+MySQL Helper Module for test resources
+Version: 1.0.0
+"""
+
 import os
-import boto3
 
-from os import path
-
-from lambda_app.database.mysql import get_connection
-from tests import ROOT_DIR
+from flambda_app.database.mysql import MySQLConnector
 
 if __package__:
     current_path = os.path.abspath(os.path.dirname(__file__)).replace('/' + str(__package__), '', 1)
@@ -19,7 +19,7 @@ if not current_path[-1] == '/':
 class ConnectionHelper:
     @staticmethod
     def get_mysql_local_connection():
-        return get_connection()
+        return MySQLConnector().get_connection()
 
 
 class MySQLHelper:
@@ -93,32 +93,38 @@ class MySQLHelper:
     @staticmethod
     def create_table(connection, table_name, file_name):
         result = False
-
-        connection.connect()
-        try:
-            sql = 'SELECT table_name FROM information_schema.tables WHERE table_schema = %s'
-            with connection.cursor() as cursor:
-                cursor.execute(sql, (table_name,))
-                table_exists = cursor.fetchone()
-        except Exception as err:
-             table_exists = False
-
-        if not table_exists:
-            sql_file = open(file_name, 'r')
-            create_table = sql_file.read()
-            sql_file.close()
+        if connection:
+            try:
+                connection.connect()
+            except Exception as err:
+                pass
 
             try:
+                sql = 'SELECT table_name FROM information_schema.tables WHERE table_schema = %s'
                 with connection.cursor() as cursor:
-                    result = cursor.execute(create_table)
-                    print(f"Creating {table_name}...")
+                    cursor.execute(sql, (table_name,))
+                    table_exists = cursor.fetchone()
             except Exception as err:
-                result = False
-                print(f"Not created {table_name}...")
+                table_exists = False
+
+            if not table_exists:
+                sql_file = open(file_name, 'r')
+                create_table = sql_file.read()
+                sql_file.close()
+
+                try:
+                    with connection.cursor() as cursor:
+                        result = cursor.execute(create_table)
+                        print(f"Creating {table_name}...")
+                except Exception as err:
+                    result = False
+                    print(f"Not created {table_name}...")
+            else:
+                print(f'Table {table_name} already exists')
+            try:
+                connection.close()
+            except Exception as err:
+                pass
         else:
-            print(f'Table {table_name} already exists')
-        try:
-            connection.close()
-        except Exception as err:
-            pass
+            print("Invalid connection")
         return result

@@ -1,14 +1,15 @@
 import os
+import time
 import unittest
 from time import sleep
 
-from lambda_app.repositories.mysql.ocoren_repository import OcorenRepository
+from flambda_app.repositories.v1.mysql.ocoren_repository import OcorenRepository
 from tests import ROOT_DIR
 from tests.component.componenttestutils import BaseComponentTestCase
-from lambda_app import helper
+from flambda_app import helper
 from unittest_data_provider import data_provider
-from lambda_app.config import get_config
-from lambda_app.logging import get_logger
+from flambda_app.config import get_config
+from flambda_app.logging import get_logger
 from tests.component.helpers.database.mysql_helper import MySQLHelper
 from tests.component.helpers.aws.sqs_helper import SQSHelper
 from tests.unit.helpers.aws.sqs_helper import get_sqs_event_sample, create_chalice_sqs_event
@@ -21,8 +22,14 @@ import json
 
 def get_queue_message():
     queue_url = os.getenv("APP_QUEUE")
+
+    message = get_cancelamento_event()
+    SQSHelper.create_message(message, queue_url)
+    time.sleep(1)
+
     event = SQSHelper.get_message(queue_url)
-    return (event,)
+
+    return (event,),
 
 
 def get_queue_events_samples():
@@ -33,12 +40,9 @@ def get_queue_events_samples():
     return (sqs_event,),
 
 
-# AttributeError: module 'typing' has no attribute '_classvar'
-# This error occours on Python 3.8
-# If you will consume items from the queue, dont boot the lambda
 class AppTestCase(BaseComponentTestCase):
     """
-
+    Obs: If you will execute this test, please execute the ./scripts/testenv.sh instead ./scripts/runenv.sh
     """
     EXECUTE_FIXTURE = True
     CONFIG = None
@@ -57,52 +61,21 @@ class AppTestCase(BaseComponentTestCase):
             logger.info('Fixture: create sqs queue')
 
             mysql_connection = MySQLHelper.get_connection()
+            database_name='store'
             table_name = OcorenRepository.BASE_TABLE
-            cls.fixture_table(logger, mysql_connection, table_name)
+            cls.fixture_table(logger, mysql_connection, table_name, database_name)
 
             logger.info('Fixture: create sqs queue')
 
             queue_url = cls.CONFIG.APP_QUEUE
             cls.fixture_sqs(logger, queue_url)
 
-    @classmethod
-    def fixture_sqs(cls, logger, queue_url):
-        queue_name = SQSHelper.get_queue_name(queue_url)
-        deleted = SQSHelper.delete_queue(queue_url)
-        if deleted:
-            logger.info(f'Deleting queue name: {queue_name}')
-
-        attributes = {'DelaySeconds': '1'}
-        result = SQSHelper.create_queue(queue_url, attributes)
-        if result is not None:
-            logger.info(f'queue {queue_name} created')
-        else:
-            logger.error(f'queue {queue_name} not created')
-
-        event = get_cancelamento_event()
-        message = event['Records'][0]
-        if 'body' in message:
-            message = message['body']
-        # print(message)
-        SQSHelper.create_message(message, queue_url)
-        logger.info('created message: {}'.format(message))
-
-    @classmethod
-    def fixture_table(cls, logger, mysql_connection, table_name):
-        dropped = MySQLHelper.drop_table(mysql_connection, table_name)
-        if dropped:
-            logger.info(f"Table dropped:: {table_name}")
-        file_name = ROOT_DIR + f"tests/datasets/database/structure/mysql/create.table.store.{table_name}.sql"
-        created = MySQLHelper.create_table(mysql_connection, table_name, file_name)
-        if created:
-            logger.info(f"Table created:: {table_name}")
-        file_name = ROOT_DIR + f"tests/datasets/database/seeders/mysql/seeder.table.store.{table_name}.sql"
-        populated = MySQLHelper.sow_table(mysql_connection, table_name, file_name)
-        if populated:
-            logger.info(f"Table populated:: {table_name}")
 
     @data_provider(get_queue_message)
     def test_index(self, event):
+        """
+        TODO precisa de ajustes para funcionar
+        """
         self.logger.info('Running test: %s', get_function_name(__name__))
         self.logger.info('Event: {}'.format(event))
 
@@ -116,7 +89,7 @@ class AppTestCase(BaseComponentTestCase):
         self.assertTrue(response)
 
     @data_provider(get_queue_events_samples)
-    def test_cancelamento_event_index(self, event):
+    def test_index_with_samples(self, event):
         self.logger.info('Running test: %s', get_function_name(__name__))
         self.logger.info('Event: {}'.format(event))
 

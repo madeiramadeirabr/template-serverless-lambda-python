@@ -1,3 +1,7 @@
+"""
+AWS Lambda Module Mock for test resources
+Version: 1.0.0
+"""
 class FakeLambdaContextIdentity(object):
     def __init__(self, cognito_identity_id, cognito_identity_pool_id):
         self.cognito_identity_id = cognito_identity_id

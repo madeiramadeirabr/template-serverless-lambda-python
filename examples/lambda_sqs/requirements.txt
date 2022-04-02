@@ -8,5 +8,4 @@ Flask
 pyyaml
 apispec
 marshmallow
-pylint
 autopep8

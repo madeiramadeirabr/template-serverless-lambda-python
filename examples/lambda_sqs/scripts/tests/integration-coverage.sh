@@ -1,3 +1,4 @@
+#!/bin/bash
 if [ -z "$1" ]; then
   coverage run -m unittest discover -s ./tests/integration -t ./
 else

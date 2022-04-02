@@ -1,3 +1,4 @@
+#!/bin/bash
 if test -f .projectrc; then
   source .projectrc
 elif test -f ./scripts/.projectrc; then

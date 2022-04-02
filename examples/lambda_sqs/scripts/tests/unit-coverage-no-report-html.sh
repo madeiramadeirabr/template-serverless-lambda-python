@@ -1,3 +1,4 @@
+#!/bin/bash
 if [ -z "$1" ]; then
   python3 -m coverage run -m unittest discover -s ./tests/unit -t ./
 else

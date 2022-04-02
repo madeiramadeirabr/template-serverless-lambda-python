@@ -45,7 +45,7 @@ queue_mock.send_message.side_effect = lambda MessageBody: {
                                                              'x-amz-security-token,x-amz-user-agent,x-amz-target,'
                                                              'x-amz-acl,x-amz-version-id,x-localstack-target,'
                                                              'x-amz-tagging', 'access-control-expose-headers':
-                                 'x-amz-version-id', 'connection': 'close', 'date': 'Tue, 28 Dec 2021 23:17:16 GMT',
+                             'x-amz-version-id', 'connection': 'close', 'date': 'Tue, 28 Dec 2021 23:17:16 GMT',
                              'server': 'hypercorn-h11'}, 'RetryAttempts': 0}}
 queue_mock.send_messages.side_effect = lambda arg: None
 queue_mock.set_attributes.side_effect = lambda arg: None

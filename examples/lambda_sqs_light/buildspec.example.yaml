@@ -1,0 +1,37 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.8
+  pre_build:
+    run-as: root
+    commands:
+      # Install Serverless Framework CLI and plugins
+      - curl -L -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.9.6/yq_linux_amd64 && chmod +x /usr/local/bin/yq
+      - npm install -g serverless@2.72.2 $(yq eval '.plugins | join(" ")' serverless.yaml)
+      - export IAC_VERSION="serverless-$(serverless --version | grep -i framework | cut -d ' ' -f 3)"
+      - yq eval '.provider.stackTags.Iac = strenv(IAC_VERSION) | .custom.cloudWatchLogsTags.Iac = strenv(IAC_VERSION)' --inplace serverless.yaml
+  build:
+    commands:
+      - pip install --upgrade pip
+      # Install project dependencies locally
+      - pip install -r ./requirements.txt -t .
+      - pip install -r ./requirements-vendor.txt -t ./vendor
+  post_build:
+    commands:
+      # Install test requirements
+      #      - pip install -r ./requirements-tests.txt
+      #      # Run unit tests
+      #      - ./bin/tests/unit-coverage-no-report-html.sh
+      #      # Clean vendor folder (let the zip light because the layers)
+      #      # - rm -Rf ./vendor/*
+      #      # Uninstall test dependencies
+      #      - pip uninstall -r requirements-tests.txt -y
+      # Deploy application
+      - serverless deploy --verbose --stage $ENVIRONMENT_NAME
+#reports:
+#  UnitTestsReports:
+#    files:
+#      - 'target/unit/clover.xml'
+#    file-format: 'CLOVERXML'

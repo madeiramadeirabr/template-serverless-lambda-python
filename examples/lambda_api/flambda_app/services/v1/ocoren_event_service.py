@@ -18,7 +18,7 @@ class OcorenEventService:
         # sqs event service
         self.sqs = sqs if sqs is not None else SQS()
         # queue_url
-        self.queue = self.config.APP_QUEUE
+        self.queue = self.config.get('APP_QUEUE', None)
         # exception
         self.exception = None
         # response

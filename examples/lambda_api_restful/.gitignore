@@ -17,8 +17,6 @@ venv
 /docker/elk/logs/elasticsearch.log
 /.infrastructure/.terraform/
 /.chalice/deployments/
-/target/
-/target/dynamodb-local/
 *_us-east-2.db
 *_sa-east-1.db
 /docker/aws/credentials

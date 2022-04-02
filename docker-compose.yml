@@ -1,9 +1,8 @@
 version: "3.2"
 services:
-  template-serverless-lambda-python-lambda-api-resful:
-#    container_name: template-serverless-lambda-python-lambda-api
+  template-serverless-lambda-python-lambda-api:
     build:
-      context: ./examples/lambda_api_restful/
+      context: ./examples/lambda_api/
       dockerfile: ./docker/python/Dockerfile
     privileged: true
     entrypoint: ["sh", "./docker/python/entrypoint.sh"]
@@ -21,7 +20,7 @@ services:
     networks:
       - service-python
     volumes:
-      - ./examples/lambda_api_restful/:/app
+      - ./examples/lambda_api/:/app
   template-serverless-lambda-python-lambda-sqs:
 #    container_name: template-serverless-lambda-python-lambda-sqs
     build:

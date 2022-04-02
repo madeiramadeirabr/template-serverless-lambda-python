@@ -35,7 +35,7 @@ class LoggingTestCase(BaseUnitTestCase):
         event = {"event_name": "TEST"}
 
         # TODO mockar o es client
-        logger = get_logger(profile, default_index='life-cycle-logs')
+        logger = get_logger(profile, default_index='logs')
 
         logger.info("something", extra=event)
         logger.error("something 2", extra=event)
@@ -43,7 +43,7 @@ class LoggingTestCase(BaseUnitTestCase):
     def test_remove_handler(self):
         self.logger.info('Running test: %s', get_function_name(__name__))
         profile = LoggerProfile.ELK
-        logger = get_logger(profile, default_index='life-cycle-logs')
+        logger = get_logger(profile, default_index='logs')
         logger.addHandler(logging.StreamHandler())
         remove_handler(logger, logging.StreamHandler)
 

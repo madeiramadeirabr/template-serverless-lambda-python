@@ -63,7 +63,6 @@ config/integration.en
 output/response.json
 /output/
 /include/
-/life-cycle-service-manager-recovery.zip
 /env/integration.env
 /env/production.env
 /env/staging.env

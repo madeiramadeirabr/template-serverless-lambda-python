@@ -77,7 +77,7 @@ def get_tracker_logger(profile: LoggerProfile = None, **kwargs):
     logging.basicConfig(format=log_format, filename=log_filename, level=log_level)
     logger = logging.getLogger(log_name)
     if 'default_index' not in kwargs:
-        kwargs['default_index'] = 'life-cycle-event-tracking'
+        kwargs['default_index'] = 'event-tracking'
     set_handler_by_profile(logger, profile=profile, **kwargs)
     return logger
 

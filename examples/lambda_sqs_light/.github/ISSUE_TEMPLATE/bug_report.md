@@ -1,45 +1,67 @@
 ---
-name: Bug reports
-about: Bug reports
-title: bug - [component/module] - bug title
-labels: ''
-assignees: ''
+name: Bug Report
+about: File a bug report
+title: "bug - [component/module] - bug title"
+labels: "bug report"
+assignees: ""
 ---
 
-<!-- ## We appreciate you creating a new issue 😄!
+## Thanks for creating an issue 😄!
 
-Don't forget to check that there are no other open/closed issues before creating your issue. Someone may have already asked this question/request.
-Please fill in as many of the fields as possible to facilitate the resolution or clarification of your question ❤️.
+Please search open/closed issues before submitting. Someone might have asked the same thing before.
+To help us, please take the time to accurately fill out this template. ❤️
 
--->
+#### 1. Describe the bug:
 
-#### 1. Bug description:
-
-> Enter a simple description about the bug
-> Example: When I \_**\_, I expected the behavior \_\_** but the behavior \_\_\_\_ occurred
-
----
-
-#### 3. Link to bug example:
-
-> Link to CodeSandbox or any sandbox service that shows the error happening (see https://github.com/accezar/multi-package-start#codesandbox-templates for examples)
+> A brief description of the issue.
+> Ex: When I \_**\_, I expected \_\_** to happen but \_\_\_\_ happened instead.
 
 ---
 
-#### 4. Step-by-step to reproduces the error behavior:
+#### 2. Version:
+
+> The version of this library that are using.
+
+---
+
+#### 3. Link to Reproduction:
+
+> A link to a CodeSandbox or any other sandbox service which demonstrates the bug (see https://github.com/accezar/multi-package-start#codesandbox-templates for templates)
+
+---
+
+#### 4. Steps to reproduce
 
 > 1. Go to '...'
 > 2. Click on '....'
-> 3. Get the error
+> 3. Scroll down to '....'
+> 4. See error
 
 ---
 
 #### 5. Screenshots
 
-> Se possível, adicione screenshots para ajudar a explicar o erro
+> If applicable, add screenshots to help explain your problem.
 
 ---
 
-#### 6. Extra info
+#### 6. Desktop (please complete the following information):
 
-> Add any additional information here that you think is relevant to understanding the issue
+- OS: [e.g. iOS]
+- Browser [e.g. chrome, safari]
+- Version [e.g. 22]
+
+---
+
+#### 7. Smartphone (please complete the following information):
+
+- Device: [e.g. iPhone6]
+- OS: [e.g. iOS8.1]
+- Browser [e.g. stock browser, safari]
+- Version [e.g. 22]
+
+---
+
+#### 8. Additional context
+
+> Add any other context about the problem here.

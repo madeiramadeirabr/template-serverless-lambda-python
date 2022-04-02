@@ -63,19 +63,23 @@ Example of the workflow to create the environment.
 ## Single project examples
 
 You can find light examples:
-* [Lambda API Light](./examples/lambda_api_light)
-* [Lambda CRON Light](./examples/lambda_cron_light)
+
+[//]: # (* [Lambda API Light]&#40;./examples/lambda_api_light&#41;)
+[//]: # (* [Lambda CRON Light]&#40;./examples/lambda_cron_light&#41;)
 * [Lambda SQS Light](./examples/lambda_sqs_light)
-* [Lambda SNS Light](./examples/lambda_sns_light)
-* [Lambda S3 Light](./examples/lambda_s3_light)
-* 
+
+[//]: # (* [Lambda SNS Light]&#40;./examples/lambda_sns_light&#41;)
+[//]: # (* [Lambda S3 Light]&#40;./examples/lambda_s3_light&#41;)
+
 You can find complex examples:
 * [Lambda API](./examples/lambda_api)
 * [Lambda API RESTful](./examples/lambda_api_restful)
-* [Lambda CRON](./examples/lambda_cron)
+
+[//]: # (* [Lambda CRON]&#40;./examples/lambda_cron&#41;)
 * [Lambda SQS](./examples/lambda_sqs)
-* [Lambda SNS](./examples/lambda_sns)
-* [Lambda S3](./examples/lambda_s3)
+
+[//]: # (* [Lambda SNS]&#40;./examples/lambda_sns&#41;)
+[//]: # (* [Lambda S3]&#40;./examples/lambda_s3&#41;)
 
 ## Details about requirements files
 ### requirements.txt

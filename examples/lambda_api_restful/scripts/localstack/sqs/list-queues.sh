@@ -1,4 +1,8 @@
 #!/bin/bash
+# **************************
+# Localstack SQS List Queues Tool
+# Version: 1.0.0
+# **************************
 if [ $RUNNING_IN_CONTAINER ]; then
   HOST=localstack
 else

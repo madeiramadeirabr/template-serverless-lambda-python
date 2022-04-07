@@ -1,4 +1,8 @@
 #!/bin/bash
+# **************************
+# Localstack Lambda Create Event Source Mapping Tool
+# Version: 1.0.0
+# **************************
 if [ -z "$1" ]; then
   echo 'Function name must be informed'
   exit 1

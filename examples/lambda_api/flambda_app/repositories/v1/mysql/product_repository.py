@@ -250,3 +250,6 @@ class ProductRepository(AbstractRepository):
             self._close()
 
         return result
+
+    def delete(self):
+        pass

@@ -1,4 +1,8 @@
 #!/bin/bash
+# **************************
+# Localstack Lambda Create Function From S3 Tool
+# Version: 1.0.0
+# **************************
 # -----------------------------------------------------------------------------
 # Current file variables
 # -----------------------------------------------------------------------------
@@ -105,7 +109,7 @@ else
   echo '----------------------------------------'
   LAST_PWD=$(pwd)
   cd ${FUNCTION_PATH}
-  zip -r ./lambda-full.zip ./ -x '*.git*' -x "./zip.sh*" -x "./venv/*" -x "./.idea/*" -x "./lambda-full.zip"
+  zip -q -r ./lambda-full.zip ./ -x '*.git*' -x "./zip.sh*" -x "./venv/*" -x "./.idea/*" -x "./lambda-full.zip"
   echo "zip file created in ${FUNCTION_PATH}lambda-full.zip"
   cd ${LAST_PWD}
 

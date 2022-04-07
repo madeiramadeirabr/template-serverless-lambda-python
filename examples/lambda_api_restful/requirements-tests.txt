@@ -1,4 +1,3 @@
-serverless-wsgi
 unittest-data-provider
 coverage
 coverage2clover

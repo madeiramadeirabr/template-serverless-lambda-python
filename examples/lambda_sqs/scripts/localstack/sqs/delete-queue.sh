@@ -1,4 +1,8 @@
 #!/bin/bash
+# **************************
+# Localstack SQS Delete Queue Tool
+# Version: 1.0.0
+# **************************
 if [ -z "$1" ]; then
   echo 'Queue name must be informed'
   exit 1

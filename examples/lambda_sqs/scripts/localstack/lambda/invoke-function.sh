@@ -1,4 +1,8 @@
 #!/bin/bash
+# **************************
+# Localstack Lambda Invoke API Function Tool
+# Version: 1.0.0
+# **************************
 if [ -z "$1" ]; then
   echo 'Function name must be informed'
   exit 1
@@ -25,6 +29,11 @@ else
   --function-name arn:aws:lambda:us-east-1:000000000000:function:$FUNCTION_NAME \
   --payload $PAYLOAD ./output/response.json \
   --log-type Tail --query 'LogResult' --output text |  base64 -d"
+
+  if ! test -d ./output; then
+    echo 'creating dir ./output'
+    mkdir ./output
+  fi
 
   aws --endpoint-url=http://$HOST:4566 lambda invoke \
   --function-name arn:aws:lambda:us-east-1:000000000000:function:$FUNCTION_NAME \

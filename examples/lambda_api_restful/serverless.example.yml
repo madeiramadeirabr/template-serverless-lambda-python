@@ -56,8 +56,36 @@ functions:
     reservedConcurrency: 5
     role: ${env:LAMBDA_EXECUTION_ROLE_ARN}
     events:
-      - http: ANY /
-      - http: 'ANY /{proxy+}'
+      # index
+      - http:
+          method: GET
+          path: /${env:APP_NAME}
+          cors: true
+      # alive
+      - http:
+          method: GET
+          path: /${env:APP_NAME}/alive
+          cors: true
+      # favicon
+      - http:
+          method: GET
+          path: /${env:APP_NAME}/favicon-32x32.png
+          cors: true
+      # favicon
+      - http:
+          method: GET
+          path: /${env:APP_NAME}/favicon-16x16.png
+          cors: true
+      # docs
+      - http:
+          method: GET
+          path: /${env:APP_NAME}/docs
+          cors: true
+      # openapi
+      - http:
+          method: GET
+          path: /${env:APP_NAME}/openapi.yml
+          cors: true
     deploymentSettings:
       type: ${env:LAMBDA_DEPLOYMENT_PREFERENCE_TYPE}
       alias: Live

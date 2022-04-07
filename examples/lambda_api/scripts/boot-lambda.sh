@@ -1,4 +1,8 @@
 #!/bin/bash
+# **************************
+# Localstack Boot Lambda
+# Version: 1.0.0
+# **************************
 # -----------------------------------------------------------------------------
 # Current file variables
 # -----------------------------------------------------------------------------
@@ -58,6 +62,10 @@ if test -f ${current_parent_folder}requirements-vendor.txt; then
   echo "requirements vendor..."
 fi
 
+echo 'Flask compatibility with Python 3.8'
+python3 -m pip uninstall dataclasses -y
+rm -Rf ${current_parent_folder}vendor/dataclasses-0.8.dist-info/ ${current_parent_folder}vendor/dataclasses.py
+
 read -p "Press enter to continue..."
 
 #echo 'Creating resource dependencies...'
@@ -76,7 +84,7 @@ if test -f "${current_parent_folder}scripts/localstack/lambda/create-function-fr
     echo '----------------------------------------'
     echo "$0 - Creating the lambda: $APP_LAMBDA_NAME"
     echo '----------------------------------------'
-    ${current_parent_folder}scripts/localstack/lambda/create-function-from-s3.sh $current_filename_path $APP_LAMBDA_NAME
+    ${current_parent_folder}scripts/localstack/lambda/create-function-from-s3.sh $current_filename_path $APP_LAMBDA_NAME $APP_LAMBDA_HANDLER
 
     read -p "Press enter to continue..."
 

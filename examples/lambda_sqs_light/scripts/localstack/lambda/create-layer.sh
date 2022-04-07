@@ -1,4 +1,8 @@
 #!/bin/bash
+# **************************
+# Localstack Lambda Create Layer Tool
+# Version: 1.0.0
+# **************************
 # https://aws.amazon.com/premiumsupport/knowledge-center/lambda-layer-simulated-docker/
 if [ -z "$1" ]; then
   echo 'Function path must be informed'

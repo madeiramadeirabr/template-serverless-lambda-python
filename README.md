@@ -181,6 +181,26 @@ Helper scripts to execute tests and generate reports;
 ## Samples
 See the project samples in this folder [here](samples).
 
+## Localstack Scripts tips
+
+### Lambdas
+
+List functions: 
+```bash
+./scripts/localstack/lambda/list-function.sh 
+```
+
+Invoke lambda_api: 
+```bash
+ ./scripts/localstack/lambda/invoke-api-function.sh lambda_api
+ 
+```
+
+Invoke lambda_sqs: 
+```bash
+ ./scripts/localstack/lambda/invoke-sqs-function.sh lambda_sqs
+ 
+```
 
 ## License
 See the license: [LICENSE.md](LICENSE.md).

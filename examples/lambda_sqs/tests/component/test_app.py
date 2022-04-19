@@ -44,7 +44,7 @@ class AppTestCase(BaseComponentTestCase):
     """
     Obs: If you will execute this test, please execute the ./scripts/testenv.sh instead ./scripts/runenv.sh
     """
-    EXECUTE_FIXTURE = True
+    EXECUTE_FIXTURE = False
     CONFIG = None
 
     @classmethod

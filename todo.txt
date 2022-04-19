@@ -1,14 +1,3 @@
-# Atualizar projeto geral:
-- README
-- scripts
-- LICENSE
-- CODE-OF-CONDUCT
-- CHANGELOG
-- etc
-
-# Atualização
-root
-lambda_api
-lambda_api_restful
-lambda_sqs
-lambda_sqs_light
+Revisar teste de integração de uma das lambdas que está fora do padrão
+Revisar database_mocks
+Revisar serviços e testes da lambda_api

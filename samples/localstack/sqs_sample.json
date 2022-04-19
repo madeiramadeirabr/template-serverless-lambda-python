@@ -3,7 +3,7 @@
         {
             "messageId": "11d6ee51-4cc7-4302-9e22-7cd8afdaadf5",
             "receiptHandle": "AQEBBX8nesZEXmkhsmZeyIE8iQAMig7qw...",
-            "body": "{\n   \"chavenfe\": \"32210206107255000134550010001712551245826554\",\n   \"ocor\": \"MOTIVO DO CANCELAMENTO\",\n   \"origem\": \"SAC/EAGLE\",\n   \"pedido\": \"Z1223321\"\n}",
+            "body": "{\n   \"chavenfe\": \"32210206107255000134550010001712551245826554\",\n   \"ocor\": \"MM DO CANCELAMENTO\",\n   \"origem\": \"SAC/EAGLE\",\n   \"pedido\": \"Z1223321\"\n}",
             "attributes": {
                 "ApproximateReceiveCount": "1",
                 "SentTimestamp": "1573251510774",

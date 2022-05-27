@@ -1,8 +1,9 @@
 """
 Boot module for Flambda App
-Version: 1.0.4
+Version: 1.0.5
 """
 import json
+import logging
 import os
 import sys
 
@@ -113,7 +114,7 @@ def load_dot_env(env='development', force=False, debug=False):
                     _LOADED = True
                 else:
                     if debug:
-                        logger.error('Unable to load config')
+                        logger.error('Unable to load config - secrets scenario')
 
     else:
         result = True
@@ -153,16 +154,22 @@ def load_env(env='dev', force=False, debug=False):
         env = 'dev'
 
     logger = get_internal_logger()
+    # só para testes
+    # logger.level = logging.INFO
 
     global _LOADED, _ENV_KEYS, _DEFAULT_ENV_CONFIGS
     if not _LOADED or force:
-        if debug:
-            logger.info('Boot - load_env - Loading env: {}'.format(env))
 
         chalice_config_path = '{}.chalice/config.json'.format(current_path)
 
+        if debug:
+            logger.info('Boot - load_env - Loading env: {}'.format(env))
+            logger.info('Boot - load_env - chalice_config_path: {}'.format(chalice_config_path))
+
         # todo tratar cenários novos que não serão baseado em arquivos
         if os.path.isfile(chalice_config_path):
+            if debug:
+                logger.info('Boot - load_env - Chalice retro compatibility')
             file = open(chalice_config_path, 'r')
             data = file.read()
             configs = json.loads(data)
@@ -179,37 +186,54 @@ def load_env(env='dev', force=False, debug=False):
                 if isinstance(env_vars, dict):
                     for k, v in env_vars.items():
                         _ENV_KEYS.append(k)
-                        # não remover, senão vai sobrescrever as variaveis pelo arquivo config.json, sabemos que em
-                        # ambientes como de prod isso é ruim
+                        # não remover, senão vai sobrescrever as variaveis pelo arquivo
+                        # config.json, sabemos que em ambientes como de prod isso é ruim
                         if k not in os.environ:
                             os.environ[k] = v
                             if debug:
-                                logger.debug('setting env configs.stages.env k = v {} = {}'.format(k, v))
+                                logger.info(
+                                    'Boot - load_env - setting env configs.stages.env k = v {} = {}'.format(k, v))
                         else:
                             if debug:
-                                logger.debug('ENV k = v {} = {}'.format(k, os.environ[k]))
+                                logger.info(
+                                    'Boot - load_env - ENV k = v {} = {}'.format(k, os.environ[k]))
                     _LOADED = True
                     result = True
                 else:
                     if debug:
-                        logger.error("Unable to load env_vars from chalice: {}".format(env_vars))
+                        logger.error(
+                            "Boot - load_env - Unable to load env_vars from chalice: {}".format(
+                                env_vars))
             else:
                 # solution for projects with development flag instead of dev
                 if env == 'dev':
                     result = load_env('development')
                 else:
                     if debug:
-                        logger.error('Unable to load config')
+                        logger.error('Unable to load config - chalice scenario')
                     _LOADED = False
             # close the file
             file.close()
 
         else:
             if debug:
-                logger.error('Unable to load config')
-            _LOADED = False
+                logger.info('Boot - load_env - Flambda compatibility')
+            # todo implementar uma logica melhor para identificar se as variáveis do projeto estão
+            # registradas
+            if 'APP_QUEUE' in os.environ or 'API_SERVER' in os.environ or 'FLASK_ENV' in os.environ\
+                    or 'DB_HOST' in os.environ or 'APP_BUCKET' in os.environ:
+                _LOADED = True
+                if debug:
+                    logger.info('Boot - load_env - Environment variables already defined')
+                    result = True
+                # logger.info(os.environ)
+            else:
+                if debug:
+                    logger.error('Boot - load_env - Unable to load config - environment scenario')
+                _LOADED = False
 
-        # Carrega as variaves default, só seta valores caso não tenham sido carregadas via arquivo ou env (secrets)
+        # Carrega as variaves default, só seta valores caso não tenham sido carregadas via
+        # arquivo ou env (secrets)
         for k, v in _DEFAULT_ENV_CONFIGS.items():
             _ENV_KEYS.append(k)
             if k == 'APP_ENV':

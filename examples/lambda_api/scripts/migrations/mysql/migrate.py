@@ -94,10 +94,10 @@ class ConnectionHelper:
         project_config = get_config()
 
         params = {
-            'host': project_config.DB_HOST,
-            'user': project_config.DB_USER,
-            'password': project_config.DB_PASSWORD,
-            'db': project_config.DB
+            'host': project_config.get('DB_HOST'),
+            'user': project_config.get('DB_USER'),
+            'password': project_config.get('DB_PASSWORD'),
+            'db': project_config.get('DB')
         }
 
         mysql_connection = pymysql.connect(host=params['host'],

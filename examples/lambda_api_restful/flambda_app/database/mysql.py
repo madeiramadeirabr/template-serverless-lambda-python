@@ -35,10 +35,10 @@ class MySQLConnector:
 
             try:
                 params = {
-                    'host': self.config.DB_HOST,
-                    'user': self.config.DB_USER,
-                    'password': self.config.DB_PASSWORD,
-                    'db': self.config.DB
+                    'host': self.config.get('DB_HOST'),
+                    'user': self.config.get('DB_USER'),
+                    'password': self.config.get('DB_PASSWORD'),
+                    'db': self.config.get('DB')
                 }
 
                 connection = pymysql.connect(host=params['host'],
@@ -66,11 +66,12 @@ class MySQLConnector:
                     if not retry:
                         _RETRY_COUNT += 1
                         # Fix para tratar diff entre docker/local
-                        if self.config.DB_HOST == 'mysql':
-                            old_value = self.config.DB_HOST
-                            self.config.DB_HOST = 'localhost'
+                        if self.config.get('DB_HOST') == 'mysql':
+                            old_value = self.config.get('DB_HOST')
+                            self.config.set('DB_HOST', 'localhost')
                             self.logger.info(
-                                'Changing the endpoint from {} to {}'.format(old_value, self.config.DB_HOST))
+                                'Changing the endpoint from {} to {}'.format(
+                                    old_value, self.config.get('DB_HOST')))
                         return self.get_connection(True)
         else:
             connection = _CONNECTION

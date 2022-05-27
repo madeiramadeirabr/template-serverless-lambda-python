@@ -23,7 +23,7 @@ class MySQLTestCase(BaseComponentTestCase):
         config = get_config()
         self.logger.info('DB_HOST: {}'.format(config.get('DB_HOST', None)))
         self.logger.info('DB_USER: {}'.format(config.get('DB_USER', None)))
-        self.logger.info('DB: {}'.format(config.DB))
+        self.logger.info('DB: {}'.format(config.get('DB')))
 
         connection = MySQLConnector().get_connection()
 
@@ -34,12 +34,12 @@ class MySQLTestCase(BaseComponentTestCase):
 
         config = get_config()
         # forca os parametros
-        config.DB_HOST = 'localhost'
-        config.DB_USER = 'undefined'
+        config.set('DB_HOST', 'localhost')
+        config.set('DB_USER', 'undefined')
 
         self.logger.info('DB_HOST: {}'.format(config.get('DB_HOST', None)))
         self.logger.info('DB_USER: {}'.format(config.get('DB_USER', None)))
-        self.logger.info('DB: {}'.format(config.DB))
+        self.logger.info('DB: {}'.format(config.get('DB')))
         connection = MySQLConnector(config=config).get_connection()
 
         self.assertIsNone(connection)

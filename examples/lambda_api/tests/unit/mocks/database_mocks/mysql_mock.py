@@ -60,10 +60,10 @@ def get_connection(config=None, connect=True, retry=False):
             config = get_config()
         try:
             params = {
-                'host': config.DB_HOST,
-                'user': config.DB_USER,
-                'password': config.DB_PASSWORD,
-                'db': config.DB
+                'host': config.get('DB_HOST'),
+                'user': config.get('DB_USER'),
+                'password': config.get('DB_PASSWORD'),
+                'db': config.get('DB')
             }
 
             connection = connection_mock
@@ -88,11 +88,11 @@ def get_connection(config=None, connect=True, retry=False):
                 if not retry:
                     _RETRY_COUNT += 1
                     # Fix para tratar diff entre docker/local
-                    if config.DB_HOST == 'mysql':
-                        old_value = config.DB_HOST
-                        config.DB_HOST = 'localhost'
+                    if config.get('DB_HOST') == 'mysql':
+                        old_value = config.get('DB_HOST')
+                        config.set('DB_HOST', 'localhost')
                         logger.info(
-                            'Changing the endpoint from {} to {}'.format(old_value, config.DB_HOST))
+                            'Changing the endpoint from {} to {}'.format(old_value, config.get('DB_HOST')))
                     return get_connection(config, True)
     else:
         connection = _CONNECTION

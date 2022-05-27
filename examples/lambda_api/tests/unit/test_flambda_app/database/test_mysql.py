@@ -1,7 +1,7 @@
 import unittest
 
 from flambda_app.config import get_config
-from tests.unit.mocks.database.mysql_mock import get_connection, reset, connection_mock, mock_raise_exception
+from tests.unit.mocks.database_mocks.mysql_mock import get_connection, reset, connection_mock, mock_raise_exception
 from tests.unit.testutils import get_function_name, BaseUnitTestCase
 
 
@@ -16,9 +16,9 @@ class MySQLTestCase(BaseUnitTestCase):
         self.logger.info('Running test: %s', get_function_name(__name__))
 
         config = get_config()
-        self.logger.info('DB_HOST: {}'.format(config.DB_HOST))
-        self.logger.info('DB_USER: {}'.format(config.DB_USER))
-        self.logger.info('DB: {}'.format(config.DB))
+        self.logger.info('DB_HOST: {}'.format(config.get('DB_HOST')))
+        self.logger.info('DB_USER: {}'.format(config.get('DB_USER')))
+        self.logger.info('DB: {}'.format(config.get('DB')))
 
         connection = get_connection()
 
@@ -35,12 +35,12 @@ class MySQLTestCase(BaseUnitTestCase):
 
         config = get_config()
         # forca os parametros
-        config.DB_HOST = 'localhost'
-        config.DB_USER = 'undefined'
+        config.set('DB_HOST', 'localhost')
+        config.set('DB_USER', 'undefined')
 
-        self.logger.info('DB_HOST: {}'.format(config.DB_HOST))
-        self.logger.info('DB_USER: {}'.format(config.DB_USER))
-        self.logger.info('DB: {}'.format(config.DB))
+        self.logger.info('DB_HOST: {}'.format(config.get('DB_HOST')))
+        self.logger.info('DB_USER: {}'.format(config.get('DB_USER')))
+        self.logger.info('DB: {}'.format(config.get('DB')))
         connection = get_connection(config)
 
         self.assertIsNone(connection)

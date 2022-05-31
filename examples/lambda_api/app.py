@@ -47,9 +47,10 @@ if DEBUG:
     # override to the level desired
     set_debug_mode(LOGGER)
 
-API_ROOT = os.environ['API_ROOT'] if 'API_ROOT' in os.environ else None
-API_ROOT_ENDPOINT = API_ROOT if API_ROOT != "" else '/'
+API_ROOT = os.environ['API_ROOT'] if 'API_ROOT' in os.environ else ''
+API_ROOT_ENDPOINT = API_ROOT if API_ROOT != '' or API_ROOT is None else '/'
 
+LOGGER.info("API_ROOT_ENDPOINT: {}".format(API_ROOT_ENDPOINT))
 
 @APP.route(API_ROOT_ENDPOINT)
 def index():

@@ -155,7 +155,7 @@ def load_env(env='dev', force=False, debug=False):
 
     logger = get_internal_logger()
     # só para testes
-    # logger.level = logging.INFO
+    logger.level = logging.INFO
 
     global _LOADED, _ENV_KEYS, _DEFAULT_ENV_CONFIGS
     if not _LOADED or force:
@@ -219,12 +219,18 @@ def load_env(env='dev', force=False, debug=False):
             if debug:
                 logger.info('Boot - load_env - Flambda compatibility')
             # todo implementar uma logica melhor para identificar se as variáveis do projeto estão
+            # print(os.environ['API_SERVER'])
+
             # registradas
-            if 'APP_QUEUE' in os.environ or 'API_SERVER' in os.environ or 'FLASK_ENV' in os.environ\
-                    or 'DB_HOST' in os.environ or 'APP_BUCKET' in os.environ:
+            if 'APP_QUEUE' in os.environ or 'DB_HOST' in os.environ or 'APP_BUCKET' in os.environ:
                 _LOADED = True
                 if debug:
                     logger.info('Boot - load_env - Environment variables already defined')
+                    # logger.info('APP_QUEUE = {}'.format('APP_QUEUE' in os.environ))
+                    # logger.info('API_SERVER = {}'.format('API_SERVER' in os.environ))
+                    # logger.info('DB_HOST = {}'.format('DB_HOST' in os.environ))
+                    # logger.info('APP_BUCKET = {}'.format('APP_BUCKET' in os.environ))
+                    # logger.info('FLASK_ENV = {}'.format('FLASK_ENV' in os.environ))
                     result = True
                 # logger.info(os.environ)
             else:

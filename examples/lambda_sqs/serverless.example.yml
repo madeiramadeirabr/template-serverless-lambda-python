@@ -67,7 +67,7 @@ functions:
           arn: ${env:SQS_QUEUE_ARN_0}
           # por hora desativado até migrar da antiga para a nova
           enabled: true
-          batchSize: 10
+          batchSize: 1
           maximumBatchingWindow: 10
     vpc:
       securityGroupIds:

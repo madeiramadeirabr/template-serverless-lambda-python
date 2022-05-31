@@ -9,7 +9,8 @@ phases:
     commands:
       # Install Serverless Framework CLI and plugins
       - curl -L -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.9.6/yq_linux_amd64 && chmod +x /usr/local/bin/yq
-      - npm install -g serverless@2.72.2 $(yq eval '.plugins | join(" ")' serverless.yaml)
+      - curl -L -o /usr/local/bin/jq https://stedolan.github.io/jq/download/linux64/jq && chmod +x /usr/local/bin/jq
+      - npm install -g serverless@2.72.2 $(jq -r '.devDependencies | [keys[] as $k | "\($k)@\(.[$k])"] | join(" ")' package.json)
       - export IAC_VERSION="serverless-$(serverless --version | grep -i framework | cut -d ' ' -f 3)"
       - yq eval '.provider.stackTags.Iac = strenv(IAC_VERSION) | .custom.cloudWatchLogsTags.Iac = strenv(IAC_VERSION)' --inplace serverless.yaml
   build:

@@ -15,7 +15,7 @@ fi
 #echo $RUNNING_IN_CONTAINER
 
 # execute the boot.sh
-bash ./scripts/boot.sh
+#bash ./scripts/boot.sh
 # bash ./scripts/boot-queues.sh
 
 # execute the flask

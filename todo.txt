@@ -1,3 +1,7 @@
 Revisar teste de integração de uma das lambdas que está fora do padrão
 Revisar database_mocks
 Revisar serviços e testes da lambda_api
+
+Hot swap da docker
+volumes
+composer usando projectrc para variaveis

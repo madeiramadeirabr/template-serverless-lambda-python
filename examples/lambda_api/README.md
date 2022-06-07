@@ -100,10 +100,16 @@ To create the `venv` and install the modules execute:
 ```bash
 ./scripts/venv.sh
 ```
-#### Running the app
-Execute the follow command:
+#### Running the app flask only
+If you want test only the flask service without any other resource execute the follow command:
 ```bash
 ./scripts/flask/run-local.sh
+```
+
+### Creating network
+To execute the create network:
+```bash
+./scripts/docker/create-network.sh
 ```
 ### Running via docker
 To execute the build:

@@ -57,16 +57,15 @@
 
         layout: "StandaloneLayout",
         requestInterceptor: function(config) {
-          config.headers = {
-            'Accept': 'application/json,*/*',
+          Object.assign(config.headers, {
             'Access-Control-Request-Method': 'POST, GET, PUT, DELETE, PATH',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Credentials': 'true',
             'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-          }
+          })
           console.log(config)
           return config;
-        },
+        }
 
       })
       // End Swagger UI call region

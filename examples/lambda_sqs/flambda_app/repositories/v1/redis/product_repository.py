@@ -83,6 +83,8 @@ class ProductRepository:
         response = self.get(key)
         if response:
             raise DatabaseException(MessagesEnum.CREATE_ERROR)
+        # TODO mudar
+        # setex(1000)
         return self.redis_connection.set(key, data)
 
     def update(self, key, data):

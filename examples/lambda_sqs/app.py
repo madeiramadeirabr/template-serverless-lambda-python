@@ -33,7 +33,7 @@ if DEBUG:
     set_debug_mode(LOGGER)
 
 # general vars
-APP_QUEUE = CONFIG.APP_QUEUE
+APP_QUEUE = CONFIG.get('APP_QUEUE')
 
 
 @APP.on_sqs_message(queue=APP_QUEUE, batch_size=1)

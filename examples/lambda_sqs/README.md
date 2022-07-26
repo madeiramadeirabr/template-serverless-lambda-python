@@ -12,6 +12,9 @@ Diagrams with application usage of this architecture.
 
 More details [here](https://drive.google.com/file/d/112om-id0zfd8qGd0Q4kTaoIwIgwx6DGJ/view?usp=sharing).
 
+
+TODO atualizar e incluir o runenv
+
 ### Cloud Architecture
 Example of the architecture running on AWS Cloud.
 
@@ -73,6 +76,8 @@ Execute the follow command:
 ```bash
 aws configure
 ```
+TODO 
+> configurar o region us-east-1
 
 ### Installing python venv support
 Execute the follow command:
@@ -86,6 +91,7 @@ To create the `venv` and install the modules execute:
 ./scripts/venv.sh
 ```
 #### Running the app
+TODO atualizar e informar o pq dos pqs
 Execute the follow command:
 ```bash
 ./scripts/flask/run-local.sh
@@ -265,3 +271,7 @@ Or:
 ```bash 
 ./scripts/autopep8.sh ./app.py
 ```
+
+TODO
+
+acrescentar video de explicação que o Jil vai passar

@@ -7,6 +7,10 @@ Template for build flexible SQS processor with AWS Lambda.
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=madeiramadeirabr_template-serverless-lambda-python&metric=coverage)](https://sonarcloud.io/summary/new_code?id=madeiramadeirabr_template-serverless-lambda-python)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=madeiramadeirabr_template-serverless-lambda-python&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=madeiramadeirabr_template-serverless-lambda-python)
 
+## Tutorial
+Video with the explanation about the project:
+https://drive.google.com/file/d/1igaBUw2bmK9wTiolcpuyh1l8I1iAQQDb/view?usp=sharing
+
 ## Service Architecture
 Diagrams with application usage of this architecture.
 

@@ -62,6 +62,28 @@ PUT /v1/product/<uuid> - Complete Product Update
 - Redis
 - Swagger
 
+
+## Kong Configuration
+Configure the env variable API_ROOT with the path of the kong, example:
+```
+API_ROOT	/quotation-service-lambda-request-syncs
+```
+
+Kong url request:
+```
+GET https://skull-island-general-cdn-stg.madeiramadeira.com.br/quotation-service-lambda-request-syncs/alive
+```
+
+Lambda Route Map:
+```
+[INFO] 2022-08-11T13:51:43.356Z Route: OPTIONS - /quotation-service-lambda-request-syncs/alive
+[INFO] 2022-08-11T13:51:43.357Z Route: GET - /quotation-service-lambda-request-syncs/alive
+```
+
+> With this configuration it will work well.
+
+
+
 ## Details about requirements files
 ### requirements.txt
 Collection of common application modules, light modules.

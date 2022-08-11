@@ -671,6 +671,6 @@ print_routes(APP, LOGGER)
 LOGGER.info(f'Running at {ENV}')
 
 # generate de openapi.yml
-generate_openapi_yml(spec, LOGGER, force=True)
+generate_openapi_yml(spec, LOGGER)
 
 api_schemas.register()

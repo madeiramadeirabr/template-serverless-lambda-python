@@ -7,7 +7,7 @@ metadata:
     github.com/project-slug: madeiramadeirabr/template-serverless-lambda-python
   tags:
     - python
-    -lambda
+    - lambda
     - api-rest
     - sqs-consumer
     - flask-application

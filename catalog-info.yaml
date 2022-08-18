@@ -1,0 +1,20 @@
+apiVersion: backstage.io/v1alpha1
+kind: Template
+metadata:
+  name: template-serverless-lambda-python
+  description: Template com exemplos de boilerplates para a criação de aplicações para lambda com Python.
+  annotations:
+    github.com/project-slug: madeiramadeirabr/template-serverless-lambda-python
+  tags:
+    - python
+    -lambda
+    - api-rest
+    - sqs-consumer
+    - flask-application
+    - kinesis-stream
+spec:
+  type: template
+  lifecycle: production
+  owner: team-platform-services
+  system: public-templates
+  

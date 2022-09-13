@@ -269,3 +269,29 @@ Or:
 ```bash 
 ./scripts/autopep8.sh ./app.py
 ```
+
+### Sending an item to Localstack SQS
+To send a default event to SQS execute the follow command:
+```bash 
+./scripts/localstack/sqs/send-message.sh
+```
+
+To send a default payload to a specific queue, execute the follow command:
+```bash 
+./scripts/localstack/sqs/send-message.sh test-queue
+```
+
+To send a specific payload, execute the follow command:
+```bash
+./scripts/localstack/sqs/send-message.sh test-queue '{ 
+   "chavenfe": "32210206107255000134550010001712551245826554", 
+   "ocor": "MOTIVO DO CANCELAMENTO", 
+   "origem": "SAC/EAGLE", 
+   "pedido": "Z1223321" 
+}'
+```
+
+To send a specific file payload, execute the follow command:
+```bash
+./scripts/localstack/sqs/send-message.sh test-queue ./samples/ocorens/cancelamento.json
+```

@@ -36,6 +36,7 @@ class FlaskRequestParser:
             self._request = request
 
         request = self._request
+
         # Query string
         self.query_string = str(request.query_string.decode('ascii'))
         self.query_string_args = {k: v for k, v in request.args.items()}
@@ -152,7 +153,10 @@ class FlaskRequestParser:
         # print('REQUEST WHERE: ', self.where)
         filtered_where = dict()
         for k, v in self.where.items():
-            filtered_where[k] = filter_sql_injection(v)
+            if not isinstance(v, dict) and not isinstance(v, list):
+                filtered_where[k] = filter_sql_injection(v)
+            else:
+                filtered_where[k] = v
         self.where = filtered_where
         # print(self.where)
         # print('REQUEST WHERE FILTERED: ', self.where)

@@ -12,7 +12,7 @@ fi
 QUEUE=$1
 if [ -z "$QUEUE" ]
 then
-  QUEUE='http://$HOST:4566/000000000000/test-queue'
+  QUEUE="http://$HOST:4566/000000000000/test-queue"
 else
   QUEUE=$(basename -- $QUEUE)
   QUEUE="http://$HOST:4566/000000000000/${QUEUE}"

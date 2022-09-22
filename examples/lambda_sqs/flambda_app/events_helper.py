@@ -1,6 +1,8 @@
 """
 Events Helper Module for Flambda APP
-Version: 1.0.0
+Version: 1.1.0
+
+Add treatment for sqs.Message
 """
 import ast
 import json
@@ -58,9 +60,15 @@ def get_records_from_sqs_event(sqs_event, logger=None):
             if not helper.empty(sqs_event.to_dict()):
                 try:
                     sqs_event_dict = sqs_event.to_dict()
-                    # todo tratar <class 'boto3.resources.factory.sqs.Message'>
+                    # Validation <class 'boto3.resources.factory.sqs.Message'>
+                    if isinstance(sqs_event_dict, list):
+                        if 'sqs.Message' in str(type(sqs_event_dict[0])):
+                            logger.info("Boto sqs Message")
+                            sqs_event_dict = json.loads(sqs_event_dict[0].body)
+
                     if 'Records' in sqs_event_dict:
                         sqs_event_dict = sqs_event_dict['Records']
+
                     for record in sqs_event_dict:
                         records.append(record)
                 except Exception as err:
@@ -70,6 +78,7 @@ def get_records_from_sqs_event(sqs_event, logger=None):
             logger.info("SQSRecord instance")
             if not helper.empty(sqs_event.to_dict()):
                 records.append(sqs_event)
+
     except Exception as err:
         logger.error(err)
         if isinstance(sqs_event, SQSEvent) or isinstance(sqs_event, SQSRecord):

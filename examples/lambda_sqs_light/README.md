@@ -80,17 +80,41 @@ Execute the follow command:
 apt install python38-env
 ```
 
+### Creating the Docker Network
+To execute the creation of the Docker network, execute the follow command:
+```bash
+./scripts/docker/create-network.sh
+```
+
 ### Running Locally
 To create the `venv` and install the modules execute:
 ```bash
 ./scripts/venv.sh
 ```
-#### Running the app
+#### Running the app (only for APIs)
+This mode provide an execution of Flask without the docker, but you will need to start any dependencies of the project by yourself.
+
 Execute the follow command:
 ```bash
 ./scripts/flask/run-local.sh
 ```
-### Running via docker
+
+### Running via docker (Fast Development mode - without Lambda creation)
+To do de fast development execute de follow commands.
+
+To execute the build:
+```bash
+./scripts/dev.sh --build
+```
+
+Execute the follow command:
+```bash
+./scripts/dev.sh
+```
+
+### Running via docker (Full Development mode  - ith Lambda creation)
+To simulate the lambda creating in the development environment execute the commands bellow.
+
 To execute the build:
 ```bash
 ./scripts/runenv.sh --build
@@ -100,6 +124,8 @@ Execute the follow command:
 ```bash
 ./scripts/runenv.sh
 ```
+
+
 
 ### Recovering the environment in error cases
 Execute the follow command:
@@ -128,6 +154,7 @@ Kebab case script to help the developer in general tasks.
 | openapi.sh                  | Script to generate the openapi.yaml                                               | CI/CD pipeline    |
 | preenv.sh                   | Script to execute the pre build commands                                          | Local boot        |
 | pylint.sh                   | Script to execute the pylint analysis                                             | Local development |
+| dev.sh                      | Script to start the project locally for development                               | Local development |
 | runenv.sh                   | Script to start the project locally                                               | Local development |
 | testenv.sh                  | Script to run the environment with focus in the component tests                   | Local development |
 | venv.sh                     | Script to install the dependencies in the venv folder                             | Local install     |

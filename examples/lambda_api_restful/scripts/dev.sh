@@ -1,6 +1,6 @@
 #!/bin/bash
-export TEST_ENV=1
-export DEV_MODE=0
+export TEST_ENV=0
+export DEV_MODE=1
 if test -f ./scripts/preenv.sh; then
     source ./scripts/preenv.sh;
 else

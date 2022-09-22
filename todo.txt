@@ -5,3 +5,5 @@ Revisar serviços e testes da lambda_api
 Hot swap da docker
 volumes
 composer usando projectrc para variaveis
+
+teste

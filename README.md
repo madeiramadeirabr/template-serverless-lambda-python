@@ -115,6 +115,12 @@ Execute the follow command:
 apt install python38-env
 ```
 
+### Creating the Docker Network
+To execute the creation of the Docker network, execute the follow command:
+```bash
+./scripts/docker/create-network.sh
+```
+
 ### Running Locally
 To create the `venv` and install the modules execute:
 ```bash
@@ -131,6 +137,8 @@ Execute the follow command:
 ```bash
 ./scripts/runenv.sh
 ```
+
+
 
 ### Recovering the environment in error cases
 Execute the follow command:

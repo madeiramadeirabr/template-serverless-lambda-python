@@ -1,0 +1,13 @@
+{
+  "account": "123457940291",
+  "detail": {},
+  "detail-type": "Scheduled Event",
+  "id": "12345678-b9f1-4667-9c5e-39f98e9a6113",
+  "region": "us-west-2",
+  "resources": [
+    "arn:aws:events:us-west-2:123457940291:rule/testevents-dev-every_minute"
+  ],
+  "source": "aws.events",
+  "time": "2017-06-30T23:28:38Z",
+  "version": "0"
+}

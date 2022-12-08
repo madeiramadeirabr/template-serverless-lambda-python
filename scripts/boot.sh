@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 # Current file variables
 # -----------------------------------------------------------------------------
-debug=false
+debug=0
 parent_folder="../"
 current_path=$(pwd)/
 current_path_basename=$(basename $(pwd))
@@ -16,7 +16,12 @@ if [ $current_file_full_path = $current_file_name ] || [ $current_file_full_path
 else
   current_file_path="${current_file_full_path/$current_file_name/''}"
 fi
-if [ debug ]; then
+
+if [ -z "$DEV_MODE" ]; then
+  DEV_MODE=0
+fi
+
+if [[ $debug == 1 ]]; then
   echo '----------------------------------------'
   echo "$0 - Script variables"
   echo '----------------------------------------'

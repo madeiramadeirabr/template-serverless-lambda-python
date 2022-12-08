@@ -90,6 +90,7 @@ To execute the creation of the Docker network, execute the follow command:
 ./scripts/docker/create-network.sh
 ```
 
+## Running
 ### Running Locally
 To create the `venv` and install the modules execute:
 ```bash
@@ -116,7 +117,7 @@ Execute the follow command:
 ./scripts/dev.sh
 ```
 
-### Running via docker (Full Development mode  - ith Lambda creation)
+### Running via docker (Full Development mode  - with Lambda creation)
 To simulate the lambda creating in the development environment execute the commands bellow.
 
 To execute the build:

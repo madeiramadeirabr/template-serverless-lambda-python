@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 # Current file variables
 # -----------------------------------------------------------------------------
-debug=false
+debug=0
 parent_folder="../"
 current_path=$(pwd)/
 current_path_basename=$(basename $(pwd))
@@ -30,7 +30,7 @@ else
 fi
 
 
-if [ debug ]; then
+if [[ $debug == 1 ]]; then
   echo '----------------------------------------'
   echo "$0 - Script variables"
   echo '----------------------------------------'

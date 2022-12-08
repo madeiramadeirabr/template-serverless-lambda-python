@@ -1,17 +1,19 @@
 #!/bin/bash
 # **************************
 # Localstack SQS Send Message Tool
-# Version: 1.0.0
+# Version: 1.0.1
 # **************************
 # -----------------------------------------------------------------------------
 # Current file variables
 # -----------------------------------------------------------------------------
-debug=true
+debug=0
 parent_folder="../"
 current_path=$(pwd)/
 current_path_basename=$(basename $(pwd))
 current_file_full_path=$0
+# echo $current_filepath
 current_file_name=$(basename -- "$0")
+# echo $current_filename
 if [ $current_file_full_path = $current_file_name ] || [ $current_file_full_path = "./$current_file_name" ]; then
   current_file_full_path="./${current_file_full_path}"
   current_file_path="./"
@@ -30,7 +32,7 @@ else
 fi
 
 
-if [ debug ]; then
+if [[ $debug == 1 ]]; then
   echo '----------------------------------------'
   echo "$0 - Script variables"
   echo '----------------------------------------'
@@ -52,7 +54,7 @@ fi
 QUEUE=$1
 if [ -z "$QUEUE" ]
 then
-  QUEUE='http://$HOST:4566/000000000000/test-queue'
+  QUEUE="http://$HOST:4566/000000000000/test-queue"
 else
   QUEUE=$(basename -- $QUEUE)
   QUEUE="http://$HOST:4566/000000000000/${QUEUE}"
@@ -66,8 +68,11 @@ else
     MESSAGE=$(cat $2)
   fi
 fi
-
+REGION=$3
+if [ -z "$REGION" ]; then
+  REGION=us-east-1
+fi
 # cat ${current_file_path}sample.json
 #echo $MESSAGE
-echo "aws --endpoint-url=http://$HOST:4566 sqs send-message --queue-url $QUEUE --message-body '$MESSAGE'"
-aws --endpoint-url=http://$HOST:4566 sqs send-message --queue-url $QUEUE --message-body "$MESSAGE"
+echo "aws --endpoint-url=http://$HOST:4566 sqs send-message --queue-url $QUEUE --region $REGION--message-body '$MESSAGE'"
+aws --endpoint-url=http://$HOST:4566 sqs send-message --queue-url $QUEUE --region $REGION --message-body "$MESSAGE"

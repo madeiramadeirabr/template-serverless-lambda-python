@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 # Current file variables
 # -----------------------------------------------------------------------------
-debug=false
+debug=1
 parent_folder="../"
 current_path=$(pwd)/
 current_path_basename=$(basename $(pwd))
@@ -33,7 +33,7 @@ else
 fi
 
 
-if [ debug ]; then
+if [[ $debug == 1 ]]; then
   echo '----------------------------------------'
   echo "$0 - Script variables"
   echo '----------------------------------------'
@@ -46,25 +46,47 @@ if [ debug ]; then
   echo '----------------------------------------'
 fi
 
+# Add projectrc
+if test -f ${current_parent_folder}.projectrc; then
+  source ${current_parent_folder}.projectrc
+fi
+
+
+
+
 echo '----------------------------------------'
 echo "$0 - Booting lambda"
 echo '----------------------------------------'
+echo "Runtime $APP_LAMBDA_RUNTIME"
 echo 'Installing dependencies...'
-echo "Requirements file: ${current_parent_folder}requirements.txt"
-if test -f ${current_parent_folder}requirements.txt; then
-  python3 -m pip install -r ${current_parent_folder}requirements.txt -t ${current_parent_folder}vendor
-  echo "requirements..."
+
+#echo "Requirements file: ${current_parent_folder}requirements.txt"
+if [[ "$APP_LAMBDA_RUNTIME" == *"node"* ]]; then
+  if test -f ${current_parent_folder}package.json; then
+    echo "npm install..."
+    npm install
+
+  fi
+else
+  # Default python
+  echo "Requirements file: ${current_parent_folder}requirements.txt"
+  if test -f ${current_parent_folder}requirements.txt; then
+    echo "requirements..."
+    python3 -m pip install -r ${current_parent_folder}requirements.txt -t ${current_parent_folder}vendor
+
+  fi
+
+  echo "Requirements file: ${current_parent_folder}requirements-vendor.txt"
+  if test -f ${current_parent_folder}requirements-vendor.txt; then
+    echo "requirements vendor..."
+    python3 -m pip install -r ${current_parent_folder}requirements-vendor.txt -t ${current_parent_folder}vendor
+  fi
+
+  echo 'Flask compatibility with Python 3.8'
+  python3 -m pip uninstall dataclasses -y
+  rm -Rf ${current_parent_folder}vendor/dataclasses-0.8.dist-info/ ${current_parent_folder}vendor/dataclasses.py
 fi
 
-echo "Requirements file: ${current_parent_folder}requirements-vendor.txt"
-if test -f ${current_parent_folder}requirements-vendor.txt; then
-  python3 -m pip install -r ${current_parent_folder}requirements-vendor.txt -t ${current_parent_folder}vendor
-  echo "requirements vendor..."
-fi
-
-echo 'Flask compatibility with Python 3.8'
-python3 -m pip uninstall dataclasses -y
-rm -Rf ${current_parent_folder}vendor/dataclasses-0.8.dist-info/ ${current_parent_folder}vendor/dataclasses.py
 
 read -p "Press enter to continue..."
 
@@ -84,7 +106,7 @@ if test -f "${current_parent_folder}scripts/localstack/lambda/create-function-fr
     echo '----------------------------------------'
     echo "$0 - Creating the lambda: $APP_LAMBDA_NAME"
     echo '----------------------------------------'
-    ${current_parent_folder}scripts/localstack/lambda/create-function-from-s3.sh $current_filename_path $APP_LAMBDA_NAME $APP_LAMBDA_HANDLER
+    ${current_parent_folder}scripts/localstack/lambda/create-function-from-s3.sh $current_filename_path $APP_LAMBDA_NAME $APP_LAMBDA_NAME $APP_LAMBDA_HANDLER $APP_LAMBDA_RUNTIME $APP_REGION
 
     read -p "Press enter to continue..."
 

@@ -15,13 +15,12 @@ RUN apk update \
     && apk add sqlite \
     && apk add socat
 
-# gcc requirement for greenlit and sqlalchemy
+# dependencies
 RUN apk add --no-cache build-base \
                        python3-dev \
                        libffi-dev \
                        musl-dev \
                        make \
-                       gcc \
                        openldap \
                        libcurl \
                        gpgme-dev \
@@ -30,6 +29,9 @@ RUN apk add --no-cache build-base \
                        curl \
                        zip \
     && rm -rf /var/cache/apk/*
+
+# gcc requirement for greenlit and sqlalchemy
+RUN apk add --no-cache gcc
 
 # upgrade pip
 RUN pip install --upgrade pip

@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 # Current file variables
 # -----------------------------------------------------------------------------
-debug=false
+debug=0
 parent_folder="../"
 current_path=$(pwd)/
 current_path_basename=$(basename $(pwd))
@@ -33,7 +33,7 @@ else
   current_parent_folder="${current_file_path/$current_file_path_basename/''}"
 fi
 
-if [ debug ]; then
+if [[ $debug == 1 ]]; then
   echo '----------------------------------------'
   echo "$0 - Script variables"
   echo '----------------------------------------'
@@ -60,6 +60,7 @@ else
   FUNCTION_NAME=$1
   HANDLER=$2
   REGION=us-east-1
+  RUNTIME=python3.8
   if [ -z "$2" ]; then
     HANDLER="app.index"
   fi
@@ -68,6 +69,14 @@ else
     FUNCTION_PATH=$1
     FUNCTION_NAME=$2
     HANDLER=$3
+  fi
+
+  if [ ! -z "$4" ]; then
+    RUNTIME=$4
+  fi
+
+  if [ ! -z "$5" ]; then
+    REGION=$5
   fi
 
   echo '----------------------------------------'
@@ -169,13 +178,13 @@ else
   echo '----------------------------------------'
   echo "aws --endpoint-url=http://$HOST:4566 lambda create-function \
    --function-name arn:aws:lambda:$REGION:000000000000:function:$FUNCTION_NAME \
-   --runtime python3.6 --handler $HANDLER --memory-size 128 \
+   --runtime $RUNTIME --handler $HANDLER --memory-size 128 \
    --code S3Bucket=test,S3Key=lambda-full.zip --role arn:aws:iam:awslocal \
    --environment \"{\"Variables\": $ENVIRONMENT_VARIABLES}\""
 
   aws --endpoint-url=http://$HOST:4566 lambda create-function \
    --function-name arn:aws:lambda:$REGION:000000000000:function:$FUNCTION_NAME \
-   --runtime python3.6 --handler $HANDLER --memory-size 128 \
+   --runtime $RUNTIME --handler $HANDLER --memory-size 128 \
    --code S3Bucket=test,S3Key=lambda-full.zip --role arn:aws:iam:awslocal \
    --environment "{\"Variables\": $ENVIRONMENT_VARIABLES }"
    #--environment Variables="{ENVIRONMENT_NAME=development}"

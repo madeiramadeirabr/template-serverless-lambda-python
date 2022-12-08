@@ -1,6 +1,7 @@
 APP_NAME=template-serverless-lambda-python-lambda-api
 APP_VERSION=1.0.1
-NETWORK_NAME=service-python
+NETWORK_NAME=service-python-v1
+APP_REGION=us-east-1
 APP_QUEUE=test-queue
 APP_LAMBDA_NAME=lambda_api
 APP_LAMBDA_EVENT_SOURCE=false

@@ -3,6 +3,7 @@ Flambda Framework Decorator Module - Chalice Compatible
 Version: 1.0.0
 """
 from flambda_app import helper
+from flambda_app.decorators import CloudWatchEvent
 from flambda_app.decorators.events import SQSRecord, SQSEvent
 
 
@@ -57,11 +58,8 @@ class ScheduleLambdaWrapper(object):
         self._original_func = original_func
 
     def __call__(self, event):
-        # if isinstance(event, SQSEvent) or isinstance(event, SQSRecord):
-        #     record = event
-        # else:
-        #     if helper.has_attr(event, 'body'):
-        #         record = SQSRecord(helper.to_dict(event), event.context)
-        #     else:
-        #         record = SQSEvent(helper.to_dict(event), event.context)
-        return self._original_func(event.to_dict(), event.context)
+        if isinstance(event, CloudWatchEvent):
+            cloudwatch_event = event
+        else:
+            cloudwatch_event = CloudWatchEvent(event.to_dict(), event.context)
+        return self._original_func(cloudwatch_event, event.context)

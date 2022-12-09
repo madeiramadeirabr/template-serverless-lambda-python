@@ -37,10 +37,11 @@ APP_QUEUE = CONFIG.APP_QUEUE
 
 
 @APP.schedule('rate(5 minutes)')
-def index(event):
+def index(cron_event, context=None):
     """
     Lambda handler
-    :param event:
+    :param context: 
+    :param cron_event:
     :return:
     :rtype: str
     """
@@ -61,6 +62,7 @@ def index(event):
     # # todo implementar lógica aqui
 
     LOGGER.info("deu boa?")
+    LOGGER.info("{}".format(cron_event))
     result = True
 
     # body = {"app": '%s:%s' % (APP_NAME, APP_VERSION)}

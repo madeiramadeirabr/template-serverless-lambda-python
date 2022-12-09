@@ -43,3 +43,11 @@ def get_cancelamento_quote_error_event():
         return json.loads(event_str)
     except:
         raise Exception('Invalid JSON')
+
+def get_cron_event_sample():
+    with open(path.join(ROOT_DIR, 'tests/datasources/events/cron/sample.json')) as f:
+        event_str = f.read()
+    try:
+        return json.loads(event_str)
+    except Exception as err:
+        raise FileNotFoundError('Invalid JSON {}'.format(str(err)))

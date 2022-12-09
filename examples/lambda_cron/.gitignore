@@ -1,0 +1,71 @@
+node_modules
+.idea
+venv
+/db.sqlite3
+*.pyc
+*/**/__pycache__/*
+/.env
+
+/.infrestructure/dist/deployment.zip
+/.infrestructure/.terraform/
+/.infrastructure/.terraform.lock.hcl
+/.infrastructure/terraform.tfstate
+/.infrastructure/terraform.tfstate.backup
+/.infrastructure/plan.json
+/plan.json
+/plan.json.binary
+/docker/elk/logs/elasticsearch.log
+/.infrastructure/.terraform/
+/.chalice/deployments/
+*_us-east-2.db
+*_sa-east-1.db
+/docker/aws/credentials
+/deployment.zip
+/sam.json
+/.coverage
+
+# mantem a vendor
+!vendor
+# ignora os demais arquivos
+vendor/*
+# mantem essa pasta
+!/vendor/public
+# mantem essa pasta
+!/vendor/datasources
+
+# Coverage results and execution report
+!/target/integration/report.xml
+!/target/component/report.xml
+!/target/unit/report.xml
+
+!/target/integration/clover.xml
+!/target/component/clover.xml
+!/target/unit/clover.xml
+
+!/target/integration/junit-report.xml
+!/target/component/junit-report.xml
+!/target/unit/junit-report.xml
+
+# ignore
+/target/component/coverage_html/
+/target/integration/coverage_html/
+/target/unit/coverage_html/
+/madeira_fc.db
+
+imagedefinitions.json
+/include/*
+config/integration.en
+/node_modules/
+
+/lambda-full.zip
+
+#output lambda
+output/response.json
+/output/
+/include/
+/env/integration.env
+/env/production.env
+/env/staging.env
+/env/_staging.env
+/env/_integration.env
+/env/_production.env

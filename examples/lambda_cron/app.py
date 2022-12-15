@@ -33,14 +33,14 @@ if DEBUG:
     set_debug_mode(LOGGER)
 
 # general vars
-APP_QUEUE = CONFIG.APP_QUEUE
+APP_QUEUE = CONFIG.get('APP_QUEUE')
 
 
 @APP.schedule('rate(5 minutes)')
 def index(cron_event, context=None):
     """
     Lambda handler
-    :param context: 
+    :param context:
     :param cron_event:
     :return:
     :rtype: str

@@ -1,5 +1,5 @@
-# template-serverless-lambda-python - Lambda SQS Light
-Template for build flexible SQS processor with AWS Lambda.
+# template-serverless-lambda-python - Lambda Cron
+Template for build flexible Cloud Watch Event processor with AWS Lambda.
 
 [![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/PyCQA/pylint)
 [![PEP8](https://img.shields.io/badge/code%20style-pep8-orange.svg)](https://www.python.org/dev/peps/pep-0008/)
@@ -15,17 +15,17 @@ More details [here](https://drive.google.com/file/d/112om-id0zfd8qGd0Q4kTaoIwIgw
 ### Cloud Architecture
 Example of the architecture running on AWS Cloud.
 
-![Service-Arch](docs/lambda-sqs-service-arch.png)
+![Service-Arch](docs/lambda-cron-service-arch.drawio.png)
 
 ### Docker Architecture
 Exemple of the architecture running with docker.
-![Docker-Service-Arch](docs/lambda-sqs-docker-service-arch.png)
+![Docker-Service-Arch](docs/lambda-cron-docker-service-arch.drawio.png)
 
 ## General Service Routes Architecture
 There are no routes for this project.
 
 # Prerequisites
-- Python >=3.6
+- Python >=3.8
 - docker
 - docker-compose
 - python-dotenv

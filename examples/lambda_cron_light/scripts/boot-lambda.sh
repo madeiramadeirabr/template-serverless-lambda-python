@@ -1,7 +1,7 @@
 #!/bin/bash
 # **************************
 # Localstack Boot Lambda
-# Version: 1.0.0
+# Version: 1.0.1
 # **************************
 # -----------------------------------------------------------------------------
 # Current file variables
@@ -106,22 +106,15 @@ if test -f "${current_parent_folder}scripts/localstack/lambda/create-function-fr
     echo '----------------------------------------'
     echo "$0 - Creating the lambda: $APP_LAMBDA_NAME"
     echo '----------------------------------------'
-    ${current_parent_folder}scripts/localstack/lambda/create-function-from-s3.sh $current_filename_path $APP_LAMBDA_NAME $APP_LAMBDA_NAME $APP_LAMBDA_HANDLER $APP_LAMBDA_RUNTIME $APP_REGION
+#    echo "\$current_filename_path $current_filename_path"
+    echo "\$APP_LAMBDA_NAME $APP_LAMBDA_NAME"
+    echo "\$APP_LAMBDA_HANDLER $APP_LAMBDA_HANDLER"
+    echo "\$APP_LAMBDA_RUNTIME $APP_LAMBDA_RUNTIME"
+    echo "\$APP_REGION $APP_REGION"
+    ${current_parent_folder}scripts/localstack/lambda/create-function-from-s3.sh $APP_LAMBDA_NAME $APP_LAMBDA_HANDLER $APP_LAMBDA_RUNTIME $APP_REGION
+
 
     read -p "Press enter to continue..."
-
-    if test $APP_LAMBDA_EVENT_SOURCE = true;then
-      if test $TEST_ENV = 0; then
-        echo '----------------------------------------'
-        echo "$0 - Creating the event source: $APP_LAMBDA_NAME"
-        echo '----------------------------------------'
-        ${current_parent_folder}scripts/localstack/lambda/create-event-source-mapping.sh $APP_LAMBDA_NAME $APP_QUEUE
-      else
-        echo 'Event source disabled'
-      fi
-    else
-      echo 'There is no event source for this lambda'
-    fi
   fi
 else
   echo "File not found: ${current_parent_folder}scripts/localstack/lambda/create-function-from-s3.sh"

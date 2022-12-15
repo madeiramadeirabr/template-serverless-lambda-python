@@ -85,6 +85,17 @@ fi
 read -p "Press enter to continue..."
 
 echo '----------------------------------------'
+echo "$0 - CloudWatch event boot"
+echo '----------------------------------------'
+if test -f ${current_file_path}boot-cloudwatch-events.sh; then
+  ${current_file_path}boot-cloudwatch-events.sh
+else
+  echo 'There is no CloudWatch event to be booted'
+fi
+
+read -p "Press enter to continue..."
+
+echo '----------------------------------------'
 echo "$0 - Lambda boot"
 echo '----------------------------------------'
 if [ "$DEV_MODE" = "0" ]; then
@@ -95,6 +106,21 @@ if [ "$DEV_MODE" = "0" ]; then
   fi
 else
   echo 'Ignoring lambda boot'
+fi
+
+read -p "Press enter to continue..."
+
+echo '----------------------------------------'
+echo "$0 - Lambda event source boot"
+echo '----------------------------------------'
+if [ "$DEV_MODE" = "0" ]; then
+  if test -f ${current_file_path}boot-lambda-event-source.sh; then
+    ${current_file_path}boot-lambda-event-source.sh
+  else
+    echo 'There is no lambda event source to be booted'
+  fi
+else
+  echo 'Ignoring lambda event source boot'
 fi
 
 read -p "Press enter to continue..."

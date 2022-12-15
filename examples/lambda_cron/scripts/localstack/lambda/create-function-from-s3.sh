@@ -1,7 +1,7 @@
 #!/bin/bash
 # **************************
 # Localstack Lambda Create Function From S3 Tool
-# Version: 1.0.0
+# Version: 1.1.0
 # **************************
 # -----------------------------------------------------------------------------
 # Current file variables
@@ -61,22 +61,20 @@ else
   HANDLER=$2
   REGION=us-east-1
   RUNTIME=python3.8
+
   if [ -z "$2" ]; then
     HANDLER="app.index"
   fi
 
   if [ ! -z "$3" ]; then
     FUNCTION_PATH=$1
-    FUNCTION_NAME=$2
-    HANDLER=$3
+    FUNCTION_NAME=$1
+    HANDLER=$2
+    RUNTIME=$3
   fi
 
   if [ ! -z "$4" ]; then
-    RUNTIME=$4
-  fi
-
-  if [ ! -z "$5" ]; then
-    REGION=$5
+    REGION=$4
   fi
 
   echo '----------------------------------------'
@@ -176,17 +174,27 @@ else
   echo '----------------------------------------'
   echo "$0 - Creating the lambda function"
   echo '----------------------------------------'
+
+#  echo "\$HOST $HOST"
+  echo "\$FUNCTION_PATH $FUNCTION_PATH"
+  echo "\$FUNCTION_NAME $FUNCTION_NAME"
+  echo "\$HANDLER $HANDLER"
+  echo "\$RUNTIME $RUNTIME"
+  echo "\$REGION $REGION"
+
   echo "aws --endpoint-url=http://$HOST:4566 lambda create-function \
    --function-name arn:aws:lambda:$REGION:000000000000:function:$FUNCTION_NAME \
    --runtime $RUNTIME --handler $HANDLER --memory-size 128 \
    --code S3Bucket=test,S3Key=lambda-full.zip --role arn:aws:iam:awslocal \
-   --environment \"{\"Variables\": $ENVIRONMENT_VARIABLES}\""
+   --environment \"{\"Variables\": $ENVIRONMENT_VARIABLES}\"\
+   --region $REGION"
 
   aws --endpoint-url=http://$HOST:4566 lambda create-function \
    --function-name arn:aws:lambda:$REGION:000000000000:function:$FUNCTION_NAME \
    --runtime $RUNTIME --handler $HANDLER --memory-size 128 \
    --code S3Bucket=test,S3Key=lambda-full.zip --role arn:aws:iam:awslocal \
-   --environment "{\"Variables\": $ENVIRONMENT_VARIABLES }"
+   --environment "{\"Variables\": $ENVIRONMENT_VARIABLES }" \
+   --region $REGION
    #--environment Variables="{ENVIRONMENT_NAME=development}"
    # --environment file://environment.json
 

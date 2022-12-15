@@ -1,6 +1,6 @@
 """
 Flambda Framework Events Module - Chalice Compatible
-Version: 1.0.0
+Version: 1.1.0
 """
 import base64
 import datetime
@@ -56,15 +56,15 @@ class SQSRecord(BaseLambdaEvent):
 
 class CloudWatchEvent(BaseLambdaEvent):
     def _extract_attributes(self, event_dict):
-        self.version: str = event_dict['version']
-        self.account: str = event_dict['account']
-        self.region: str = event_dict['region']
-        self.detail: dict = event_dict['detail']
-        self.detail_type: str = event_dict['detail-type']
-        self.source: str = event_dict['source']
-        self.time: str = event_dict['time']
-        self.event_id: str = event_dict['id']
-        self.resources: list = event_dict['resources']
+        self.version: str = event_dict['version'] if 'version' in event_dict else ''
+        self.account: str = event_dict['account'] if 'account' in event_dict else ''
+        self.region: str = event_dict['region'] if 'region' in event_dict else ''
+        self.detail: dict = event_dict['detail'] if 'detail' in event_dict else ''
+        self.detail_type: str = event_dict['detail-type'] if 'detail-type' in event_dict else ''
+        self.source: str = event_dict['source'] if 'source' in event_dict else ''
+        self.time: str = event_dict['time'] if 'time' in event_dict else ''
+        self.event_id: str = event_dict['id'] if 'id' in event_dict else ''
+        self.resources: list = event_dict['resources'] if 'resources' in event_dict else ''
 
 
 class KinesisEvent(BaseLambdaEvent):

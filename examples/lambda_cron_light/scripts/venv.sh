@@ -1,4 +1,6 @@
 #!/bin/bash
+# TODO incluir download dos scripts para localstack e afins
+# TODO criar ou usar um repo existente, quem sabe o flambda
 current_path=$(basename $(pwd))
 current_filename=$(basename -- "$0")
 current_filename_path=$0

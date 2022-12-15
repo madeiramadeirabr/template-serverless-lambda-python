@@ -1,7 +1,6 @@
 version: "3.2"
 services:
-  template-serverless-lambda-python-lambda_cron_light:
-#    container_name: lambda-sqs
+  template-serverless-lambda-python-lambda_cron:
     build:
       context: .
       dockerfile: ./docker/python/Dockerfile
@@ -13,6 +12,7 @@ services:
       TEST_ENV: ${TEST_ENV}
     depends_on:
       - "localstack"
+      - "documentdb"
       - "redis"
       - "mysql"
 #    ports:
@@ -29,23 +29,23 @@ services:
       - 6379
     networks:
       - service-python-v1
-#  redis:
-#    image: "redis:alpine"
-#    ports:
-#      - 6379:6379
-#    expose:
-#      - 6379
-#    networks:
-#      - service-python-v1
-#  mysql:
-#    image: mysql:5.7.22
-#    ports:
-#      - "3306:3306"
-#    environment:
-#      MYSQL_DATABASE: store
-#      MYSQL_ROOT_PASSWORD: store
-#    networks:
-#      - service-python-v1
+  redis:
+    image: "redis:alpine"
+    ports:
+      - 6379:6379
+    expose:
+      - 6379
+    networks:
+      - service-python-v1
+  mysql:
+    image: mysql:5.7.22
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: store
+      MYSQL_ROOT_PASSWORD: store
+    networks:
+      - service-python-v1
   localstack:
     image: localstack/localstack
     privileged: true
@@ -58,10 +58,17 @@ services:
       SERVICES: sqs,lambda,cloudwatch,s3
       DOCKER_HOST: unix:///var/run/docker.sock
       PORT_WEB_UI: 9070
-      # LAMBDA_EXECUTOR: docker # está dando erro via docker
-      LAMBDA_EXECUTOR: local
+      # metodo antigo
+#      LAMBDA_EXECUTOR: local
+      # Compatibilidade com todas as linguagens
+      # https://docs.localstack.cloud/references/configuration/#lambda
+#      LAMBDA_EXECUTOR: docker-reuse
+      LAMBDA_EXECUTOR: docker
+      LAMBDA_REMOTE_DOCKER: 1
+      LAMBDA_DOCKER_NETWORK: service-python-v1
       DEBUG: 1
       HOSTNAME_EXTERNAL: localstack
+      LEGACY_DIRECTORIES: 1
     networks:
       - service-python-v1
     volumes:

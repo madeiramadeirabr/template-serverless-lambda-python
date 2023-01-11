@@ -1,0 +1,79 @@
+version: "3.2"
+services:
+  template-serverless-lambda-python-lambda_cron:
+    build:
+      context: .
+      dockerfile: ./docker/python/Dockerfile
+    privileged: true
+    environment:
+      # Fake credentials for Localstack
+      AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
+      AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      TEST_ENV: ${TEST_ENV}
+    depends_on:
+      - "localstack"
+      - "documentdb"
+      - "redis"
+      - "mysql"
+#    ports:
+#      - 5001:5000
+    networks:
+      - service-python-v1
+    volumes:
+      - ./:/app
+  documentdb:
+    image: "bootjp/amazon-documentdb-tools"
+    ports:
+      - "27017:27017"
+    expose:
+      - 6379
+    networks:
+      - service-python-v1
+  redis:
+    image: "redis:alpine"
+    ports:
+      - 6379:6379
+    expose:
+      - 6379
+    networks:
+      - service-python-v1
+  mysql:
+    image: mysql:5.7.22
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: store
+      MYSQL_ROOT_PASSWORD: store
+    networks:
+      - service-python-v1
+  localstack:
+    image: localstack/localstack
+    privileged: true
+    ports:
+      - "4566:4566"
+      - "4567-4582:4567-4582"
+      - "9070:9070"
+      - "8080:8080"
+    environment:
+      SERVICES: sqs,lambda,cloudwatch,s3
+      DOCKER_HOST: unix:///var/run/docker.sock
+      PORT_WEB_UI: 9070
+      # metodo antigo
+#      LAMBDA_EXECUTOR: local
+      # Compatibilidade com todas as linguagens
+      # https://docs.localstack.cloud/references/configuration/#lambda
+#      LAMBDA_EXECUTOR: docker-reuse
+      LAMBDA_EXECUTOR: docker
+      LAMBDA_REMOTE_DOCKER: 1
+      LAMBDA_DOCKER_NETWORK: service-python-v1
+      DEBUG: 1
+      HOSTNAME_EXTERNAL: localstack
+      LEGACY_DIRECTORIES: 1
+    networks:
+      - service-python-v1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/localstack:/tmp/localstack
+networks:
+  service-python-v1:
+    external: true

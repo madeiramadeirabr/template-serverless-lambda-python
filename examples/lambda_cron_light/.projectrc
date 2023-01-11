@@ -1,0 +1,11 @@
+APP_NAME=template-serverless-lambda-python-lambda-cron-light
+APP_VERSION=1.0.1
+NETWORK_NAME=service-python-v1
+APP_REGION=us-east-1
+APP_RULE_NAME=test-rule
+APP_RULE_EXPRESSION_TYPE="rate"
+APP_RULE_EXPRESSION="1 minute"
+APP_LAMBDA_NAME=lambda_cron_light
+APP_LAMBDA_HANDLER=app.index
+APP_LAMBDA_RUNTIME=python3.8
+APP_LAMBDA_EVENT_SOURCE=true

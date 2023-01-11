@@ -1,0 +1,82 @@
+service: ${env:APP_NAME}
+variablesResolutionMode: 20210326
+
+frameworkVersion: '2'
+configValidationMode: error
+
+plugins:
+  # https://www.serverless.com/plugins/serverless-offline/
+  - serverless-offline
+  # https://www.serverless.com/plugins/serverless-plugin-resource-tagging/
+  - serverless-plugin-resource-tagging
+  # https://www.serverless.com/plugins/serverless-tag-cloud-watch-logs/
+  - serverless-tag-cloud-watch-logs
+  # https://www.npmjs.com/package/serverless-offline-sqs
+  - serverless-offline-sqs
+  # https://www.serverless.com/plugins/serverless-newrelic-lambda-layers
+  - serverless-newrelic-lambda-layers
+
+provider:
+  name: aws
+  region: ${env:AWS_REGION}
+  logRetentionInDays: ${env:LOG_RETENTION_IN_DAYS}
+  lambdaHashingVersion: 20201221
+  environment: ${ssm:/aws/reference/secretsmanager/${env:SECRETS_NAME}}
+  apiGateway:
+    shouldStartNameWithService: true
+  deploymentBucket: ${env:LAMBDA_DEPLOYMENT_BUCKET}
+  deploymentPrefix: ${self:service}
+  stackTags:
+    App: "${env:APP_NAME}"
+    Env: "${env:ENVIRONMENT_NAME}"
+    Iac: "serverless-ci-IAC-VERSION"
+    Repository: "${env:REPOSITORY_NAME}"
+
+custom:
+  cloudWatchLogsTags:
+    App: ${env:APP_NAME}
+    Env: ${env:ENVIRONMENT_NAME}
+    Iac: serverless-ci-IAC-VERSION
+    Repository: ${env:REPOSITORY_NAME}
+  newRelic:
+    accountId: ${self:provider.environment.NEW_RELIC_ACCOUNT_ID}
+    apiKey: ${self:provider.environment.NEW_RELIC_API_KEY}
+    enableExtension: true
+    enableIntegration: true
+    logEnabled: false
+    debug: true
+
+package:
+  patterns:
+    - '!buildspec.yaml'
+    - '!infrastructure/**'
+
+functions:
+  app:
+    handler: ${env:LAMBDA_HANDLER}
+    name: ${env:APP_NAME}-${env:ENVIRONMENT_NAME}
+    runtime: ${env:LAMBDA_RUNTIME}
+    memorySize: ${env:LAMBDA_MEMORY_SIZE}
+    timeout: ${env:LAMBDA_TIMEOUT}
+    maximumRetryAttempts: ${env:LAMBDA_MAXIMUM_RETRY_ATTEMPTS}
+    role: ${env:LAMBDA_EXECUTION_ROLE_ARN}
+    destinations:
+      onFailure: ${env:SQS_DEAD_QUEUE_ARN_0}
+    events:
+      - sqs:
+          arn: ${env:SQS_QUEUE_ARN_0}
+          # por hora desativado até migrar da antiga para a nova
+          enabled: true
+          batchSize: 10
+          maximumBatchingWindow: 10
+    vpc:
+      securityGroupIds:
+        - ${env:LAMBDA_SECURITY_GROUP_ID}
+      subnetIds:
+        - ${env:SUBNET_ID_0}
+        - ${env:SUBNET_ID_1}
+    environment:
+      APP_ENV: ${env:ENVIRONMENT_NAME}
+      DEBUG: false
+      LOG_LEVEL: info
+      REGION_NAME: ${env:AWS_REGION}

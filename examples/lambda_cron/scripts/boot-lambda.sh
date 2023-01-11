@@ -1,0 +1,121 @@
+#!/bin/bash
+# **************************
+# Localstack Boot Lambda
+# Version: 1.0.1
+# **************************
+# -----------------------------------------------------------------------------
+# Current file variables
+# -----------------------------------------------------------------------------
+debug=1
+parent_folder="../"
+current_path=$(pwd)/
+current_path_basename=$(basename $(pwd))
+current_file_full_path=$0
+# echo $current_filepath
+current_file_name=$(basename -- "$0")
+# echo $current_filename
+if [ $current_file_full_path = $current_file_name ] || [ $current_file_full_path = "./$current_file_name" ]; then
+  current_file_full_path="./${current_file_full_path}"
+  current_file_path="./"
+else
+  current_file_path="${current_file_full_path/$current_file_name/''}"
+fi
+
+current_file_path_basename=$(basename -- "$current_file_path")
+
+if [ -z "$current_file_path_basename" ] || [ $current_file_path = "./" ]; then
+#  echo 'aq'
+  current_parent_folder="../"
+else
+#  echo 'naq'
+  current_file_path_basename=$current_file_path_basename/
+  current_parent_folder="${current_file_path/$current_file_path_basename/''}"
+fi
+
+
+if [[ $debug == 1 ]]; then
+  echo '----------------------------------------'
+  echo "$0 - Script variables"
+  echo '----------------------------------------'
+  echo "current_path: $current_path"
+  echo "current_path_basename: $current_path_basename"
+  echo "current_file_full_path: $current_file_full_path"
+  echo "current_file_name: $current_file_name"
+  echo "current_file_path: $current_file_path"
+  echo "current_parent_folder: $current_parent_folder"
+  echo '----------------------------------------'
+fi
+
+# Add projectrc
+if test -f ${current_parent_folder}.projectrc; then
+  source ${current_parent_folder}.projectrc
+fi
+
+
+
+
+echo '----------------------------------------'
+echo "$0 - Booting lambda"
+echo '----------------------------------------'
+echo "Runtime $APP_LAMBDA_RUNTIME"
+echo 'Installing dependencies...'
+
+#echo "Requirements file: ${current_parent_folder}requirements.txt"
+if [[ "$APP_LAMBDA_RUNTIME" == *"node"* ]]; then
+  if test -f ${current_parent_folder}package.json; then
+    echo "npm install..."
+    npm install
+
+  fi
+else
+  # Default python
+  echo "Requirements file: ${current_parent_folder}requirements.txt"
+  if test -f ${current_parent_folder}requirements.txt; then
+    echo "requirements..."
+    python3 -m pip install -r ${current_parent_folder}requirements.txt -t ${current_parent_folder}vendor
+
+  fi
+
+  echo "Requirements file: ${current_parent_folder}requirements-vendor.txt"
+  if test -f ${current_parent_folder}requirements-vendor.txt; then
+    echo "requirements vendor..."
+    python3 -m pip install -r ${current_parent_folder}requirements-vendor.txt -t ${current_parent_folder}vendor
+  fi
+
+  echo 'Flask compatibility with Python 3.8'
+  python3 -m pip uninstall dataclasses -y
+  rm -Rf ${current_parent_folder}vendor/dataclasses-0.8.dist-info/ ${current_parent_folder}vendor/dataclasses.py
+fi
+
+
+read -p "Press enter to continue..."
+
+#echo 'Creating resource dependencies...'
+#echo "${current_parent_folder}scripts/localstack/lambda/create-function-from-s3.sh"
+
+if test -f "${current_parent_folder}scripts/localstack/lambda/create-function-from-s3.sh"; then
+
+  if test -f ${current_parent_folder}.projectrc; then
+    source ${current_parent_folder}.projectrc
+  fi
+
+  if [ -z "$APP_LAMBDA_NAME" ]; then
+    echo 'APP_LAMBDA_NAME not defined'
+    exit 1
+  else
+    echo '----------------------------------------'
+    echo "$0 - Creating the lambda: $APP_LAMBDA_NAME"
+    echo '----------------------------------------'
+#    echo "\$current_filename_path $current_filename_path"
+    echo "\$APP_LAMBDA_NAME $APP_LAMBDA_NAME"
+    echo "\$APP_LAMBDA_HANDLER $APP_LAMBDA_HANDLER"
+    echo "\$APP_LAMBDA_RUNTIME $APP_LAMBDA_RUNTIME"
+    echo "\$APP_REGION $APP_REGION"
+    ${current_parent_folder}scripts/localstack/lambda/create-function-from-s3.sh $APP_LAMBDA_NAME $APP_LAMBDA_HANDLER $APP_LAMBDA_RUNTIME $APP_REGION
+
+
+    read -p "Press enter to continue..."
+  fi
+else
+  echo "File not found: ${current_parent_folder}scripts/localstack/lambda/create-function-from-s3.sh"
+fi

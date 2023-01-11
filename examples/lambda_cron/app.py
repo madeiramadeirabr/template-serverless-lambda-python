@@ -36,31 +36,40 @@ if DEBUG:
 APP_QUEUE = CONFIG.get('APP_QUEUE')
 
 
-@APP.on_sqs_message(queue=APP_QUEUE, batch_size=1)
-def index(event):
+@APP.schedule('rate(5 minutes)')
+def index(cron_event, context=None):
     """
     Lambda handler
-    :param event:
+    :param context:
+    :param cron_event:
     :return:
     :rtype: str
     """
-    body = {"app": '%s:%s' % (APP_NAME, APP_VERSION)}
-    LOGGER.info('Env: {} App Info: {}'.format(ENV, body))
-
-    records = get_records_from_sqs_event(event, LOGGER)
-
-    LOGGER.info("event records: {}".format(records))
-
-    if records is not None:
-        process_counter = 0
-        for record in records:
-            process_counter += 1
-            event = read_event(record, LOGGER)
-            LOGGER.info("event: {}".format(event))
-
-    # todo implementar lógica aqui
+    # body = {"app": '%s:%s' % (APP_NAME, APP_VERSION)}
+    # LOGGER.info('Env: {} App Info: {}'.format(ENV, body))
+    #
+    # records = get_records_from_sqs_event(event, LOGGER)
+    #
+    # LOGGER.info("event records: {}".format(records))
+    #
+    # if records is not None:
+    #     process_counter = 0
+    #     for record in records:
+    #         process_counter += 1
+    #         event = read_event(record, LOGGER)
+    #         LOGGER.info("event: {}".format(event))
+    #
+    # # todo implementar lógica aqui
 
     LOGGER.info("deu boa?")
+    LOGGER.info("{}".format(cron_event))
     result = True
+
+    # body = {"app": '%s:%s' % (APP_NAME, APP_VERSION)}
+    # LOGGER.info('Env: {} App Info: {}'.format(ENV, body))
+    # LOGGER.info('Handling event: {}'.format(event.to_dict()))
+    #
+    # service = CarrierNotifierService()
+    # result = service.process(event)
 
     return result

@@ -1,0 +1,1 @@
+# For lambda projects this file must be empty

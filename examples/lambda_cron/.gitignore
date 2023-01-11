@@ -69,4 +69,3 @@ output/response.json
 /env/_staging.env
 /env/_integration.env
 /env/_production.env
-/examples/lambda_cron/targets.json

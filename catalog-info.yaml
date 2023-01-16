@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: template-serverless-lambda-python
+  annotations:
+    github.com/project-slug: madeiramadeirabr/template-serverless-lambda-python
+  tags:
+    - shell
+spec:
+  type: service
+  lifecycle: production
+  owner: team-platform-engineering-admin
+  

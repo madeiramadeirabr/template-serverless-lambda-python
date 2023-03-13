@@ -1,7 +1,7 @@
 #!/bin/bash
 # **************************
 # Localstack Lambda Create Function From S3 Tool
-# Version: 1.1.0
+# Version: 1.1.1
 # **************************
 # -----------------------------------------------------------------------------
 # Current file variables
@@ -158,9 +158,16 @@ else
   echo '----------------------------------------'
   echo "$0 - Creating the environment variables"
   echo '----------------------------------------'
-
   if test -d ${FUNCTION_PATH}.chalice; then
       ENVIRONMENT_VARIABLES=$(jq '.stages.dev.environment_variables' ${FUNCTION_PATH}.chalice/config.json -c)
+      if [ ! $? -eq 0 ]; then
+        echo "Unable to parse .chalice/config.json because"
+        ENVIRONMENT_VARIABLES="{}"
+      fi
+      jq --version
+      if [ ! $? -eq 0 ]; then
+        echo "jq not installed"
+      fi
     else
       ENVIRONMENT_VARIABLES=$(python3 ${FUNCTION_PATH}scripts/tools/python/env-to-json.py ${FUNCTION_PATH}env/development.env)
     fi

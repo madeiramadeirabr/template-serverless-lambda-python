@@ -45,6 +45,7 @@ def index(cron_event, context=None):
     :return:
     :rtype: str
     """
+    # TODO implementar os serviços que faça uma tarefa, lance um item em uma SQS por exemplo
     # body = {"app": '%s:%s' % (APP_NAME, APP_VERSION)}
     # LOGGER.info('Env: {} App Info: {}'.format(ENV, body))
     #

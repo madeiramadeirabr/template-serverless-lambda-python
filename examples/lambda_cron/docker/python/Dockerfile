@@ -29,6 +29,7 @@ RUN apk add --no-cache build-base \
                        bash \
                        curl \
                        zip \
+                       jq \
     && rm -rf /var/cache/apk/*
 
 # upgrade pip

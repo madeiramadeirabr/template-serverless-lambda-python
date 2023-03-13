@@ -1,6 +1,6 @@
 """
 Config Module for Flambda APP
-Version: 1.0.1
+Version: 1.1.0
 """
 import inspect
 import os
@@ -28,6 +28,15 @@ class Configuration:
         for k in env_keys:
             value = os.getenv(k) if k in os.environ else None
             setattr(Configuration, k, value)
+
+        self.configure_docker_environment()
+
+    def configure_docker_environment(self):
+        # development docker changes
+        if self.get('RUNNING_WITH_DOCKER') and self.get('APP_ENV') == 'development':
+            # database
+            setattr(Configuration, 'DB_HOST', 'mysql')
+            # others
 
     def __dict__(self):
         attributes = inspect.getmembers(self, lambda a: not (inspect.isroutine(a)))

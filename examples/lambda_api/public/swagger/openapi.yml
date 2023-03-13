@@ -104,14 +104,45 @@ components:
     HealthCheck:
       type: object
       properties:
-        entries:
-          $ref: '#/components/schemas/EntryData'
         total_duration:
           type: string
           example: '0:00:00.013737'
+        entries:
+          $ref: '#/components/schemas/EntryData'
         status:
           type: string
           example: healthy
+    RequestControl:
+      type: object
+      properties:
+        count:
+          type: integer
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+      required:
+      - limit
+    Meta:
+      type: object
+      properties:
+        next:
+          type: string
+          format: url
+        previous:
+          type: string
+          format: url
+        first:
+          type: string
+          format: url
+        href:
+          type: string
+          format: url
+        last:
+          type: string
+          format: url
     Link:
       type: object
       properties:
@@ -121,165 +152,134 @@ components:
           type: string
         rel:
           type: string
-    RequestControl:
-      type: object
-      properties:
-        count:
-          type: integer
-        total:
-          type: integer
-        offset:
-          type: integer
-        limit:
-          type: integer
-      required:
-      - limit
-    Meta:
-      type: object
-      properties:
-        last:
-          type: string
-          format: url
-        next:
-          type: string
-          format: url
-        href:
-          type: string
-          format: url
-        first:
-          type: string
-          format: url
-        previous:
-          type: string
-          format: url
     Event:
       type: object
       properties:
-        hash:
+        type:
           type: string
-          example: 406cce9743906f7b8d7dd5d5c5d8c95d820eeefd72a3a554a4a726d022d8fa19
         date:
           type: string
           format: date-time
           example: '2021-05-03T19:41:36.315842-03:00'
-        type:
+        hash:
           type: string
+          example: 406cce9743906f7b8d7dd5d5c5d8c95d820eeefd72a3a554a4a726d022d8fa19
         data:
           type: object
     EventListResponse:
       type: object
       properties:
-        label:
-          type: string
-          example: common.success
-        message:
-          type: string
-          example: Success
-        success:
-          type: boolean
-          example: true
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/Link'
-        control:
-          $ref: '#/components/schemas/RequestControl'
-        meta:
-          $ref: '#/components/schemas/Meta'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Event'
         code:
           type: integer
           example: 1
+        success:
+          type: boolean
+          example: true
+        label:
+          type: string
+          example: common.success
         params:
           type: array
           items:
             type: string
+        control:
+          $ref: '#/components/schemas/RequestControl'
+        meta:
+          $ref: '#/components/schemas/Meta'
+        message:
+          type: string
+          example: Success
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
       required:
       - code
     EventListErrorResponse:
       type: object
       properties:
-        trace:
-          type: string
-        details:
-          type: string
-        label:
-          type: string
-          example: common.error.internal_server_error
-        message:
-          type: string
-          example: Internal Server Error
-        success:
-          type: boolean
-          example: false
         code:
           type: integer
           example: 7
+        trace:
+          type: string
+        success:
+          type: boolean
+          example: false
+        label:
+          type: string
+          example: common.error.internal_server_error
         params:
           type: array
           items:
             type: string
+        details:
+          type: string
+        message:
+          type: string
+          example: Internal Server Error
       required:
       - code
     EventCreateRequest:
       type: object
       properties:
-        pedido:
-          type: string
-          example: Z1223321
-        ocor:
-          type: string
-          example: MOTIVO DO CANCELAMENTO
         origem:
           type: string
           example: SAC/EAGLE
+        pedido:
+          type: string
+          example: Z1223321
         chavenfe:
           type: string
           example: '32210206107255000134550010001712551245826554'
+        ocor:
+          type: string
+          example: MOTIVO DO CANCELAMENTO
     EventCreateResponse:
       type: object
       properties:
+        code:
+          type: integer
+          example: 102
         label:
           type: string
           example: common.event_registered_with_success
+        params:
+          type: array
+          items:
+            type: string
+        event_hash:
+          type: string
+          example: c82bf3ee20dd2f4ae7109e52d313a3190f1a85ba3362c54d3eb6257bd0c4d69d
         result:
           type: boolean
           example: true
         message:
           type: string
           example: Event registered with success
+    EventCreateErrorResponse:
+      type: object
+      properties:
         code:
           type: integer
-          example: 102
-        event_hash:
+          example: 105
+        label:
           type: string
-          example: c82bf3ee20dd2f4ae7109e52d313a3190f1a85ba3362c54d3eb6257bd0c4d69d
+          example: common.error.event_type_unknown_error
         params:
           type: array
           items:
             type: string
-    EventCreateErrorResponse:
-      type: object
-      properties:
-        label:
+        event_hash:
           type: string
-          example: common.error.event_type_unknown_error
+          example: null
         result:
           type: boolean
           example: false
         message:
           type: string
           example: 'Event type unknown: (%s)'
-        code:
-          type: integer
-          example: 105
-        event_hash:
-          type: string
-          example: null
-        params:
-          type: array
-          items:
-            type: string

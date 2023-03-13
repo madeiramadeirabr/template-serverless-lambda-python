@@ -39,4 +39,5 @@ class HealthCheckManager:
         # example with a lambda check
         # self.healthcheck_service.add_check("internal", lambda: HealthCheckResult.unhealthy("connect"), ["example"])
 
+
         return self.healthcheck_service.get_response()

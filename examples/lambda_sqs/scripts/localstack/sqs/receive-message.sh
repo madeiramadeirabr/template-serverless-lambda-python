@@ -17,11 +17,18 @@ else
   QUEUE=$(basename -- $QUEUE)
   QUEUE="http://$HOST:4566/000000000000/${QUEUE}"
 fi
-echo "aws --endpoint-url=http://$HOST:4566 sqs receive-message --queue-url $QUEUE"
-aws --endpoint-url=http://$HOST:4566 sqs receive-message --queue-url $QUEUE
+
+if [ -z "$2" ]; then
+  REGION=us-east-1
+else
+  REGION=$2
+fi
+
+echo "aws --endpoint-url=http://$HOST:4566 sqs receive-message --queue-url $QUEUE  --region $REGION"
+aws --endpoint-url=http://$HOST:4566 sqs receive-message --queue-url $QUEUE --region $REGION
 
 if [ ! $? -eq 0 ]; then
     QUEUE="http://$HOST:4566/000000000000/$QUEUE"
-    echo "aws --endpoint-url=http://$HOST:4566 sqs receive-message --queue-url $QUEUE"
-    aws --endpoint-url=http://$HOST:4566 sqs receive-message --queue-url $QUEUE
+    echo "aws --endpoint-url=http://$HOST:4566 sqs receive-message --queue-url $QUEUE --region $REGION"
+    aws --endpoint-url=http://$HOST:4566 sqs receive-message --queue-url $QUEUE --region $REGION
 fi

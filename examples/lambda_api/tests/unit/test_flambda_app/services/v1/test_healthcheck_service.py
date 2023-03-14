@@ -5,8 +5,8 @@ from flambda_app.services.v1.healthcheck import HealthCheckResult
 from flambda_app.services.v1.healthcheck.resources import MysqlConnectionHealthCheck, RedisConnectionHealthCheck, \
     SelfConnectionHealthCheck
 from flambda_app.services.v1.healthcheck_service import HealthCheckService
-from tests.unit.mocks.database.mysql_mock import get_connection as mysql_get_connection
-from tests.unit.mocks.database.redis_mock import get_connection as redis_get_connection
+from tests.unit.mocks.database_mocks.mysql_mock import get_connection as mysql_get_connection
+from tests.unit.mocks.database_mocks.redis_mock import get_connection as redis_get_connection
 from tests.unit.mocks.http_mocks import http_client_mock
 from tests.unit.testutils import get_function_name, BaseUnitTestCase
 

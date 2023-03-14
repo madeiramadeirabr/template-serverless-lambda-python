@@ -84,20 +84,22 @@ fi
 
 read -p "Press enter to continue..."
 
-echo '----------------------------------------'
-echo "$0 - Lambda boot"
-echo '----------------------------------------'
-if [ "$DEV_MODE" = "0" ]; then
-  if test -f ${current_file_path}boot-lambda.sh; then
-    ${current_file_path}boot-lambda.sh
-  else
-    echo 'There is no lambda to be booted'
-  fi
-else
-  echo 'Ignoring lambda boot'
-fi
-
-read -p "Press enter to continue..."
+# TODO revisar para criar uma lambda api e permitir o invoke ou api gateway via localstack
+# TODO ou melhor usar um container Kong + Lambda
+#echo '----------------------------------------'
+#echo "$0 - Lambda boot"
+#echo '----------------------------------------'
+#if [ "$DEV_MODE" = "0" ]; then
+#  if test -f ${current_file_path}boot-lambda.sh; then
+#    ${current_file_path}boot-lambda.sh
+#  else
+#    echo 'There is no lambda to be booted'
+#  fi
+#else
+#  echo 'Ignoring lambda boot'
+#fi
+#
+#read -p "Press enter to continue..."
 
 echo '----------------------------------------'
 echo "$0 - Database boot"

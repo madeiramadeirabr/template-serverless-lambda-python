@@ -324,3 +324,10 @@ To send a specific file payload, execute the follow command:
 ```bash
 ./scripts/localstack/sqs/send-message.sh test-queue ./samples/ocorens/cancelamento.json
 ```
+
+
+## TODO 
+
+* [x] Revisar porque os testes de coverage via script estão consumindo dados da vendor por um exclude dir
+* [ ] Replicar para os demais exemplos
+* [ ] Melhorar erro de importação de libs que faltam nos log handlers (ELK, Newrelic)

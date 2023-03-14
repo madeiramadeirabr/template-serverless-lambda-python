@@ -85,17 +85,17 @@ components:
     Entry:
       type: object
       properties:
+        status:
+          type: string
+          example: healthy
+        duration:
+          type: string
+          example: '0:00:00.013737'
         tags:
           type: array
           items:
             type: string
             example: db
-        duration:
-          type: string
-          example: '0:00:00.013737'
-        status:
-          type: string
-          example: healthy
     EntryData:
       type: object
       properties:
@@ -104,43 +104,30 @@ components:
     HealthCheck:
       type: object
       properties:
+        status:
+          type: string
+          example: healthy
         total_duration:
           type: string
           example: '0:00:00.013737'
         entries:
           $ref: '#/components/schemas/EntryData'
-        status:
-          type: string
-          example: healthy
-    RequestControl:
-      type: object
-      properties:
-        count:
-          type: integer
-        total:
-          type: integer
-        limit:
-          type: integer
-        offset:
-          type: integer
-      required:
-      - limit
     Meta:
       type: object
       properties:
-        next:
-          type: string
-          format: url
-        previous:
-          type: string
-          format: url
-        first:
+        last:
           type: string
           format: url
         href:
           type: string
           format: url
-        last:
+        first:
+          type: string
+          format: url
+        previous:
+          type: string
+          format: url
+        next:
           type: string
           format: url
     Link:
@@ -152,29 +139,44 @@ components:
           type: string
         rel:
           type: string
+    RequestControl:
+      type: object
+      properties:
+        limit:
+          type: integer
+        offset:
+          type: integer
+        count:
+          type: integer
+        total:
+          type: integer
+      required:
+      - limit
     Event:
       type: object
       properties:
-        type:
+        hash:
           type: string
+          example: 406cce9743906f7b8d7dd5d5c5d8c95d820eeefd72a3a554a4a726d022d8fa19
         date:
           type: string
           format: date-time
           example: '2021-05-03T19:41:36.315842-03:00'
-        hash:
-          type: string
-          example: 406cce9743906f7b8d7dd5d5c5d8c95d820eeefd72a3a554a4a726d022d8fa19
         data:
           type: object
+        type:
+          type: string
     EventListResponse:
       type: object
       properties:
-        code:
-          type: integer
-          example: 1
+        message:
+          type: string
+          example: Success
         success:
           type: boolean
           example: true
+        meta:
+          $ref: '#/components/schemas/Meta'
         label:
           type: string
           example: common.success
@@ -182,31 +184,27 @@ components:
           type: array
           items:
             type: string
-        control:
-          $ref: '#/components/schemas/RequestControl'
-        meta:
-          $ref: '#/components/schemas/Meta'
-        message:
-          type: string
-          example: Success
         links:
           type: array
           items:
             $ref: '#/components/schemas/Link'
+        control:
+          $ref: '#/components/schemas/RequestControl'
         data:
           type: array
           items:
             $ref: '#/components/schemas/Event'
+        code:
+          type: integer
+          example: 1
       required:
       - code
     EventListErrorResponse:
       type: object
       properties:
-        code:
-          type: integer
-          example: 7
-        trace:
+        message:
           type: string
+          example: Internal Server Error
         success:
           type: boolean
           example: false
@@ -217,34 +215,36 @@ components:
           type: array
           items:
             type: string
+        code:
+          type: integer
+          example: 7
+        trace:
+          type: string
         details:
           type: string
-        message:
-          type: string
-          example: Internal Server Error
       required:
       - code
     EventCreateRequest:
       type: object
       properties:
-        origem:
-          type: string
-          example: SAC/EAGLE
         pedido:
           type: string
           example: Z1223321
-        chavenfe:
+        origem:
           type: string
-          example: '32210206107255000134550010001712551245826554'
+          example: SAC/EAGLE
         ocor:
           type: string
           example: MOTIVO DO CANCELAMENTO
+        chavenfe:
+          type: string
+          example: '32210206107255000134550010001712551245826554'
     EventCreateResponse:
       type: object
       properties:
-        code:
-          type: integer
-          example: 102
+        message:
+          type: string
+          example: Event registered with success
         label:
           type: string
           example: common.event_registered_with_success
@@ -255,18 +255,18 @@ components:
         event_hash:
           type: string
           example: c82bf3ee20dd2f4ae7109e52d313a3190f1a85ba3362c54d3eb6257bd0c4d69d
+        code:
+          type: integer
+          example: 102
         result:
           type: boolean
           example: true
-        message:
-          type: string
-          example: Event registered with success
     EventCreateErrorResponse:
       type: object
       properties:
-        code:
-          type: integer
-          example: 105
+        message:
+          type: string
+          example: 'Event type unknown: (%s)'
         label:
           type: string
           example: common.error.event_type_unknown_error
@@ -277,9 +277,9 @@ components:
         event_hash:
           type: string
           example: null
+        code:
+          type: integer
+          example: 105
         result:
           type: boolean
           example: false
-        message:
-          type: string
-          example: 'Event type unknown: (%s)'

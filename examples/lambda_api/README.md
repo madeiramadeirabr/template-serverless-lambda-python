@@ -328,3 +328,9 @@ Or:
 ```bash 
 ./scripts/autopep8.sh ./app.py
 ```
+
+## TODO 
+
+* [x] Revisar porque os testes de coverage via script estão consumindo dados da vendor por um exclude dir
+* [ ] Replicar para os demais exemplos
+* [ ] Melhorar erro de importação de libs que faltam nos log handlers (ELK, Newrelic)

@@ -3,7 +3,7 @@ import unittest
 from flambda_app.config import get_config
 from flambda_app.services.v1.healthcheck import HealthStatus, HealthCheckResult
 from flambda_app.services.v1.healthcheck.resources import RedisConnectionHealthCheck
-from tests.unit.mocks.database.redis_mock import redis_connector_mock
+from tests.unit.mocks.database_mocks.redis_mock import redis_connector_mock
 from tests.unit.testutils import get_function_name, BaseUnitTestCase
 
 

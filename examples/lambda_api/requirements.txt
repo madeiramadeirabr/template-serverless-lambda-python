@@ -12,3 +12,4 @@ marshmallow
 pylint
 autopep8
 gevent
+python-json-logger

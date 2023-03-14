@@ -16,7 +16,7 @@ omit =
         *~/.local/lib/*
         /usr/local/lib*
         /home/*/.local/*
-
+        vendor/*
 
 [report]
 omit =
@@ -26,6 +26,7 @@ omit =
         *~/.local/lib/*
         /usr/local/lib*
         /home/*/.local/*
+        vendor/*
 
 [html]
 directory =  ./target/unit/coverage_html/

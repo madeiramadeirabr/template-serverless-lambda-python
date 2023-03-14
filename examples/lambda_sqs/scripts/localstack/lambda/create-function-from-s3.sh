@@ -61,6 +61,7 @@ else
   HANDLER=$2
   REGION=us-east-1
   RUNTIME=python3.8
+
   if [ -z "$2" ]; then
     HANDLER="app.index"
   fi
@@ -78,6 +79,13 @@ else
   if [ ! -z "$5" ]; then
     REGION=$5
   fi
+
+#  echo $FUNCTION_PATH
+#  echo $FUNCTION_NAME
+#  echo $HANDLER
+#  echo $REGION
+#  echo $RUNTIME
+#  exit
 
   echo '----------------------------------------'
   echo "$0 - Checking lambda function path"
@@ -97,6 +105,8 @@ else
   echo '----------------------------------------'
   # zip full code
   if test -f ${FUNCTION_PATH}lambda-full.zip; then
+#    echo 'changing the ownership'
+#    chown $USER ${FUNCTION_PATH}lambda-full.zip
     echo 'Removing old zip file...'
     rm ${FUNCTION_PATH}lambda-full.zip
   else

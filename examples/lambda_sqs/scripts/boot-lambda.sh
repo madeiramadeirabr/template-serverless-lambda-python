@@ -106,6 +106,7 @@ if test -f "${current_parent_folder}scripts/localstack/lambda/create-function-fr
     echo '----------------------------------------'
     echo "$0 - Creating the lambda: $APP_LAMBDA_NAME"
     echo '----------------------------------------'
+#    echo "$APP_LAMBDA_NAME $APP_LAMBDA_NAME $APP_LAMBDA_HANDLER $APP_LAMBDA_RUNTIME $APP_REGION"
     ${current_parent_folder}scripts/localstack/lambda/create-function-from-s3.sh $current_filename_path $APP_LAMBDA_NAME $APP_LAMBDA_NAME $APP_LAMBDA_HANDLER $APP_LAMBDA_RUNTIME $APP_REGION
 
     read -p "Press enter to continue..."

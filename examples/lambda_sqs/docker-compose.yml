@@ -51,9 +51,12 @@ services:
       DOCKER_HOST: unix:///var/run/docker.sock
       PORT_WEB_UI: 9070
       # LAMBDA_EXECUTOR: docker # está dando erro via docker
-      LAMBDA_EXECUTOR: local
+      LAMBDA_EXECUTOR: docker
+      LAMBDA_REMOTE_DOCKER: 1
+      LAMBDA_DOCKER_NETWORK: service-python-v1
       DEBUG: 1
       HOSTNAME_EXTERNAL: localstack
+      LEGACY_DIRECTORIES: 1
     networks:
       - service-python-v1
     volumes:

@@ -35,6 +35,7 @@ if DEBUG:
 # general vars
 APP_QUEUE = CONFIG.get('APP_QUEUE')
 
+# TODO revisar logger com saída duplicada
 
 @APP.on_sqs_message(queue=APP_QUEUE, batch_size=1)
 def index(event):
@@ -48,7 +49,7 @@ def index(event):
     LOGGER.info('Env: {} App Info: {}'.format(ENV, body))
     LOGGER.info('Handling event: {}'.format(event.to_dict()))
 
-    service = CarrierNotifierService()
+    service = CarrierNotifierService(logger=LOGGER)
     result = service.process(event)
 
     return result

@@ -29,6 +29,15 @@ class Configuration:
             value = os.getenv(k) if k in os.environ else None
             setattr(Configuration, k, value)
 
+        self.configure_docker_environment()
+
+    def configure_docker_environment(self):
+        # development docker changes
+        if self.get('RUNNING_WITH_DOCKER') and self.get('APP_ENV') == 'development':
+            # database
+            setattr(Configuration, 'DB_HOST', 'mysql')
+            # others
+
     def __dict__(self):
         attributes = inspect.getmembers(self, lambda a: not (inspect.isroutine(a)))
         return {k: v for k, v in attributes if not (k.startswith('__') and k.endswith('__'))}

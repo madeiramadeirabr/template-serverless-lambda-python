@@ -9,3 +9,4 @@ pyyaml
 apispec
 marshmallow
 autopep8
+python-json-logger

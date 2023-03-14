@@ -13,27 +13,30 @@ from pythonjsonlogger.jsonlogger import JsonFormatter
 
 class ELKHandler(logging.Handler):
     def __init__(self, es_client: Elasticsearch = None, **kwargs):
-        from flambda_app.aws.opensearch import get_elasticsearch_client
-        super().__init__()
-        self.setFormatter(JsonFormatter())
-        self.es_client = None
-        self.last_error = None
+        try:
+            from flambda_app.aws.opensearch import get_elasticsearch_client
+            super().__init__()
+            self.setFormatter(JsonFormatter())
+            self.es_client = None
+            self.last_error = None
 
-        self.default_index = 'logstash'
-        self.error_index = self.default_index
+            self.default_index = 'logstash'
+            self.error_index = self.default_index
 
-        if 'default_index' in kwargs:
-            self.default_index = kwargs['default_index']
-            # use the same of default
-            self.error_index = kwargs['default_index']
+            if 'default_index' in kwargs:
+                self.default_index = kwargs['default_index']
+                # use the same of default
+                self.error_index = kwargs['default_index']
 
-        if 'error_index' in kwargs:
-            self.error_index = kwargs['error_index']
+            if 'error_index' in kwargs:
+                self.error_index = kwargs['error_index']
 
-        if 'es_client' not in kwargs:
-            self.es_client = get_elasticsearch_client()
-        else:
-            self.es_client = es_client
+            if 'es_client' not in kwargs:
+                self.es_client = get_elasticsearch_client()
+            else:
+                self.es_client = es_client
+        except Exception as err:
+            raise Exception('Dependency fail - module unavailable: {}'.format(err))
 
     def emit(self, record: logging.LogRecord) -> None:
         record_dict = record.__dict__
@@ -75,4 +78,4 @@ def add_elk_handler(logger, **kwargs):
 
     except Exception as err:
         logger.error(err)
-        logger.info("Newrelic not available")
+        logger.info("ELK not available")

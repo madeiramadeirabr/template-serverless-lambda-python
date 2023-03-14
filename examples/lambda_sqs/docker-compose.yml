@@ -11,6 +11,7 @@ services:
       AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
       AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
       TEST_ENV: ${TEST_ENV}
+      RUNNING_WITH_DOCKER: "true"
     depends_on:
       - "localstack"
       - "redis"

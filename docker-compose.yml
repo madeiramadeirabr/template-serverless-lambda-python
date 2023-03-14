@@ -11,14 +11,15 @@ services:
       AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
       AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
       TEST_ENV: ${TEST_ENV}
+      RUNNING_WITH_DOCKER: "true"
 #    depends_on:
 #      - "localstack"
 #      - "redis"
 #      - "mysql"
     ports:
-      - 5000:5000
+      - '5000:5000'
     networks:
-      - service-python
+      - service-python-v1
     volumes:
       - ./examples/lambda_api/:/app
   template-serverless-lambda-python-lambda-sqs:
@@ -32,6 +33,7 @@ services:
       AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
       AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
       TEST_ENV: ${TEST_ENV}
+      RUNNING_WITH_DOCKER: "true"
 #    depends_on:
 #      - "localstack"
 #      - "redis"
@@ -39,17 +41,17 @@ services:
 #    ports:
 #      - 5001:5000
     networks:
-      - service-python
+      - service-python-v1
     volumes:
       - ./examples/lambda_sqs/:/app
   redis:
     image: "redis:alpine"
     ports:
-      - 6379:6379
+      - '6379:6379'
     expose:
       - 6379
     networks:
-      - service-python
+      - service-python-v1
   mysql:
     image: mysql:5.7.22
     ports:
@@ -58,7 +60,7 @@ services:
       MYSQL_DATABASE: store
       MYSQL_ROOT_PASSWORD: store
     networks:
-      - service-python
+      - service-python-v1
   localstack:
     image: localstack/localstack
     privileged: true
@@ -72,14 +74,17 @@ services:
       DOCKER_HOST: unix:///var/run/docker.sock
       PORT_WEB_UI: 9070
       # LAMBDA_EXECUTOR: docker # está dando erro via docker
-      LAMBDA_EXECUTOR: local
+      LAMBDA_EXECUTOR: docker
+      LAMBDA_REMOTE_DOCKER: 1
+      LAMBDA_DOCKER_NETWORK: service-python-v1
       DEBUG: 1
       HOSTNAME_EXTERNAL: localstack
+      LEGACY_DIRECTORIES: 1
     networks:
-      - service-python
+      - service-python-v1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/localstack:/tmp/localstack
 networks:
-  service-python:
+  service-python-v1:
     external: true

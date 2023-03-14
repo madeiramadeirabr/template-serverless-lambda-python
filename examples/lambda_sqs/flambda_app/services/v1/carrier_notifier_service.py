@@ -24,6 +24,7 @@ class CarrierNotifierService:
     def process(self, sqs_event):
         result = True
 
+        self.logger.error('xpto')
         self.logger.info('---------------------------------------------------------------')
         self.logger.info('{} - {} - {}'.format(APP_NAME, APP_VERSION, APP_ARCH_VERSION))
         self.logger.info('---------------------------------------------------------------')

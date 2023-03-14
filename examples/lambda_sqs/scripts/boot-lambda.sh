@@ -111,6 +111,13 @@ if test -f "${current_parent_folder}scripts/localstack/lambda/create-function-fr
 
     read -p "Press enter to continue..."
 
+    echo '----------------------------------------'
+    echo "$0 - Creating the logs events: $APP_LAMBDA_NAME"
+    echo '----------------------------------------'
+    ${current_parent_folder}scripts/localstack/logs/create-logs-for-lambda.sh $APP_LAMBDA_NAME
+
+  read -p "Press enter to continue..."
+
     if test $APP_LAMBDA_EVENT_SOURCE = true;then
       if test $TEST_ENV = 0; then
         echo '----------------------------------------'
@@ -127,3 +134,4 @@ if test -f "${current_parent_folder}scripts/localstack/lambda/create-function-fr
 else
   echo "File not found: ${current_parent_folder}scripts/localstack/lambda/create-function-from-s3.sh"
 fi
+

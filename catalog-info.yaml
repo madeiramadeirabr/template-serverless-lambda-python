@@ -2,12 +2,15 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: template-serverless-lambda-python
+  description: Este projeto contém exemplos isolados de AWS Lambda Services, além de fornecer um exemplo de stack.
   annotations:
     github.com/project-slug: madeiramadeirabr/template-serverless-lambda-python
+    backstage.io/techdocs-ref: dir:.
   tags:
     - shell
+    - dockerfile
 spec:
-  type: service
+  type: template
   lifecycle: production
   owner: team-platform-engineering-admin
   
